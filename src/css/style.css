@@ -43,6 +43,7 @@
     @apply border-primary bg-primary;
 }
 
+/* Rectangle 424 */
 .apexcharts-legend-text {
     @apply !text-body dark:!text-bodydark;
 }
@@ -241,3 +242,22 @@ input[type="search"]::-webkit-search-cancel-button {
 [x-cloak] {
     display: none !important;
 }
+
+.apexcharts-legend-marker {
+    width: 12px; /* Ukuran diameter */
+    height: 12px; /* Ukuran diameter */
+    border-radius: 50%; /* Menjadikan marker berbentuk bulat */
+    display: inline-block; /* Agar ditampilkan di baris yang sama */
+    margin-right: 8px; /* Spasi di sebelah kanan marker */
+}
+
+.dropdown-select {
+    color: #007C80; /* Warna teks */
+    background-color: white; /* Latar belakang dropdown */
+}
+
+.dropdown-select option {
+    background-color: white; /* Latar belakang opsi */
+    color: #007C80; /* Warna teks opsi */
+}
+

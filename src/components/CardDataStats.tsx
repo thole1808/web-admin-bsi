@@ -4,8 +4,6 @@ interface CardDataStatsProps {
   title: string;
   total: string;
   rate: string;
-  levelUp?: boolean;
-  levelDown?: boolean;
   children: ReactNode;
 }
 
@@ -13,62 +11,61 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
   title,
   total,
   rate,
-  levelUp,
-  levelDown,
   children,
 }) => {
+  // Ubah rate menjadi number
+  const rateNumber = parseFloat(rate);
+
   return (
-    <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+    <div className="flex items-center rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-md">
+      {/* Left Section (Icon) */}
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
         {children}
       </div>
 
-      <div className="mt-4 flex items-end justify-between">
-        <div>
-          <h4 className="text-title-md font-bold text-black dark:text-white">
-            {total}
-          </h4>
-          <span className="text-sm font-medium">{title}</span>
-        </div>
-
-        <span
-          className={`flex items-center gap-1 text-sm font-medium ${
-            levelUp && "text-meta-3"
-          } ${levelDown && "text-meta-5"} `}
+      {/* Middle Section (Text) */}
+      <div className="ml-4 flex flex-col">
+        <span className="text-sm text-gray-500">{title}</span>
+        <h4 className="my-1 text-2xl font-semibold text-gray-900">{total}</h4>
+        <div
+          className={`mt-1 flex items-center text-sm font-semibold ${
+            rateNumber >= 10 ? "text-red-600" : "text-green-600"
+          }`}
         >
-          {rate}
-
-          {levelUp && (
+          {rateNumber >= 10 ? (
             <svg
-              className="fill-meta-3"
-              width="10"
-              height="11"
-              viewBox="0 0 10 11"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="mr-1"
             >
               <path
-                d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737L5.64284 10.0849L4.35716 10.0849L4.35716 2.47737Z"
-                fill=""
+                d="M15.9999 18L18.2136 15.71L13.4963 10.83L9.62961 14.83L2.46661 7.41L3.82961 6L9.62961 12L13.4963 8L19.5863 14.29L21.7999 12V18H15.9999Z"
+                fill="#FF0000"
+              />
+            </svg>
+          ) : (
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="mr-1"
+            >
+              <path
+                d="M16 6L18.2136 8.29L13.4963 13.17L9.62963 9.17L2.46663 16.59L3.82963 18L9.62963 12L13.4963 16L19.5863 9.71L21.8 12V6H16Z"
+                fill="#00B69B"
               />
             </svg>
           )}
-          {levelDown && (
-            <svg
-              className="fill-meta-5"
-              width="10"
-              height="11"
-              viewBox="0 0 10 11"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5.64284 7.69237L9.09102 4.33987L10 5.22362L5 10.0849L-8.98488e-07 5.22362L0.908973 4.33987L4.35716 7.69237L4.35716 0.0848701L5.64284 0.0848704L5.64284 7.69237Z"
-                fill=""
-              />
-            </svg>
-          )}
-        </span>
+          <span>{rate}%</span>
+          <span className="text-gray-500 ml-1">
+            {rateNumber >= 10 ? "Down From Yesterday " : "Up From Yesterday"}
+          </span>
+        </div>
       </div>
     </div>
   );

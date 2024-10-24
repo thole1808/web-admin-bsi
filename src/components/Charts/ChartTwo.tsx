@@ -1,5 +1,3 @@
-"use client";
-
 import { ApexOptions } from "apexcharts";
 import React from "react";
 import dynamic from "next/dynamic";
@@ -9,12 +7,11 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 const options: ApexOptions = {
-  colors: ["#3C50E0", "#80CAEE"],
+  colors: ["#C2F2EF", "#C9D8F1", "#F4A8A8"],
   chart: {
     fontFamily: "Satoshi, sans-serif",
     type: "bar",
     height: 335,
-    stacked: true,
     toolbar: {
       show: false,
     },
@@ -22,7 +19,6 @@ const options: ApexOptions = {
       enabled: false,
     },
   },
-
   responsive: [
     {
       breakpoint: 1536,
@@ -30,7 +26,7 @@ const options: ApexOptions = {
         plotOptions: {
           bar: {
             borderRadius: 0,
-            columnWidth: "25%",
+            columnWidth: "30%", // Menambah lebar kolom untuk lebih banyak ruang antar batang
           },
         },
       },
@@ -40,25 +36,34 @@ const options: ApexOptions = {
     bar: {
       horizontal: false,
       borderRadius: 0,
-      columnWidth: "25%",
-      borderRadiusApplication: "end",
-      borderRadiusWhenStacked: "last",
+      columnWidth: "30%",
+      distributed: false, // Ini penting agar batang tidak bertumpuk (tidak stacked)
     },
   },
   dataLabels: {
     enabled: false,
   },
-
   xaxis: {
-    categories: ["M", "T", "W", "T", "F", "S", "S"],
+    categories: [
+      "Pasar Senin", 
+      "Margonda", 
+      "Pramuka", 
+      "Pulo Gadung", 
+      "Cempaka Mas", 
+      "Kota Wisata"
+    ],
+    labels: {
+      style: {
+        fontSize: '12px',
+      },
+    },
   },
   legend: {
-    position: "top",
-    horizontalAlign: "left",
+    // position: "t", // Ensure the legend is at the top
+    horizontalAlign: "center",
     fontFamily: "Satoshi",
     fontWeight: 500,
     fontSize: "14px",
-
     markers: {
       radius: 99,
     },
@@ -66,41 +71,43 @@ const options: ApexOptions = {
   fill: {
     opacity: 1,
   },
+  tooltip: {
+    y: {
+      formatter: (val: number) => `${val}`,
+    },
+  },
 };
-
-interface ChartTwoState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
 
 const ChartTwo: React.FC = () => {
   const series = [
     {
-      name: "Sales",
-      data: [44, 55, 41, 67, 22, 43, 65],
+      name: "Terlayani",
+      data: [120, 150, 180, 200, 170, 140], // Data untuk setiap lokasi
     },
     {
-      name: "Revenue",
-      data: [13, 23, 20, 8, 13, 27, 15],
+      name: "Total Pengunjung",
+      data: [200, 220, 250, 270, 230, 210], // Data untuk setiap lokasi
+    },
+    {
+      name: "Tidak Terlayani",
+      data: [80, 70, 70, 70, 60, 70], // Data untuk setiap lokasi
     },
   ];
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="mb-4 justify-between gap-4 sm:flex">
         <div>
           <h4 className="text-xl font-semibold text-black dark:text-white">
-            Profit this week
+            Pengunjung 
           </h4>
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            <select
+          <select
               name="#"
               id="#"
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
+              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none dropdown-select"
             >
               <option value="" className="dark:bg-boxdark">
                 This Week
@@ -134,7 +141,7 @@ const ChartTwo: React.FC = () => {
       </div>
 
       <div>
-        <div id="chartTwo" className="-mb-9 -ml-5">
+        <div id="chartTwo" className="">
           <ReactApexChart
             options={options}
             series={series}
