@@ -107,7 +107,7 @@ const ChartTwo: React.FC = () => {
           <select
               name="#"
               id="#"
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none dropdown-select"
+              className="relative z-20 inline-flex appearance-none bg-red py-1 pl-3 pr-8 text-sm font-medium outline-none dropdown-select"
             >
               <option value="" className="dark:bg-boxdark">
                 This Week
