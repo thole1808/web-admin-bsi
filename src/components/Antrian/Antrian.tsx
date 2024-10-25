@@ -1,7 +1,8 @@
 "use client"; // Add this directive at the top
 
 import React from 'react';
-import DataTable from 'react-data-table-component';
+// import DataTable from 'react-data-table-component';
+import dynamic from 'next/dynamic';
 
 interface Branch {
   branch: string;
@@ -12,6 +13,8 @@ interface Branch {
   waiting: number;
   inService: number;
 }
+
+const DataTable = dynamic(() => import('react-data-table-component'), { ssr: false });
 
 const TopBranchesTable: React.FC = () => {
   const topBranches: Branch[] = [
