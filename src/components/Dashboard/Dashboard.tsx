@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
 
       {/* <div className="grid grid-cols-3 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> */}
       {/* <div className="grid grid-cols-1 sm:grid-col-3 lg:grid-cols-1 xl:grid-cols-3 gap-4"> */}
-      
+        
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
         <CardDataStats title="Total Semua Pengunjung" total="287" rate="8.5%">
           <svg width="114" height="114" viewBox="0 0 114 114" fill="none" xmlns="http://www.w3.org/2000/svg">
