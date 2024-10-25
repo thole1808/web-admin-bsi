@@ -26,7 +26,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
       {/* Middle Section (Text) */}
       <div className="ml-4 flex flex-col">
         <span className="text-sm text-gray-500">{title}</span>
-        <h4 className="my-1 text-2xl font-semibold text-gray-900">{total}</h4>
+        <h4 className="my-1 text-1xl font-semibold text-gray-900">{total}</h4>
         <div
           className={`mt-1 flex items-center text-sm font-semibold ${
             rateNumber >= 10 ? "text-red-600" : "text-green-600"
