@@ -1,7 +1,7 @@
 
 "use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import React from "react"; 
 import ChartTwo from "../Charts/ChartTwo";
 import TodayVisitors from '../TodayVisitor/TodayVisitors';
 import CardDataStats from "../CardDataStats";
@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
                 title="Total tidak terlayani"
                 value="20"
                 change="8.5"
-                positive={true}
+                positive={false}
               />
             </div>
             <ChartTwo />
