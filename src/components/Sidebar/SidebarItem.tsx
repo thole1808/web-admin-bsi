@@ -26,7 +26,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
     <li className="relative">
       {/* Garis hover di sebelah kiri */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-1 bg-green-500 transition-all duration-300 ease-in-out ${
+        className={`absolute left-0 top-0 bottom-0 w-1 bg-[#00BFB2] transition-all duration-300 ease-in-out ${
           isItemActive ? "opacity-100" : "opacity-0"
         }`} style={{ color: "#00BFB2" }}
       />
