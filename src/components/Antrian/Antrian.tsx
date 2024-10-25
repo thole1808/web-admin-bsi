@@ -22,6 +22,14 @@ const TopBranchesTable: React.FC = () => {
     { branch: 'Pasar Senen', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
     { branch: 'Margonda', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
     { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
+    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
   ];
 
   const columns = [
@@ -67,7 +75,7 @@ const TopBranchesTable: React.FC = () => {
         <span className="bg-blue-100 text-blue-700 px-12 py-2 rounded-full">{row.inService}</span>
       ),
       center: true,
-    },
+    },  
   ];
 
   return (
