@@ -3,6 +3,7 @@ import FormElements from "@/components/FormElements";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Antrian from "@/components/Antrian/Antrian";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export const metadata: Metadata = {
     title:
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
-            <Antrian />
+            <Breadcrumb pageName="Antrian"/>
+            <div className="flex flex-col gap-10">
+                <Antrian />
+            </div>
         </DefaultLayout>
     );
 };

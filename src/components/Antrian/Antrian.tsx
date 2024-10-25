@@ -3,6 +3,7 @@
 import React from 'react';
 // import DataTable from 'react-data-table-component';
 import dynamic from 'next/dynamic';
+import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 
 interface Branch {
   branch: string;
@@ -71,7 +72,6 @@ const TopBranchesTable: React.FC = () => {
 
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md mt-8">
-      <h3 className="text-xl font-semibold mb-4">5 Cabang Terbaik</h3>
       <DataTable
         columns={columns}
         data={topBranches}
