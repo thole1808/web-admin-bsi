@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
       <div className="min-h-screen bg-gray-100 p-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="col-span-1 md:col-span-3 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <CardDataStats title="Total Semua Pengunjung" total="287" rate="8.5%">
                 <svg width="114" height="114" viewBox="0 0 114 114" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path opacity="0.21" fillRule="evenodd" clipRule="evenodd" d="M57 114C88.4802 114 114 88.4802 114 57C114 25.5198 88.4802 0 57 0C25.5197 0 0 25.5198 0 57C0 88.4802 25.5197 114 57 114Z" fill="#0047BB" />
