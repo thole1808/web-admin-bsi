@@ -144,6 +144,14 @@ const TopBranchesTable: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        {/* <select className="px-4 py-2 border rounded-lg w-1/3" value={selectedSortColumn} onChange={handleSortColumnChange}>
+          <option value="branch">Nama Cabang</option>
+          <option value="percentage">Prosentase Total Antrian</option>
+          <option value="served">Terlayani</option>
+          <option value="notServed">Tidak Terlayani</option>
+          <option value="waiting">Menunggu</option>
+          <option value="inService">Dilayani</option>
+        </select> */}
       </div>
 
       <div className="w-full p-6 bg-white rounded-lg shadow-md">
