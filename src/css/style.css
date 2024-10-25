@@ -35,6 +35,24 @@
 
 /* third-party libraries CSS */
 
+.link {
+    position: relative; /* Pastikan posisi relatif untuk parent */
+}
+
+.link .hover-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px; /* Ketebalan garis */
+    background-color: transparent;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.link:hover .hover-line {
+    background-color: #00BFB2; /* Ganti dengan warna yang diinginkan saat hover */
+}
+
 .tableCheckbox:checked ~ div span {
     @apply opacity-100;
 }
