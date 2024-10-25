@@ -15,49 +15,34 @@ interface Branch {
 
 const DataTable = dynamic(() => import('react-data-table-component'), { ssr: false });
 
-const SortingIcon = ({ direction }: { direction: string }) => (
-  <svg width="16" height="16" viewBox="0 0 79 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clipPath="url(#clip0_216_1473)">
-      <rect width="79" height="68" rx="15" fill="white" />
-      <path opacity="0.686151" d="M78.2303 70.4333V0" stroke="#979797" strokeWidth="0.3" strokeLinecap="square" />
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M39.8474 32.9527C45.8382 32.9527 50.6947 30.9255 50.6947 28.4248C50.6947 25.9242 45.8382 23.897 39.8474 23.897C33.8565 23.897 29 25.9242 29 28.4248C29 30.9255 33.8565 32.9527 39.8474 32.9527Z"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M29 28.4248C29.0028 32.9682 32.4557 36.9151 37.3441 37.9625V44.2723C37.3441 45.5226 38.4649 46.5362 39.8474 46.5362C41.2299 46.5362 42.3506 45.5226 42.3506 44.2723V37.9625C47.239 36.9151 50.6919 32.9682 50.6947 28.4248"
-        stroke="black"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </g>
-    <defs>
-      <clipPath id="clip0_216_1473">
-        <rect width="79" height="68" rx="15" fill="white" />
-      </clipPath>
-    </defs>
-  </svg>
-);
-
 const TopBranchesTable: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: keyof Branch; direction: 'ascending' | 'descending' | null }>({
     key: 'branch',
     direction: 'ascending',
   });
-  const [selectedSortColumn, setSelectedSortColumn] = useState<keyof Branch>('branch');
+  const [visibleColumns, setVisibleColumns] = useState({
+    branch: true,
+    percentage: true,
+    served: true,
+    notServed: true,
+    waiting: true,
+    inService: true,
+  });
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const topBranches: Branch[] = [
     { branch: 'Pasar Senen', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
     { branch: 'Margonda', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
     { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
   ];
+
+  const toggleColumnVisibility = (columnKey: keyof Branch) => {
+    setVisibleColumns((prev) => ({
+      ...prev,
+      [columnKey]: !prev[columnKey],
+    }));
+  };
 
   const columns = [
     {
@@ -70,51 +55,44 @@ const TopBranchesTable: React.FC = () => {
       name: 'Nama Cabang',
       selector: 'branch',
       sortable: true,
+      omit: !visibleColumns.branch,
     },
     {
       name: 'Prosentase Total Antrian',
       selector: 'percentage',
       cell: (row: Branch) => `${row.percentage} dari total ${row.total} antrian`,
       sortable: true,
+      omit: !visibleColumns.percentage,
     },
     {
       name: 'Terlayani',
       selector: 'served',
       cell: (row: Branch) => <span className="bg-green-100 text-green-700 px-12 py-2 rounded-full">{row.served}</span>,
       center: true,
+      omit: !visibleColumns.served,
     },
     {
       name: 'Tidak Terlayani',
       selector: 'notServed',
       cell: (row: Branch) => <span className="bg-red-100 text-red-700 px-12 py-2 rounded-full">{row.notServed}</span>,
       center: true,
+      omit: !visibleColumns.notServed,
     },
     {
       name: 'Menunggu',
       selector: 'waiting',
       cell: (row: Branch) => <span className="bg-yellow-100 text-yellow-700 px-12 py-2 rounded-full">{row.waiting}</span>,
       center: true,
+      omit: !visibleColumns.waiting,
     },
     {
       name: 'Dilayani',
       selector: 'inService',
       cell: (row: Branch) => <span className="bg-blue-100 text-blue-700 px-12 py-2 rounded-full">{row.inService}</span>,
       center: true,
+      omit: !visibleColumns.inService,
     },
   ];
-
-  const requestSort = (key: keyof Branch) => {
-    let direction: 'ascending' | 'descending' = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const handleSortColumnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSortColumn(e.target.value as keyof Branch);
-    requestSort(e.target.value as keyof Branch);
-  };
 
   const filteredBranches = useMemo(() => {
     return topBranches.filter((branch) => branch.branch.toLowerCase().includes(search.toLowerCase()));
@@ -137,6 +115,36 @@ const TopBranchesTable: React.FC = () => {
   return (
     <div>
       <div className="flex items-center mb-4 mt-4 space-x-2">
+
+         {/* Filter Button */}
+         <button className="flex items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path d="M4 6h16M4 12h16m-7 6h7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className="font-semibold">Filter</span>
+        </button>
+        {dropdownOpen && (
+          <div className="absolute z-10 bg-white border rounded-lg shadow-lg p-4 mt-2">
+            {Object.keys(visibleColumns).map((key) => (
+              <label key={key} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={visibleColumns[key as keyof Branch]}
+                  onChange={() => toggleColumnVisibility(key as keyof Branch)}
+                />
+                <span>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</span>
+              </label>
+            ))}
+          </div>
+        )}
+        
         <input
           type="text"
           placeholder="Cari cabang..."
@@ -144,27 +152,20 @@ const TopBranchesTable: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {/* <select className="px-4 py-2 border rounded-lg w-1/3" value={selectedSortColumn} onChange={handleSortColumnChange}>
-          <option value="branch">Nama Cabang</option>
-          <option value="percentage">Prosentase Total Antrian</option>
-          <option value="served">Terlayani</option>
-          <option value="notServed">Tidak Terlayani</option>
-          <option value="waiting">Menunggu</option>
-          <option value="inService">Dilayani</option>
-        </select> */}
+       
       </div>
 
-      <div className="w-full p-6 bg-white rounded-lg shadow-md">
-        <DataTable
-          columns={columns}
-          data={sortedBranches}
-          pagination
-          highlightOnHover
-          striped
-          defaultSortField="branch"
-          defaultSortAsc={true}
-        />
-      </div>
+      <DataTable
+        title="Cabang Teratas"
+        columns={columns.filter(column => !column.omit)}
+        data={sortedBranches}
+        defaultSortFieldId="branch"
+        pagination
+        onSort={(column, direction) => {
+          setSortConfig({ key: column.selector as keyof Branch, direction });
+        }}
+        sortServer={true}
+      />
     </div>
   );
 };
