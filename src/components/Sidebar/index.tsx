@@ -40,7 +40,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Antrian",
-        route: "/profile",
+        route: "/antrian",
       },
       {
         icon: (
