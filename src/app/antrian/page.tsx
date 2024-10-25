@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
-            <Breadcrumb pageName="Antrian"/>
             <div className="flex flex-col gap-10">
+                <Breadcrumb pageName="Antrian"/>
                 <Antrian />
             </div>
         </DefaultLayout>
