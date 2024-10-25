@@ -1,12 +1,14 @@
 
 "use client";
 import dynamic from "next/dynamic";
-import React from "react"; 
+import React from "react";
 import ChartTwo from "../Charts/ChartTwo";
 import TodayVisitors from '../TodayVisitor/TodayVisitors';
 import CardDataStats from "../CardDataStats";
 import { FaUsers } from "react-icons/fa";
 import StatsCard from '../StatsCard/StatsCard';
+import TodayVisitorsTable from "../TopBranchesTable/TopBranchesTable";
+import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), { ssr: false });
 const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), { ssr: false });
@@ -66,6 +68,13 @@ const Dashboard: React.FC = () => {
           <div className="col-span-1">
             <TodayVisitors />
           </div>
+
+          <div className="col-span-1 md:col-span-4 space-y-6">
+            <div className="col-span-1 md:col-span-3">
+              <TopBranchesTable />
+            </div>
+          </div>
+          
         </div>
       </div>
     </>
