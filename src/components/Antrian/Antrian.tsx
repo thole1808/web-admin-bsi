@@ -22,11 +22,10 @@ const TopBranchesTable: React.FC = () => {
     direction: 'ascending',
   });
 
-  // Add `total` to `visibleColumns`
   const [visibleColumns, setVisibleColumns] = useState({
     branch: true,
     percentage: true,
-    total: true, // Added total here
+    total: true,
     served: true,
     notServed: true,
     waiting: true,
@@ -139,7 +138,7 @@ const TopBranchesTable: React.FC = () => {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
-  
+
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
         } else if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -195,8 +194,8 @@ const TopBranchesTable: React.FC = () => {
         />
       </div>
 
-      {/* <DataTable
-        title="Cabang Teratas"
+      <DataTable
+        title=""
         columns={columns.filter(column => !column.omit)}
         data={sortedBranches}
         defaultSortFieldId="branch"
@@ -205,19 +204,7 @@ const TopBranchesTable: React.FC = () => {
           setSortConfig({ key: column.selector as keyof Branch, direction });
         }}
         sortServer={true}
-      /> */}
-      <DataTable
-  title="Cabang Teratas"
-  columns={columns.filter((column): column is TableColumn<Branch> => !column.omit)} // Type guard to ensure the correct type
-  data={sortedBranches}
-  defaultSortFieldId="branch"
-  pagination
-  onSort={(column, direction) => {
-    // Ensure that the column selector is a key of Branch
-    setSortConfig({ key: column.selector as keyof Branch, direction });
-  }}
-  sortServer={true}
-/>
+      />
     </div>
   );
 };
