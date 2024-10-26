@@ -211,7 +211,7 @@ const TopBranchesTable: React.FC = () => {
   return (
     <div>
       <div className="flex items-center mb-4 mt-4 space-x-2">
-      <button className="flex bg-white items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <button className="flex bg-white items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -249,6 +249,24 @@ const TopBranchesTable: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <button className="bg-white px-4 py-2 rounded-lg border border-white-500 flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6 mr-2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span>Tambah</span>
+        </button>
+
       </div>
 
       <DataTable
