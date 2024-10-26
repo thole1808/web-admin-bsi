@@ -3,12 +3,14 @@
 import dynamic from "next/dynamic";
 import React from "react";
 import ChartTwo from "../Charts/ChartTwo";
+import GrafikPengunjung from "../Charts/GrafikPengunjung";
 import TodayVisitors from '../TodayVisitor/TodayVisitors';
 import CardDataStats from "../CardDataStats";
 import { FaUsers } from "react-icons/fa";
 import StatsCard from '../StatsCard/StatsCard';
 import TodayVisitorsTable from "../TopBranchesTable/TopBranchesTable";
 import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
+
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), { ssr: false });
 const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), { ssr: false });
@@ -63,7 +65,7 @@ const Dashboard: React.FC = () => {
                 positive={false}
               />
             </div>
-            <ChartTwo />
+            <GrafikPengunjung />
           </div>
           <div className="col-span-1">
             <TodayVisitors />

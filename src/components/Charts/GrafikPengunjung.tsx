@@ -20,7 +20,7 @@ ChartJS.register(
   Legend
 );
 
-const ChartTwo = () => {
+const GrafikPengunjung = () => {
   const data = {
     labels: ["Pasar Senin", "Margonda", "Pramuka", "Pulo Gadung", "Cempaka Mas", "Kota Wisata"],
     datasets: [
@@ -147,4 +147,4 @@ const ChartTwo = () => {
   );
 };
 
-export default ChartTwo;
+export default GrafikPengunjung;
