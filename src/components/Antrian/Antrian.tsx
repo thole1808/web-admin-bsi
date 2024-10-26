@@ -21,14 +21,18 @@ const TopBranchesTable: React.FC = () => {
     key: 'branch',
     direction: 'ascending',
   });
+
+  // Add `total` to `visibleColumns`
   const [visibleColumns, setVisibleColumns] = useState({
     branch: true,
     percentage: true,
+    total: true, // Added total here
     served: true,
     notServed: true,
     waiting: true,
     inService: true,
   });
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -90,6 +94,12 @@ const TopBranchesTable: React.FC = () => {
       omit: !visibleColumns.percentage,
     },
     {
+      name: 'Total',
+      selector: 'total',
+      sortable: true,
+      omit: !visibleColumns.total,
+    },
+    {
       name: 'Terlayani',
       selector: 'served',
       cell: (row: Branch) => <span className="bg-green-100 text-green-700 px-12 py-2 rounded-full">{row.served}</span>,
@@ -127,11 +137,15 @@ const TopBranchesTable: React.FC = () => {
     let sortableItems = [...filteredBranches];
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
-        if (typeof a[sortConfig.key] === 'string') {
-          return a[sortConfig.key].localeCompare(b[sortConfig.key]) * (sortConfig.direction === 'ascending' ? 1 : -1);
-        } else {
-          return (a[sortConfig.key] - b[sortConfig.key]) * (sortConfig.direction === 'ascending' ? 1 : -1);
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+  
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
+        } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return (aValue - bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
         }
+        return 0; // fallback if types don't match
       });
     }
     return sortableItems;
@@ -140,20 +154,6 @@ const TopBranchesTable: React.FC = () => {
   return (
     <div>
       <div className="flex items-center mb-4 mt-4 space-x-2">
-        {/* Filter Button */}
-        {/* <button className="flex items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path d="M4 6h16M4 12h16m-7 6h7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span className="font-semibold">Filter</span>
-        </button> */}
         <button className="flex bg-white items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +169,6 @@ const TopBranchesTable: React.FC = () => {
               d="M3 4h18l-7 8v6.5l-4 2v-8.5l-7-8z"
             />
           </svg>
-          {/* <span className="font-semibold"></span> */}
         </button>
 
         {dropdownOpen && (
@@ -196,7 +195,7 @@ const TopBranchesTable: React.FC = () => {
         />
       </div>
 
-      <DataTable
+      {/* <DataTable
         title="Cabang Teratas"
         columns={columns.filter(column => !column.omit)}
         data={sortedBranches}
@@ -206,7 +205,19 @@ const TopBranchesTable: React.FC = () => {
           setSortConfig({ key: column.selector as keyof Branch, direction });
         }}
         sortServer={true}
-      />
+      /> */}
+      <DataTable
+  title="Cabang Teratas"
+  columns={columns.filter((column): column is TableColumn<Branch> => !column.omit)} // Type guard to ensure the correct type
+  data={sortedBranches}
+  defaultSortFieldId="branch"
+  pagination
+  onSort={(column, direction) => {
+    // Ensure that the column selector is a key of Branch
+    setSortConfig({ key: column.selector as keyof Branch, direction });
+  }}
+  sortServer={true}
+/>
     </div>
   );
 };
