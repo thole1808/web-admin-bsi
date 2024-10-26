@@ -1,6 +1,6 @@
 "use client"; // Add this directive at the top
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 interface Branch {
@@ -30,6 +30,17 @@ const TopBranchesTable: React.FC = () => {
     inService: true,
   });
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const columnLabels: { [key in keyof Branch]: string } = {
+    branch: 'Nama Cabang',
+    percentage: 'Prosentase Total Antrian',
+    total: 'Total',
+    served: 'Terlayani',
+    notServed: 'Tidak Terlayani',
+    waiting: 'Menunggu',
+    inService: 'Dilayani',
+  };
 
   const topBranches: Branch[] = [
     { branch: 'Pasar Senen', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
@@ -42,7 +53,21 @@ const TopBranchesTable: React.FC = () => {
       ...prev,
       [columnKey]: !prev[columnKey],
     }));
+    setDropdownOpen(false); // Close dropdown after selecting an option
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false); // Close dropdown if clicked outside
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const columns = [
     {
@@ -115,9 +140,8 @@ const TopBranchesTable: React.FC = () => {
   return (
     <div>
       <div className="flex items-center mb-4 mt-4 space-x-2">
-
-         {/* Filter Button */}
-         <button className="flex items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
+        {/* Filter Button */}
+        {/* <button className="flex items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -129,9 +153,27 @@ const TopBranchesTable: React.FC = () => {
             <path d="M4 6h16M4 12h16m-7 6h7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span className="font-semibold">Filter</span>
+        </button> */}
+        <button className="flex bg-white items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 4h18l-7 8v6.5l-4 2v-8.5l-7-8z"
+            />
+          </svg>
+          {/* <span className="font-semibold"></span> */}
         </button>
+
         {dropdownOpen && (
-          <div className="absolute z-10 bg-white border rounded-lg shadow-lg p-4 mt-2">
+          <div ref={dropdownRef} className="absolute z-10 bg-white border rounded-lg shadow-lg p-4 mt-2">
             {Object.keys(visibleColumns).map((key) => (
               <label key={key} className="flex items-center space-x-2">
                 <input
@@ -139,7 +181,7 @@ const TopBranchesTable: React.FC = () => {
                   checked={visibleColumns[key as keyof Branch]}
                   onChange={() => toggleColumnVisibility(key as keyof Branch)}
                 />
-                <span>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</span>
+                <span>{columnLabels[key as keyof Branch]}</span>
               </label>
             ))}
           </div>
@@ -152,7 +194,6 @@ const TopBranchesTable: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-       
       </div>
 
       <DataTable
