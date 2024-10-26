@@ -145,7 +145,7 @@ const AntrianTable: React.FC = () => {
       omit: !visibleColumns.peran,
     },
     {
-      name: 'Action', // New Action column
+      name: 'Aksi', // New Action column
       cell: (row: Antrian) => (
         <div className="flex space-x-2">
           <button className="bg-orange-500 text-white px-3 py-1 rounded-full flex items-center">
