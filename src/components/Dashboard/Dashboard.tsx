@@ -12,7 +12,7 @@ import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), { ssr: false });
 const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), { ssr: false });
-const ChartFour = dynamic(() => import("@/components/Charts/ChartFour"), { ssr: false });
+// const ChartFour = dynamic(() => import("@/components/Charts/ChartFour"), { ssr: false });
 
 const Dashboard: React.FC = () => {
   return (

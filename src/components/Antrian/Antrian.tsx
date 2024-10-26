@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
+
+// Define the Branch interface
 interface Branch {
   branch: string;
   percentage: string;
@@ -13,6 +15,7 @@ interface Branch {
   inService: number;
 }
 
+// Load the DataTable component dynamically
 const DataTable = dynamic(() => import('react-data-table-component'), { ssr: false });
 
 const TopBranchesTable: React.FC = () => {
@@ -56,13 +59,13 @@ const TopBranchesTable: React.FC = () => {
       ...prev,
       [columnKey]: !prev[columnKey],
     }));
-    setDropdownOpen(false); // Close dropdown after selecting an option
+    setDropdownOpen(false);
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false); // Close dropdown if clicked outside
+        setDropdownOpen(false);
       }
     };
 
@@ -138,13 +141,13 @@ const TopBranchesTable: React.FC = () => {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
-
+  
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
         } else if (typeof aValue === 'number' && typeof bValue === 'number') {
           return (aValue - bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
         }
-        return 0; // fallback if types don't match
+        return 0;
       });
     }
     return sortableItems;
