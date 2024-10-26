@@ -3,9 +3,9 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
-// Define the Branch interface
-interface Branch {
-  nik: string; // Changed from 'branch' to 'nik'
+// Define the Antrian interface
+interface Antrian {
+  nik: string; // Changed from 'Antrian' to 'nik'
   nama: string; // Changed from 'name' to 'nama'
   email: string; // Changed from 'total' to 'email'
   peran: string; // Changed from 'served' to 'peran'
@@ -14,9 +14,9 @@ interface Branch {
 // Load the DataTable component dynamically
 const DataTable = dynamic(() => import('react-data-table-component'), { ssr: false });
 
-const TopBranchesTable: React.FC = () => {
+const AntrianTable: React.FC = () => {
   const [search, setSearch] = useState('');
-  const [sortConfig, setSortConfig] = useState<{ key: keyof Branch; direction: 'ascending' | 'descending' | null }>({
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Antrian; direction: 'ascending' | 'descending' | null }>({
     key: 'nik', // Default sort key updated
     direction: 'ascending',
   });
@@ -32,15 +32,15 @@ const TopBranchesTable: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const columnLabels: { [key in keyof Branch | 'action']: string } = {
+  const columnLabels: { [key in keyof Antrian | 'action']: string } = {
     nik: 'NIK',
     nama: 'Nama',
     email: 'Email',
     peran: 'Peran',
-    action: 'Action', // New action label
+    action: 'Aksi', // New action label
   };
 
-  const topBranches: Branch[] = [
+  const topAntrianes: Antrian[] = [
     { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
     { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
     { nik: '456789123', nama: 'Citra', email: 'citra@example.com', peran: 'User' },
@@ -73,7 +73,7 @@ const TopBranchesTable: React.FC = () => {
     { nik: '159753486', nama: 'Joko', email: 'joko@example.com', peran: 'User' },
   ];
 
-  const toggleColumnVisibility = (columnKey: keyof Branch | 'action') => {
+  const toggleColumnVisibility = (columnKey: keyof Antrian | 'action') => {
     setVisibleColumns((prev) => ({
       ...prev,
       [columnKey]: !prev[columnKey],
@@ -97,7 +97,7 @@ const TopBranchesTable: React.FC = () => {
   const columns = [
     {
       name: 'No',
-      cell: (row: Branch, index: number) => index + 1,
+      cell: (row: Antrian, index: number) => index + 1,
       width: '50px',
       center: true,
     },
@@ -111,7 +111,7 @@ const TopBranchesTable: React.FC = () => {
       name: 'Nama', // Updated to 'Nama'
       selector: 'nama', // Updated to use 'nama' selector
       sortable: true,
-      cell: (row: Branch) => (
+      cell: (row: Antrian) => (
         <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -146,7 +146,7 @@ const TopBranchesTable: React.FC = () => {
     },
     {
       name: 'Action', // New Action column
-      cell: (row: Branch) => (
+      cell: (row: Antrian) => (
         <div className="flex space-x-2">
           <button className="bg-orange-500 text-white px-3 py-1 rounded-full flex items-center">
             <svg
@@ -188,12 +188,12 @@ const TopBranchesTable: React.FC = () => {
     },
   ];
 
-  const filteredBranches = useMemo(() => {
-    return topBranches.filter((branch) => branch.nama.toLowerCase().includes(search.toLowerCase())); // Updated search logic
-  }, [search, topBranches]);
+  const filteredAntrianes = useMemo(() => {
+    return topAntrianes.filter((Antrian) => Antrian.nama.toLowerCase().includes(search.toLowerCase())); // Updated search logic
+  }, [search, topAntrianes]);
 
-  const sortedBranches = useMemo(() => {
-    let sortableItems = [...filteredBranches];
+  const sortedAntrianes = useMemo(() => {
+    let sortableItems = [...filteredAntrianes];
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key];
@@ -206,7 +206,7 @@ const TopBranchesTable: React.FC = () => {
       });
     }
     return sortableItems;
-  }, [filteredBranches, sortConfig]);
+  }, [filteredAntrianes, sortConfig]);
 
   return (
     <div>
@@ -233,11 +233,11 @@ const TopBranchesTable: React.FC = () => {
               <label key={key} className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={visibleColumns[key as keyof Branch]}
-                  onChange={() => toggleColumnVisibility(key as keyof Branch)}
+                  checked={visibleColumns[key as keyof Antrian]}
+                  onChange={() => toggleColumnVisibility(key as keyof Antrian)}
                   className="mr-2"
                 />
-                {columnLabels[key as keyof Branch]}
+                {columnLabels[key as keyof Antrian]}
               </label>
             ))}
           </div>
@@ -271,7 +271,7 @@ const TopBranchesTable: React.FC = () => {
 
       <DataTable
         columns={columns}
-        data={sortedBranches}
+        data={sortedAntrianes}
         pagination
         striped
         highlightOnHover
@@ -282,4 +282,4 @@ const TopBranchesTable: React.FC = () => {
   );
 };
 
-export default TopBranchesTable;
+export default AntrianTable;
