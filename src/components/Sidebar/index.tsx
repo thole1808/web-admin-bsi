@@ -52,7 +52,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Cabang",
-        route: "/settings",
+        route: "/cabang",
       },
       {
         icon: (
