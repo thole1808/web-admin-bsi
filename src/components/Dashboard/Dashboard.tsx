@@ -2,7 +2,6 @@
 "use client";
 import dynamic from "next/dynamic";
 import React from "react";
-import ChartTwo from "../Charts/ChartTwo";
 import GrafikPengunjung from "../Charts/GrafikPengunjung";
 import TodayVisitors from '../TodayVisitor/TodayVisitors';
 import CardDataStats from "../CardDataStats";

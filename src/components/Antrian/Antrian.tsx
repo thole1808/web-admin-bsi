@@ -40,7 +40,8 @@ const AntrianTable: React.FC = () => {
     action: 'Aksi', // New action label
   };
 
-  const topAntrianes: Antrian[] = [
+  // Move topAntrianes into useMemo to avoid changing on every render
+  const topAntrianes: Antrian[] = useMemo(() => [
     { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
     { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
     { nik: '456789123', nama: 'Citra', email: 'citra@example.com', peran: 'User' },
@@ -51,27 +52,7 @@ const AntrianTable: React.FC = () => {
     { nik: '258369147', nama: 'Hadi', email: 'hadi@example.com', peran: 'User' },
     { nik: '369147258', nama: 'Indah', email: 'indah@example.com', peran: 'User' },
     { nik: '159753486', nama: 'Joko', email: 'joko@example.com', peran: 'User' },
-    { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
-    { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
-    { nik: '456789123', nama: 'Citra', email: 'citra@example.com', peran: 'User' },
-    { nik: '654321789', nama: 'Dewi', email: 'dewi@example.com', peran: 'Admin' },
-    { nik: '321456987', nama: 'Eko', email: 'eko@example.com', peran: 'User' },
-    { nik: '789321456', nama: 'Fika', email: 'fika@example.com', peran: 'User' },
-    { nik: '147258369', nama: 'Gita', email: 'gita@example.com', peran: 'Admin' },
-    { nik: '258369147', nama: 'Hadi', email: 'hadi@example.com', peran: 'User' },
-    { nik: '369147258', nama: 'Indah', email: 'indah@example.com', peran: 'User' },
-    { nik: '159753486', nama: 'Joko', email: 'joko@example.com', peran: 'User' },
-    { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
-    { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
-    { nik: '456789123', nama: 'Citra', email: 'citra@example.com', peran: 'User' },
-    { nik: '654321789', nama: 'Dewi', email: 'dewi@example.com', peran: 'Admin' },
-    { nik: '321456987', nama: 'Eko', email: 'eko@example.com', peran: 'User' },
-    { nik: '789321456', nama: 'Fika', email: 'fika@example.com', peran: 'User' },
-    { nik: '147258369', nama: 'Gita', email: 'gita@example.com', peran: 'Admin' },
-    { nik: '258369147', nama: 'Hadi', email: 'hadi@example.com', peran: 'User' },
-    { nik: '369147258', nama: 'Indah', email: 'indah@example.com', peran: 'User' },
-    { nik: '159753486', nama: 'Joko', email: 'joko@example.com', peran: 'User' },
-  ];
+  ], []);
 
   const toggleColumnVisibility = (columnKey: keyof Antrian | 'action') => {
     setVisibleColumns((prev) => ({
@@ -189,7 +170,7 @@ const AntrianTable: React.FC = () => {
   ];
 
   const filteredAntrianes = useMemo(() => {
-    return topAntrianes.filter((Antrian) => Antrian.nama.toLowerCase().includes(search.toLowerCase())); // Updated search logic
+    return topAntrianes.filter((antrian) => antrian.nama.toLowerCase().includes(search.toLowerCase())); // Updated search logic
   }, [search, topAntrianes]);
 
   const sortedAntrianes = useMemo(() => {

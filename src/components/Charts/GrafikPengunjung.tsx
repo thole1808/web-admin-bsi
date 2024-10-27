@@ -7,6 +7,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
@@ -28,9 +29,9 @@ const GrafikPengunjung = () => {
         label: "Terlayani",
         data: [120, 150, 180, 200, 170, 140],
         backgroundColor: "#C2F2EF",
-        borderRadius: 0, // Bar corners
+        borderRadius: 0,
         borderSkipped: false,
-        barThickness: 30, // Similar to column width
+        barThickness: 30,
       },
       {
         label: "Total Pengunjung",
@@ -53,24 +54,23 @@ const GrafikPengunjung = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false, // Makes chart container flexible
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "bottom", // Legend positioned at the bottom
+        position: "bottom" as const, // Ensure this is a literal
         labels: {
           font: {
             family: "Satoshi",
             size: 14,
           },
           usePointStyle: true,
-          pointStyle: "circle", // Circular legend markers
+          pointStyle: "circle",
         },
-        // Add padding to the legend
-        padding: 20, // Space inside the legend
+        padding: 20,
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem) => `${tooltipItem.raw}`,
+          label: (tooltipItem: TooltipItem<'bar'>) => `${tooltipItem.raw}`,
         },
       },
     },
@@ -78,19 +78,18 @@ const GrafikPengunjung = () => {
       x: {
         ticks: {
           font: {
-            size: 12, // Label font size
+            size: 12,
           },
         },
       },
     },
     layout: {
       padding: {
-        top: 10, // Adjust as needed
-        bottom: 20, // Additional space below the chart
+        top: 10,
+        bottom: 20,
       },
     },
   };
-  
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -137,11 +136,8 @@ const GrafikPengunjung = () => {
           </div>
         </div>
       </div>
-
-      <div>
-        <div id="chartTwo" className="h-96 w-full p-3 mt-5"> {/* Responsive height */}
-          <Bar data={data} options={options} />
-        </div>
+      <div className="h-80">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );

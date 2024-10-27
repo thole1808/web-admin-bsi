@@ -44,11 +44,12 @@ const CabangTable: React.FC = () => {
         action: 'Aksi',
     };
 
-    const topCabangs: Cabang[] = [
+    // Wrap topCabangs in useMemo to avoid triggering the useMemo callback on every render
+    const topCabangs = useMemo<Cabang[]>(() => [
         { nama_cabang: 'Pasar Senen', antrian: 'A001', pengunjung: '1', loket: '1', status: 'Selesai' },
         { nama_cabang: 'Margonda', antrian: 'B002', pengunjung: '1', loket: '2', status: 'Selesai' },
         { nama_cabang: 'Cempaka Mas', antrian: 'C003', pengunjung: '1', loket: '3', status: 'Selesai' },
-    ];
+    ], []);
 
     const toggleColumnVisibility = (columnKey: keyof Cabang | 'action') => {
         setVisibleColumns((prev) => ({
@@ -71,7 +72,6 @@ const CabangTable: React.FC = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
 
     const handleActionDropdownToggle = (index: number) => {
         setActionDropdownOpen(actionDropdownOpen === index ? null : index);
@@ -142,53 +142,6 @@ const CabangTable: React.FC = () => {
                 </div>
             ),
         },
-        // {
-        //     name: '', // Center the action column header
-        //     cell: (_: Cabang, index: number) => (
-        //         <div className="relative flex justify-center items-center">
-        //             <span
-        //                 className="px-3 py-2 text-[#3C3C3C] text-2xl cursor-pointer hover:bg-gray-200 hover:shadow-lg rounded-full transition duration-200 ease-in-out"
-        //                 onClick={() => handleActionDropdownToggle(index)}
-        //             >
-        //                 ...
-        //             </span>
-        //             {actionDropdownOpen === index && (
-        //                 <div className="absolute right-0 z-10 bg-white border shadow-lg rounded-md p-2 min-w-[150px]">
-        //                     <button
-        //                         className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-        //                         onClick={() => console.log('Edit', index)}
-        //                     >
-        //                         <span className="flex items-center">
-        //                             <span className="mr-2">✏️</span> {/* Example icon */}
-        //                             Edit
-        //                             {/* <span className="ml-2 bg-blue-500 text-white text-xs font-bold rounded-full px-2 py-1">New</span> Badge */}
-        //                         </span>
-        //                     </button>
-        //                     <button
-        //                         className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-        //                         onClick={() => console.log('Delete', index)}
-        //                     >
-        //                         <span className="flex items-center">
-        //                             <span className="mr-2">🗑️</span> {/* Example icon */}
-        //                             Delete
-        //                         </span>
-        //                     </button>
-        //                     <button
-        //                         className="block w-full text-left px-4 py-2 hover:bg-gray-200"
-        //                         onClick={() => console.log('View', index)}
-        //                     >
-        //                         <span className="flex items-center">
-        //                             <span className="mr-2">👁️</span> {/* Example icon */}
-        //                             View
-        //                         </span>
-        //                     </button>
-        //                 </div>
-        //             )}
-        //         </div>
-        //     ),
-        //     omit: !visibleColumns.action,
-        // }
-
         {
             name: '', // Center the action column header
             cell: (_: Cabang, index: number) => (
@@ -234,8 +187,6 @@ const CabangTable: React.FC = () => {
             ),
             omit: !visibleColumns.action,
         },
-
-
     ];
 
     const filteredCabangs = useMemo(() => {
@@ -278,37 +229,34 @@ const CabangTable: React.FC = () => {
                     </svg>
                 </button>
                 {dropdownOpen && (
-                    <div ref={dropdownRef} className="absolute z-10 bg-white border shadow-lg rounded-md p-2">
-                        {Object.keys(columnLabels).map((key) => (
+                    <div ref={dropdownRef} className="absolute bg-white border rounded-lg shadow-lg p-4">
+                        {Object.keys(visibleColumns).map((key) => (
                             <label key={key} className="flex items-center">
                                 <input
                                     type="checkbox"
                                     checked={visibleColumns[key as keyof Cabang]}
-                                    onChange={() => toggleColumnVisibility(key as keyof Cabang)}
-                                    className="mr-2"
+                                    onChange={() => toggleColumnVisibility(key as keyof Cabang | 'action')}
                                 />
-                                {columnLabels[key as keyof Cabang]}
+                                <span className="ml-2">{columnLabels[key as keyof Cabang | 'action']}</span>
                             </label>
                         ))}
                     </div>
                 )}
                 <input
                     type="text"
-                    placeholder="Cari disini ..."
-                    className="flex-grow p-2 border rounded"
+                    placeholder="Search..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    className="flex-grow p-2 border rounded-lg"
                 />
             </div>
             <DataTable
                 columns={columns}
                 data={sortedCabangs}
                 pagination
-                defaultSortField="nama_cabang"
-                defaultSortAsc={true}
-                onSort={(_column, sortDirection) => setSortConfig({ key: _column.selector as keyof Cabang, direction: sortDirection })}
                 highlightOnHover
-                striped
+                pointerOnHover
+                // Add additional DataTable props as needed
             />
         </div>
     );
