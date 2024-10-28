@@ -5,10 +5,14 @@ import dynamic from 'next/dynamic';
 
 // Define the Antrian interface
 interface Antrian {
-  nik: string;
-  nama: string;
-  email: string;
-  peran: string;
+  namaNasabah: string;
+  jenisLayanan: string;
+  noAntrian: string;
+  waktuKedatangan: string;
+  waktuTunggu: string;
+  sla: string;
+  statusLayanan: string;
+  namaPetugas: string;
 }
 
 // Load the DataTable component dynamically
@@ -17,43 +21,140 @@ const DataTable = dynamic(() => import('react-data-table-component'), { ssr: fal
 const AntrianTable: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: keyof Antrian; direction: 'ascending' | 'descending' | null }>({
-    key: 'nik', 
+    key: 'namaNasabah',
     direction: 'ascending',
   });
 
   const [visibleColumns, setVisibleColumns] = useState({
-    nik: true,
-    nama: true,
-    email: true,
-    peran: true,
-    action: true, // Added action visibility
+    namaNasabah: true,
+    jenisLayanan: true,
+    noAntrian: true,
+    waktuKedatangan: true,
+    waktuTunggu: true,
+    sla: true,
+    statusLayanan: true,
+    namaPetugas: true,
   });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const columnLabels: { [key in keyof Antrian | 'action']: string } = {
-    nik: 'NIK',
-    nama: 'Nama',
-    email: 'Email',
-    peran: 'Peran',
-    action: 'Aksi', // New action label
+  // Update column labels (removed action)
+  const columnLabels: { [key in keyof Antrian]: string } = {
+    namaNasabah: 'Nama Nasabah',
+    jenisLayanan: 'Jenis Layanan',
+    noAntrian: 'No. Antrian',
+    waktuKedatangan: 'Waktu Kedatangan',
+    waktuTunggu: 'Waktu Tunggu',
+    sla: 'SLA',
+    statusLayanan: 'Status Layanan',
+    namaPetugas: 'Nama Petugas',
   };
 
   const topAntrianes: Antrian[] = useMemo(() => [
-    { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
-    { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
-    { nik: '456789123', nama: 'Citra', email: 'citra@example.com', peran: 'User' },
-    { nik: '654321789', nama: 'Dewi', email: 'dewi@example.com', peran: 'Admin' },
-    { nik: '321456987', nama: 'Eko', email: 'eko@example.com', peran: 'User' },
-    { nik: '789321456', nama: 'Fika', email: 'fika@example.com', peran: 'User' },
-    { nik: '147258369', nama: 'Gita', email: 'gita@example.com', peran: 'Admin' },
-    { nik: '258369147', nama: 'Hadi', email: 'hadi@example.com', peran: 'User' },
-    { nik: '369147258', nama: 'Indah', email: 'indah@example.com', peran: 'User' },
-    { nik: '159753486', nama: 'Joko', email: 'joko@example.com', peran: 'User' },
+    {
+      namaNasabah: 'Andi',
+      jenisLayanan: 'Setor Tunai',
+      noAntrian: '001',
+      waktuKedatangan: '25 Okt 2024 | 10:20',
+      waktuTunggu: '10 menit',
+      sla: '10 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Rudi Hartono',
+    },
+    {
+      namaNasabah: 'Budi',
+      jenisLayanan: 'Tarik Tunai',
+      noAntrian: '002',
+      waktuKedatangan: '25 Okt 2024 | 10:25',
+      waktuTunggu: '5 menit',
+      sla: '5 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Siti Aisyah',
+    },
+    {
+      namaNasabah: 'Cindy',
+      jenisLayanan: 'Pembukaan Rekening',
+      noAntrian: '003',
+      waktuKedatangan: '25 Okt 2024 | 10:30',
+      waktuTunggu: '8 menit',
+      sla: '8 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Joko Susilo',
+    },
+    {
+      namaNasabah: 'Diana',
+      jenisLayanan: 'Konsultasi',
+      noAntrian: '004',
+      waktuKedatangan: '25 Okt 2024 | 10:35',
+      waktuTunggu: '3 menit',
+      sla: '3 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Wati Rahmawati',
+    },
+    {
+      namaNasabah: 'Eko',
+      jenisLayanan: 'Transfer',
+      noAntrian: '005',
+      waktuKedatangan: '25 Okt 2024 | 10:40',
+      waktuTunggu: '15 menit',
+      sla: '15 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Agus Setiawan',
+    },
+    {
+      namaNasabah: 'Fina',
+      jenisLayanan: 'Kredit',
+      noAntrian: '006',
+      waktuKedatangan: '25 Okt 2024 | 10:45',
+      waktuTunggu: '20 menit',
+      sla: '20 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Tina Lestari',
+    },
+    {
+      namaNasabah: 'Guntur',
+      jenisLayanan: 'Deposit',
+      noAntrian: '007',
+      waktuKedatangan: '25 Okt 2024 | 10:50',
+      waktuTunggu: '12 menit',
+      sla: '12 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Rina Pratiwi',
+    },
+    {
+      namaNasabah: 'Hana',
+      jenisLayanan: 'Ganti Kartu',
+      noAntrian: '008',
+      waktuKedatangan: '25 Okt 2024 | 10:55',
+      waktuTunggu: '7 menit',
+      sla: '7 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Budi Santoso',
+    },
+    {
+      namaNasabah: 'Iwan',
+      jenisLayanan: 'Pencairan Deposito',
+      noAntrian: '009',
+      waktuKedatangan: '25 Okt 2024 | 11:00',
+      waktuTunggu: '6 menit',
+      sla: '6 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Lina Marlina',
+    },
+    {
+      namaNasabah: 'Joko',
+      jenisLayanan: 'Pinjaman',
+      noAntrian: '010',
+      waktuKedatangan: '25 Okt 2024 | 11:05',
+      waktuTunggu: '4 menit',
+      sla: '4 menit',
+      statusLayanan: 'Sedang Dilayani',
+      namaPetugas: 'Sandy Prabowo',
+    },
   ], []);
 
-  const toggleColumnVisibility = (columnKey: keyof Antrian | 'action') => {
+  const toggleColumnVisibility = (columnKey: keyof Antrian) => {
     setVisibleColumns((prev) => ({
       ...prev,
       [columnKey]: !prev[columnKey],
@@ -82,79 +183,70 @@ const AntrianTable: React.FC = () => {
       center: true,
     },
     {
-      name: 'NIK',
-      selector: (row: Antrian) => row.nik, // Use row.nik for selector
+      name: 'Nama Nasabah',
+      selector: (row: Antrian) => row.namaNasabah,
       sortable: true,
-      omit: !visibleColumns.nik,
+      omit: !visibleColumns.namaNasabah,
     },
     {
-      name: 'Nama',
-      selector: (row: Antrian) => row.nama, // Use row.nama for selector
+      name: 'Jenis Layanan',
+      selector: (row: Antrian) => row.jenisLayanan,
       sortable: true,
-      omit: !visibleColumns.nama,
+      omit: !visibleColumns.jenisLayanan,
     },
     {
-      name: 'Email',
-      selector: (row: Antrian) => row.email, // Use row.email for selector
+      name: 'No. Antrian',
+      selector: (row: Antrian) => row.noAntrian,
       sortable: true,
-      omit: !visibleColumns.email,
+      omit: !visibleColumns.noAntrian,
     },
     {
-      name: 'Peran',
-      selector: (row: Antrian) => row.peran, // Use row.peran for selector
+      name: 'Waktu Kedatangan',
+      selector: (row: Antrian) => row.waktuKedatangan,
       sortable: true,
-      omit: !visibleColumns.peran,
+      omit: !visibleColumns.waktuKedatangan,
     },
     {
-      name: 'Aksi',
+      name: 'Waktu Tunggu',
+      selector: (row: Antrian) => row.waktuTunggu,
+      sortable: true,
+      omit: !visibleColumns.waktuTunggu,
+    },
+    {
+      name: 'SLA',
+      selector: (row: Antrian) => row.sla,
+      sortable: true,
+      omit: !visibleColumns.sla,
       cell: (row: Antrian) => (
-        <div className="flex space-x-2">
-          <button className="bg-orange-500 text-white px-3 py-1 rounded-full flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-4 h-4 mr-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16 4h2a2 2 0 012 2v2m-2-2l-8 8H6v2a2 2 0 002 2h2a2 2 0 002-2v-2l8-8z"
-              />
-            </svg>
-            Edit
-          </button>
-          <button className="bg-red-500 text-white px-3 py-1 rounded-full flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-4 h-4 mr-1"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 15v4a2 2 0 002 2h4m10-14a2 2 0 00-2-2h-1.5a2 2 0 00-1.5.5l-1.25 1.25M16 4l4 4m-4 0l4-4M6 18h15"
-              />
-            </svg>
-            Delete
-          </button>
-        </div>
+        <span style={{ color: row.sla === '5 menit' ? 'red' : 'black' }}>
+          {row.sla}
+        </span>
       ),
-      omit: !visibleColumns.action,
+    },
+    {
+      name: 'Status Layanan',
+      selector: (row: Antrian) => row.statusLayanan,
+      sortable: true,
+      omit: !visibleColumns.statusLayanan,
+    },
+    {
+      name: 'Nama Petugas',
+      selector: (row: Antrian) => row.namaPetugas,
+      sortable: true,
+      omit: !visibleColumns.namaPetugas,
     },
   ];
 
   const filteredAntrianes = useMemo(() => {
     return topAntrianes.filter((antrian) =>
-      antrian.nik.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.nama.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.email.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.peran.toLowerCase().includes(search.toLowerCase())
+      antrian.namaNasabah.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.jenisLayanan.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.noAntrian.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.waktuKedatangan.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.waktuTunggu.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.sla.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.statusLayanan.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.namaPetugas.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, topAntrianes]);
 
@@ -201,25 +293,21 @@ const AntrianTable: React.FC = () => {
           className="ml-auto px-4 py-2 border rounded-lg"
         />
       </div>
-      {dropdownOpen && (
-        <div ref={dropdownRef} className="border rounded-lg p-4 mb-4 bg-white shadow-lg absolute z-10">
-          {Object.entries(columnLabels).map(([key, label]) => (
-            <div key={key} className="flex items-center">
-              <input
-                type="checkbox"
-                checked={visibleColumns[key as keyof Antrian | 'action']}
-                onChange={() => toggleColumnVisibility(key as keyof Antrian | 'action')}
-                className="mr-2"
-              />
-              <label>{label}</label>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* <input
+        type="text"
+        placeholder="Cari..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="border rounded px-4 py-2 mb-4 w-full"
+      /> */}
       <DataTable
         columns={columns}
         data={sortedAntrianes}
         pagination
+        highlightOnHover
+        pointerOnHover
+        striped
+        sortServer
       />
     </div>
   );
