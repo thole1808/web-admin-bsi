@@ -18,7 +18,7 @@ interface DropdownItem {
 }
 
 const Dashboard: React.FC = () => {
-  
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 p-5">
+      <div className="min-h-screen bg-gray-100 p-2">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="col-span-1 md:col-span-3 space-y-6 py-5 w-full">
             <div className="flex space-x-4">
