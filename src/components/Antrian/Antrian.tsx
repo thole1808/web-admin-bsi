@@ -5,10 +5,10 @@ import dynamic from 'next/dynamic';
 
 // Define the Antrian interface
 interface Antrian {
-  nik: string; // Changed from 'Antrian' to 'nik'
-  nama: string; // Changed from 'name' to 'nama'
-  email: string; // Changed from 'total' to 'email'
-  peran: string; // Changed from 'served' to 'peran'
+  nik: string;
+  nama: string;
+  email: string;
+  peran: string;
 }
 
 // Load the DataTable component dynamically
@@ -17,7 +17,7 @@ const DataTable = dynamic(() => import('react-data-table-component'), { ssr: fal
 const AntrianTable: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: keyof Antrian; direction: 'ascending' | 'descending' | null }>({
-    key: 'nik', // Default sort key updated
+    key: 'nik', 
     direction: 'ascending',
   });
 
@@ -40,7 +40,6 @@ const AntrianTable: React.FC = () => {
     action: 'Aksi', // New action label
   };
 
-  // Move topAntrianes into useMemo to avoid changing on every render
   const topAntrianes: Antrian[] = useMemo(() => [
     { nik: '123456789', nama: 'Andi', email: 'andi@example.com', peran: 'Admin' },
     { nik: '987654321', nama: 'Budi', email: 'budi@example.com', peran: 'User' },
@@ -83,50 +82,31 @@ const AntrianTable: React.FC = () => {
       center: true,
     },
     {
-      name: 'NIK', // Updated to 'NIK'
-      selector: 'nik', // Updated to use 'nik' selector
+      name: 'NIK',
+      selector: (row: Antrian) => row.nik, // Use row.nik for selector
       sortable: true,
       omit: !visibleColumns.nik,
     },
     {
-      name: 'Nama', // Updated to 'Nama'
-      selector: 'nama', // Updated to use 'nama' selector
+      name: 'Nama',
+      selector: (row: Antrian) => row.nama, // Use row.nama for selector
       sortable: true,
-      cell: (row: Antrian) => (
-        <div className="flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-10 h-10 text-gray-500 mr-2" // Adjust the size and color of the user icon
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 14c2.5 0 4.5-2 4.5-4.5S14.5 5 12 5 7.5 7 7.5 9.5 9.5 14 12 14zM12 16c-4 0-6 2-6 2v2h12v-2s-2-2-6-2z"
-            />
-          </svg>
-          {row.nama}
-        </div>
-      ),
       omit: !visibleColumns.nama,
     },
     {
-      name: 'Email', // Updated to 'Email'
-      selector: 'email', // Updated to use 'email' selector
+      name: 'Email',
+      selector: (row: Antrian) => row.email, // Use row.email for selector
       sortable: true,
       omit: !visibleColumns.email,
     },
     {
-      name: 'Peran', // Updated to 'Peran'
-      selector: 'peran', // Updated to use 'peran' selector
+      name: 'Peran',
+      selector: (row: Antrian) => row.peran, // Use row.peran for selector
       sortable: true,
       omit: !visibleColumns.peran,
     },
     {
-      name: 'Aksi', // New Action column
+      name: 'Aksi',
       cell: (row: Antrian) => (
         <div className="flex space-x-2">
           <button className="bg-orange-500 text-white px-3 py-1 rounded-full flex items-center">
@@ -170,7 +150,12 @@ const AntrianTable: React.FC = () => {
   ];
 
   const filteredAntrianes = useMemo(() => {
-    return topAntrianes.filter((antrian) => antrian.nama.toLowerCase().includes(search.toLowerCase())); // Updated search logic
+    return topAntrianes.filter((antrian) =>
+      antrian.nik.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.nama.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.email.toLowerCase().includes(search.toLowerCase()) ||
+      antrian.peran.toLowerCase().includes(search.toLowerCase())
+    );
   }, [search, topAntrianes]);
 
   const sortedAntrianes = useMemo(() => {
@@ -208,56 +193,33 @@ const AntrianTable: React.FC = () => {
             />
           </svg>
         </button>
-        {dropdownOpen && (
-          <div ref={dropdownRef} className="absolute z-10 bg-white border shadow-lg rounded-md p-2">
-            {Object.keys(columnLabels).map((key) => (
-              <label key={key} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={visibleColumns[key as keyof Antrian]}
-                  onChange={() => toggleColumnVisibility(key as keyof Antrian)}
-                  className="mr-2"
-                />
-                {columnLabels[key as keyof Antrian]}
-              </label>
-            ))}
-          </div>
-        )}
         <input
           type="text"
-          placeholder="Cari disini ..."
-          className="flex-grow p-2 border rounded"
+          placeholder="Cari disini..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className="ml-auto px-4 py-2 border rounded-lg"
         />
-        <button className="bg-white px-4 py-2 rounded-lg border border-white-500 flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-6 h-6 mr-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          <span>Tambah</span>
-        </button>
-
       </div>
-
+      {dropdownOpen && (
+        <div ref={dropdownRef} className="border rounded-lg p-4 mb-4 bg-white shadow-lg absolute z-10">
+          {Object.entries(columnLabels).map(([key, label]) => (
+            <div key={key} className="flex items-center">
+              <input
+                type="checkbox"
+                checked={visibleColumns[key as keyof Antrian | 'action']}
+                onChange={() => toggleColumnVisibility(key as keyof Antrian | 'action')}
+                className="mr-2"
+              />
+              <label>{label}</label>
+            </div>
+          ))}
+        </div>
+      )}
       <DataTable
         columns={columns}
         data={sortedAntrianes}
         pagination
-        striped
-        highlightOnHover
-        fixedHeader
-        fixedHeaderScrollHeight="400px"
       />
     </div>
   );
