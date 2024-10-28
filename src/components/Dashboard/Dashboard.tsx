@@ -8,36 +8,32 @@ import StatsCard from '../StatsCard/StatsCard';
 import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), { ssr: false });
+import Image from 'next/image';
 
 
+interface DropdownItem {
+  id: number;
+  name: string;
+  avatar: string;
+}
 
 const Dashboard: React.FC = () => {
-
+  
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const dropdownRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // User data
-  const user = {
-    name: 'Admin',
-    avatar: 'https://example.com/path/to/actual-avatar.jpg', // Update with actual avatar URL,
-    name: 'User',
-    avatar: 'https://example.com/path/to/actual-avatar.jpg', // Update with actual avatar URL,
-    
-  };
-
-  // JSON data for dropdown
-  const dropdownData = [
-    { id: 1, name: 'Admin', avatar: 'https://example.com/avatar-admin.jpg' },
-    { id: 2, name: 'User', avatar: 'https://example.com/avatar-user.jpg' },
-    { id: 3, name: 'Guest', avatar: 'https://example.com/avatar-guest.jpg' },
-    { id: 4, name: 'Moderator', avatar: 'https://example.com/avatar-moderator.jpg' },
+  // Sample dropdown data
+  const dropdownData: DropdownItem[] = [
+    { id: 1, name: 'User', avatar: 'https://example.com/avatar-user.jpg' },
+    { id: 2, name: 'Guest', avatar: 'https://example.com/avatar-guest.jpg' },
+    { id: 3, name: 'Moderator', avatar: 'https://example.com/avatar-moderator.jpg' },
   ];
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setDropdownOpen(false);
       }
     };
@@ -49,11 +45,10 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // Handle item click
-  const handleItemClick = (item) => {
+  const handleItemClick = (item: DropdownItem) => {
     setSelectedItem(item);
     setDropdownOpen(false);
   };
-
 
   return (
     <>
@@ -107,13 +102,17 @@ const Dashboard: React.FC = () => {
               >
                 {/* User Avatar */}
                 <div className="flex items-center">
-                  <img
-                    src="https://avatar.iran.liara.run/public/17"
+                  <Image
+                    src="/images/logo/48.png"
                     alt="User Avatar"
-                    className="w-8 h-8 rounded-full mr-1"
+                    width={31}  // Specify your desired width
+                    height={31} // Specify your desired height
+                    priority // Optional: Add this if the image is critical for page load
                   />
                   {/* User Name */}
-                  <span className="font-medium text-lg px-2">Admin</span>
+                  <span className="font-medium text-lg px-3 font-bold">
+                    {selectedItem?.name || 'Admin'} 
+                  </span>
                 </div>
                 {/* Dropdown Icon */}
                 <svg
@@ -136,7 +135,7 @@ const Dashboard: React.FC = () => {
                       key={item.id}
                       href="#"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={handleItemClick} // Close the dropdown when an item is clicked
+                      onClick={() => handleItemClick(item)} // Pass the item to the handler
                     >
                       {item.name}
                     </a>
