@@ -17,18 +17,21 @@ const Dashboard: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Misalkan ini data pengguna yang diambil dari API atau state
+  // User data
   const user = {
     name: 'Admin',
-    avatar: 'https://avatar.iran.liara.run/public/8', // Ganti dengan URL avatar sesungguhnya
+    avatar: 'https://example.com/path/to/actual-avatar.jpg', // Update with actual avatar URL,
+    name: 'User',
+    avatar: 'https://example.com/path/to/actual-avatar.jpg', // Update with actual avatar URL,
+    
   };
 
-  // Data JSON untuk dropdown, dengan avatar
+  // JSON data for dropdown
   const dropdownData = [
-    { id: 1, name: 'Admin', avatar: 'https://avatar.iran.liara.run/public/8' },
-    { id: 2, name: 'User', avatar: 'https://avatar.iran.liara.run/public/8' },
-    { id: 3, name: 'Guest', avatar: 'https://avatar.iran.liara.run/public/8' },
-    { id: 4, name: 'Moderator', avatar: 'https://avatar.iran.liara.run/public/8' },
+    { id: 1, name: 'Admin', avatar: 'https://example.com/avatar-admin.jpg' },
+    { id: 2, name: 'User', avatar: 'https://example.com/avatar-user.jpg' },
+    { id: 3, name: 'Guest', avatar: 'https://example.com/avatar-guest.jpg' },
+    { id: 4, name: 'Moderator', avatar: 'https://example.com/avatar-moderator.jpg' },
   ];
 
   // Close dropdown when clicking outside
@@ -50,6 +53,7 @@ const Dashboard: React.FC = () => {
     setSelectedItem(item);
     setDropdownOpen(false);
   };
+
 
   return (
     <>
@@ -101,14 +105,17 @@ const Dashboard: React.FC = () => {
                 className="flex justify-between items-center bg-white px-6 py-1 w-full rounded-lg shadow-lg focus:outline-none"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
+                {/* User Avatar */}
                 <div className="flex items-center">
                   <img
-                    src={user.avatar} // Menggunakan URL avatar pengguna
+                    src="https://avatar.iran.liara.run/public/17"
                     alt="User Avatar"
                     className="w-8 h-8 rounded-full mr-1"
                   />
-                  <span className="font-medium text-lg px-2">{user.name}</span>
+                  {/* User Name */}
+                  <span className="font-medium text-lg px-2">Admin</span>
                 </div>
+                {/* Dropdown Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -121,20 +128,16 @@ const Dashboard: React.FC = () => {
                 </svg>
               </button>
 
+              {/* Dropdown Menu */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-full bg-white rounded-lg shadow-lg py-2 z-10">
                   {dropdownData.map((item) => (
                     <a
                       key={item.id}
                       href="#"
-                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => handleItemClick(item)}
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={handleItemClick} // Close the dropdown when an item is clicked
                     >
-                      <img
-                        src={item.avatar} // Menampilkan avatar untuk setiap item
-                        alt={`${item.name} Avatar`}
-                        className="w-8 h-8 rounded-full mr-2"
-                      />
                       {item.name}
                     </a>
                   ))}
@@ -142,7 +145,7 @@ const Dashboard: React.FC = () => {
               )}
             </div>
           </div>
-        
+
           <div className="col-span-1 md:col-span-3 space-y-6">
             {/* <div className="grid grid-cols-3 md:grid-cols-3 gap-6"> */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
