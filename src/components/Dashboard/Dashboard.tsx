@@ -197,7 +197,9 @@ const Dashboard: React.FC = () => {
 
           <div className="col-span-1 md:col-span-4 space-y-6">
             <div className="col-span-1 md:col-span-3">
-              <TopBranchesTable />
+              <div className="overflow-x-auto">
+                <TopBranchesTable />
+              </div>
             </div>
           </div>
 
