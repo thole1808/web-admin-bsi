@@ -134,7 +134,6 @@ const SignIn: React.FC = () => {
       </div>
 
       {/* Sign In Form */}
-      {/* Image above the form */}
       {/* Form Panel */}
       <div className="bg-gray-100 w-full flex flex-col items-center justify-center"> {/* Background for the entire section */}
         {/* Image above the form */}
@@ -216,21 +215,6 @@ const SignIn: React.FC = () => {
                 />
               </div>
               <div className="flex items-center justify-between">
-                {/* <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="ml-2 block text-sm text-gray-600"
-                  >
-                    Remember me
-                  </label>
-                </div> */}
-
                 <div className="text-sm">
                   <Link
                     href="/forgot-password"
@@ -249,15 +233,7 @@ const SignIn: React.FC = () => {
                     Sign In
                   </button>
                 </div>
-
               </div>
-
-              {/* <button
-                type="submit"
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition duration-300"
-              >
-                Sign In
-              </button> */}
             </form>
             <div className="mt-6 text-center text-sm">
               <button
