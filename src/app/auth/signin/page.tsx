@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import from next/navigation
 import { Metadata } from "next";
+import Image from 'next/image';
 
 // export const metadata: Metadata = {
 //   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
@@ -137,14 +138,14 @@ const SignIn: React.FC = () => {
       {/* Form Panel */}
       <div className="bg-gray-100 w-full flex flex-col items-center justify-center"> {/* Background for the entire section */}
         {/* Image above the form */}
-        <div className="flex justify-center mb-10 bg-transparent"> {/* Center the image */}
-          <img
+        <div className="flex justify-center mb-10 bg-transparent">
+          <Image
             src="/images/logo/Bank_Syariah_Indonesia.svg" // Replace with your image path
             alt="No Images"
-            width={170} // Set the desired width
-            height={170} // Set the desired height
-            className="rounded-lg" // Removed w-full to prevent it from taking the full width
-            style={{ backgroundColor: 'transparent' }} // Ensure background is transparent
+            width={200} // Set the desired width
+            height={200} // Set the desired height
+            className="rounded-lg" // Maintain any classes you need
+            style={{ backgroundColor: 'transparent' }} // This may not apply in the same way to <Image />
           />
         </div>
 
@@ -178,7 +179,7 @@ const SignIn: React.FC = () => {
                 <input
                   type="email"
                   id="email"
-                  className="block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="bg-gray-100 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   placeholder=""
                   required
                 />
@@ -209,13 +210,13 @@ const SignIn: React.FC = () => {
                 <input
                   type="password"
                   id="password"
-                  className="block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="bg-gray-100 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                   placeholder=""
                   required
                 />
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <input
                     id="remember-me"
                     name="remember-me"
@@ -228,31 +229,45 @@ const SignIn: React.FC = () => {
                   >
                     Remember me
                   </label>
-                </div>
+                </div> */}
 
                 <div className="text-sm">
                   <Link
                     href="/forgot-password"
-                    className="font-medium text-blue-600 hover:text-blue-500"
+                    className="font-medium text-gray-600 hover:text-red-500"
                   >
                     Forgot your password?
                   </Link>
                 </div>
+
+                <div className="flex items-center text-sm">
+                  <button
+                    type="submit"
+                    className="w-40 py-3 px-4 text-white rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition duration-300"
+                    style={{ backgroundColor: '#00BFB2' }} // Custom background color
+                  >
+                    Sign In
+                  </button>
+                </div>
+
               </div>
 
-              <button
+              {/* <button
                 type="submit"
                 className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition duration-300"
               >
                 Sign In
-              </button>
+              </button> */}
             </form>
-            <p className="mt-6 text-center text-sm text-gray-600">
-              Don&#39;t have an account?
-              <Link href="/signup" className="text-blue-600 hover:underline">
-                Sign up
-              </Link>
-            </p>
+            <div className="mt-6 text-center text-sm">
+              <button
+                type="button"
+                className="py-2 px-29 border border-[#00BFB2] text-black-200 rounded-lg bg-transparent hover:bg-[#00BFB2] hover:text-white transition duration-300"
+              >
+                Don&#39;t have an account?
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
