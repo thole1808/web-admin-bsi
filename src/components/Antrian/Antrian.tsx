@@ -255,7 +255,7 @@ const AntrianTable: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between mb-10 mt-30">
+      <div className="flex justify-between mb-8 mt-30">
         <div className="flex items-center justify-between space-x-4 bg-white shadow-md rounded-lg p-2">
           {/* Filter Icon */}
           <div className="flex items-center space-x-2">
