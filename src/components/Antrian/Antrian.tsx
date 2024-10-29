@@ -1,7 +1,7 @@
 "use client"; // Add this directive at the top
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 
 // Define the Antrian interface
 interface Antrian {
@@ -16,13 +16,18 @@ interface Antrian {
 }
 
 // Load the DataTable component dynamically
-const DataTable = dynamic(() => import('react-data-table-component'), { ssr: false });
+const DataTable = dynamic(() => import("react-data-table-component"), {
+  ssr: false,
+});
 
 const AntrianTable: React.FC = () => {
-  const [search, setSearch] = useState('');
-  const [sortConfig, setSortConfig] = useState<{ key: keyof Antrian; direction: 'ascending' | 'descending' | null }>({
-    key: 'namaNasabah',
-    direction: 'ascending',
+  const [search, setSearch] = useState("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Antrian;
+    direction: "ascending" | "descending" | null;
+  }>({
+    key: "namaNasabah",
+    direction: "ascending",
   });
 
   const [visibleColumns, setVisibleColumns] = useState({
@@ -39,16 +44,15 @@ const AntrianTable: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Update column labels (removed action)
   const columnLabels: { [key in keyof Antrian]: string } = {
-    namaNasabah: 'Nama Nasabah',
-    jenisLayanan: 'Jenis Layanan',
-    noAntrian: 'No. Antrian',
-    waktuKedatangan: 'Waktu Kedatangan',
-    waktuTunggu: 'Waktu Tunggu',
-    sla: 'SLA',
-    statusLayanan: 'Status Layanan',
-    namaPetugas: 'Nama Petugas',
+    namaNasabah: "Nama Nasabah",
+    jenisLayanan: "Jenis Layanan",
+    noAntrian: "No. Antrian",
+    waktuKedatangan: "Waktu Kedatangan",
+    waktuTunggu: "Waktu Tunggu",
+    sla: "SLA",
+    statusLayanan: "Status Layanan",
+    namaPetugas: "Nama Petugas",
   };
 
   const topAntrianes: Antrian[] = useMemo(() => [
@@ -74,7 +78,7 @@ const AntrianTable: React.FC = () => {
     },
     {
       namaNasabah: 'Cindy',
-      jenisLayanan: 'Pembukaan Rekening',
+      jenisLayanan: 'Buka Rekening',
       noAntrian: '003',
       waktuKedatangan: '25 Okt 2024 | 10:30',
       waktuTunggu: '8 menit',
@@ -159,7 +163,6 @@ const AntrianTable: React.FC = () => {
       ...prev,
       [columnKey]: !prev[columnKey],
     }));
-    setDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -169,68 +172,68 @@ const AntrianTable: React.FC = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const columns = [
     {
-      name: 'No',
+      name: "No",
       cell: (row: Antrian, index: number) => index + 1,
-      width: '50px',
+      width: "50px",
       center: true,
     },
     {
-      name: 'Nama Nasabah',
+      name: "Nama Nasabah",
       selector: (row: Antrian) => row.namaNasabah,
       sortable: true,
       omit: !visibleColumns.namaNasabah,
     },
     {
-      name: 'Jenis Layanan',
+      name: "Jenis Layanan",
       selector: (row: Antrian) => row.jenisLayanan,
       sortable: true,
       omit: !visibleColumns.jenisLayanan,
     },
     {
-      name: 'No. Antrian',
+      name: "No. Antrian",
       selector: (row: Antrian) => row.noAntrian,
       sortable: true,
       omit: !visibleColumns.noAntrian,
     },
     {
-      name: 'Waktu Kedatangan',
+      name: "Waktu Kedatangan",
       selector: (row: Antrian) => row.waktuKedatangan,
       sortable: true,
       omit: !visibleColumns.waktuKedatangan,
     },
     {
-      name: 'Waktu Tunggu',
+      name: "Waktu Tunggu",
       selector: (row: Antrian) => row.waktuTunggu,
       sortable: true,
       omit: !visibleColumns.waktuTunggu,
     },
     {
-      name: 'SLA',
+      name: "SLA",
       selector: (row: Antrian) => row.sla,
       sortable: true,
       omit: !visibleColumns.sla,
       cell: (row: Antrian) => (
-        <span style={{ color: row.sla === '5 menit' ? 'red' : 'black' }}>
+        <span style={{ color: row.sla === "5 menit" ? "red" : "black" }}>
           {row.sla}
         </span>
       ),
     },
     {
-      name: 'Status Layanan',
+      name: "Status Layanan",
       selector: (row: Antrian) => row.statusLayanan,
       sortable: true,
       omit: !visibleColumns.statusLayanan,
     },
     {
-      name: 'Nama Petugas',
+      name: "Nama Petugas",
       selector: (row: Antrian) => row.namaPetugas,
       sortable: true,
       omit: !visibleColumns.namaPetugas,
@@ -250,65 +253,91 @@ const AntrianTable: React.FC = () => {
     );
   }, [search, topAntrianes]);
 
-  const sortedAntrianes = useMemo(() => {
-    let sortableItems = [...filteredAntrianes];
-    if (sortConfig.key) {
-      sortableItems.sort((a, b) => {
-        const aValue = a[sortConfig.key];
-        const bValue = b[sortConfig.key];
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [filteredAntrianes, sortConfig]);
-
   return (
     <div>
-      <div className="flex items-center mb-4 mt-30 space-x-2">
-        
-        <button className="flex bg-white items-center space-x-2 px-4 py-2 border rounded-lg" onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 4h18l-7 8v6.5l-4 2v-8.5l-7-8z"
-            />
-          </svg>
-        </button>
-        <input
-          type="text"
-          placeholder="Cari disini..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="ml-auto px-4 py-2 border rounded-lg"
-        />
+      <div className="flex justify-between mb-10 mt-30">
+        <div className="flex items-center justify-between space-x-4 bg-white shadow-md rounded-lg p-2">
+          {/* Filter Icon */}
+          <div className="flex items-center space-x-2">
+            <button
+              className="bg-transparent rounded-md px-3 py-2 text--700"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 4h18l-7 8v6.5l-4 2v-8.5l-7-8z"
+                />
+              </svg>
+
+              {/* Garis pemisah */}
+
+            </button>
+
+            {/* Vertical Divider */}
+            <div className="h-8 w-px bg-gray-300"></div>
+            <span className="text--700">Filter By</span>
+          </div>
+
+          {/* Vertical Divider */}
+          <div className="h-8 w-px bg-gray-300"></div>
+
+          {/* Date Dropdown */}
+          <div className="relative">
+            <select className="bg-transparent rounded-md px-3 py-2 text--700">
+              <option>Date</option>
+              {/* Add more date options here */}
+            </select>
+          </div>
+
+          {/* Vertical Divider */}
+          <div className="h-8 w-px bg-gray-300"></div>
+
+          {/* Order Status Dropdown */}
+          <div className="relative">
+            <select className="bg-transparent rounded-md px-3 py-2 text--700">
+              <option>Order Status</option>
+              {/* Add more status options here */}
+            </select>
+          </div>
+
+          {/* Vertical Divider */}
+          <div className="h-8 w-px bg-gray-300"></div>
+
+          {/* Reset Filter Button */}
+          <button className="flex items-center space-x-2 text-red-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.75 8.75a5.25 5.25 0 1 1 9.66 3.25H21m-16.25 0v3.5h3.5"
+              />
+            </svg>
+            <span>Reset Filter</span>
+          </button>
+        </div>
       </div>
-      {/* <input
-        type="text"
-        placeholder="Cari..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="border rounded px-4 py-2 mb-4 w-full"
-      /> */}
+
       <DataTable
         columns={columns}
-        data={sortedAntrianes}
+        data={filteredAntrianes}
         pagination
-        highlightOnHover
-        pointerOnHover
-        striped
-        sortServer
+        responsive
       />
     </div>
   );
