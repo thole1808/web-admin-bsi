@@ -35,7 +35,7 @@ const menuGroups = [
 
         ),
         label: "Dashboard",
-        route: "/",
+        route: "/dashboard",
       },
       {
         icon: (
