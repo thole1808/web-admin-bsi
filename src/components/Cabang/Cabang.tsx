@@ -434,7 +434,7 @@ const AntrianTable: React.FC = () => {
           </button>
         </div>
       </div>
-
+          
       <DataTable
         columns={columns}
         data={filteredAntrianes}
