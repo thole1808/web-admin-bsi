@@ -4,6 +4,14 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Image from 'next/image';
 
+
+
+interface DropdownItem {
+  id: number;
+  name: string;
+  avatar: string;
+}
+
 // Define the Antrian interface
 interface Antrian {
   namaNasabah: string;
