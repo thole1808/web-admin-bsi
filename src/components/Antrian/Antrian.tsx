@@ -207,6 +207,12 @@ const AntrianTable: React.FC = () => {
       name: "Nama Nasabah",
       selector: (row: Antrian) => row.namaNasabah,
       sortable: true,
+      cell: (row: Antrian) => (
+        <div className="flex items-center">
+          <input type="checkbox" className="mr-2" />
+          <span>{row.namaNasabah}</span>
+        </div>
+      ),
       omit: !visibleColumns.namaNasabah,
     },
     {
