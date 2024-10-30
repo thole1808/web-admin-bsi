@@ -500,6 +500,12 @@ const CabangTable: React.FC = () => {
         );
     }, [search, dataCabang]);
 
+    // Handle item click
+    const handleItemClick = (item: DropdownItem) => {
+        setSelectedItem(item);
+        setDropdownOpen(false);
+    };
+
     return (
         <div>
             <div className="flex mb-10 justify-between items-center  py-5 w-full">
