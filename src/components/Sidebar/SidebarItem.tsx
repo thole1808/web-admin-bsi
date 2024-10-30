@@ -23,7 +23,7 @@ const SidebarItem = ({ item, pageName, setPageName }: any) => {
   const isItemActive = isActive(item);
 
   return (
-    <li className="relative">
+    <li className="relative mb-2">
       {/* Garis hover di sebelah kiri */}
       <div
         className={`absolute left-0 top-0 bottom-0 w-1 bg-[#00BFB2] transition-all duration-300 ease-in-out ${
