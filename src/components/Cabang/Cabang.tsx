@@ -28,7 +28,7 @@ interface Cabang {
     terlayani: string;
     tidakTerlayani: string;
     graphic: any;  // JSX for chart + percentage
-    option: string;
+    option: any;
 }
 
 // Load the DataTable component dynamically
@@ -126,7 +126,48 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+            // option: 'Sedang Dilayani',
+            option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Grogol',
@@ -158,7 +199,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Cibubur',
@@ -190,7 +293,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Bintaro',
@@ -222,7 +387,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Depok',
@@ -254,7 +481,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Tangerang',
@@ -286,7 +575,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Cikarang',
@@ -318,7 +669,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Jakarta Pusat',
@@ -350,7 +763,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Bekasi',
@@ -382,7 +857,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
         {
             namaCabang: 'Serpong',
@@ -414,7 +951,69 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            option: 'Sedang Dilayani',
+             // option: 'Sedang Dilayani',
+             option: (
+                <div className="relative inline-block text-left">
+                    <button
+                        type="button"
+                        className="inline-flex justify-center w-full shadow-sm px-2 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onClick={() => setDropdownOpen((prev) => !prev)}
+                    >
+                        <div className="flex items-center">
+                            <svg
+                                className="h-5 w-5 mr-1" // Menambahkan margin kanan untuk jarak
+                                fill="none"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 458.624 458.624"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                <g>
+                                    <path
+                                        fill="currentColor"
+                                        d="M339.588,314.529c-14.215,0-27.456,4.133-38.621,11.239l-112.682-78.67c1.809-6.315,2.798-12.976,2.798-19.871
+                    c0-6.896-0.989-13.557-2.798-19.871l109.64-76.547c11.764,8.356,26.133,13.286,41.662,13.286c39.79,0,72.047-32.257,72.047-72.047
+                    C411.634,32.258,379.378,0,339.588,0c-39.79,0-72.047,32.257-72.047,72.047c0,5.255,0.578,10.373,1.646,15.308l-112.424,78.491
+                    c-10.974-6.759-23.892-10.666-37.727-10.666c-39.79,0-72.047,32.257-72.047,72.047s32.256,72.047,72.047,72.047
+                    c13.834,0,26.753-3.907,37.727-10.666l113.292,79.097c-1.629,6.017-2.514,12.34-2.514,18.872c0,39.79,32.257,72.047,72.047,72.047
+                    c39.79,0,72.047-32.257,72.047-72.047C411.635,346.787,379.378,314.529,339.588,314.529z"
+                                    />
+                                </g>
+                            </svg>
+                            <span className="ml-2">....</span> {/* Menambahkan margin kiri untuk jarak */}
+                        </div>
+                    </button>
+
+                    {dropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-48 rounded-md bg-white shadow-lg">
+                            <div className="py-1" role="menu">
+                                <button
+                                    onClick={() => { console.log("Opsi 1 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 1
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 2 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 2
+                                </button>
+                                <button
+                                    onClick={() => { console.log("Opsi 3 dipilih"); setDropdownOpen(false); }}
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    role="menuitem"
+                                >
+                                    Opsi 3
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            ),
         },
     ], []);
 
@@ -493,6 +1092,12 @@ const CabangTable: React.FC = () => {
             cabang.option.toLowerCase().includes(search.toLowerCase())
         );
     }, [search, dataCabang]);
+
+    // Handle item click
+    const handleItemClick = (item: DropdownItem) => {
+        setSelectedItem(item);
+        setDropdownOpen(false);
+    };
 
     return (
         <div>
