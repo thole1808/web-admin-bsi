@@ -16,7 +16,7 @@ const FormElementsPage = () => {
     return (
         <DefaultLayout>
             <div className="flex flex-col gap-10">
-                <Breadcrumb pageName="Cabang"/>
+                {/* <Breadcrumb pageName="Cabang"/> */}
                 <Cabang />
             </div>
         </DefaultLayout>
