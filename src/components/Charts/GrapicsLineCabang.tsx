@@ -17,7 +17,9 @@ const GrapicsLineCabang = () => {
         const firstValue = data[0].value;
         const lastValue = data[data.length - 1].value;
         const percentageChange = ((lastValue - firstValue) / firstValue) * 100;
-        setPercentage(percentageChange.toFixed(2));
+        
+        // Gunakan parseFloat untuk mengonversi hasil toFixed menjadi number
+        setPercentage(parseFloat(percentageChange.toFixed(2)));
     }, [data]);
 
     return (
