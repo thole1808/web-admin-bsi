@@ -1,5 +1,4 @@
-# .github/workflows/deploy.yml
-name: Deploy Next.js App to Server
+name: Deploy Next.js App to Server BSI (Sentuh)
 
 on:
   push:
