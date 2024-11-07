@@ -43,16 +43,8 @@ jobs:
             chmod 600 ~/.ssh/id_rsa
             # Menambahkan SSH host ke known_hosts
             ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-            # Deploy ke server menggunakan SSH dan instal npm jika belum ada
+            # Deploy ke server menggunakan SSH dan jalankan build serta start
             ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
-            # Install Node.js dan npm jika belum terpasang
-            if ! command -v npm &> /dev/null; then
-                echo "npm not found, installing..."
-                curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-                sudo apt-get install -y nodejs
-            fi
-
-            # Pastikan Docker berjalan dengan versi terbaru
             docker pull achmadagus/nextjs-app-image-dev:latest
             docker stop nextjs-container || true
             docker rm nextjs-container || true

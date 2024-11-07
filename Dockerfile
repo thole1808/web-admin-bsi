@@ -1,32 +1,23 @@
-# Dockerfile
-# Menggunakan image Node.js resmi
-FROM node:18-alpine AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Menyalin package.json dan package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Menyalin semua kode ke dalam container
-COPY . .
-
-# Build aplikasi Next.js untuk production
-# RUN npm run build
-
-# Stage 2: Menjalankan server
+# Gunakan image Node.js
 FROM node:18-alpine
 
+# Tentukan direktori kerja
 WORKDIR /app
 
-# Menyalin hasil build dari stage builder
-COPY --from=builder /app ./
+# Salin package.json dan package-lock.json terlebih dahulu untuk instalasi dependensi
+COPY package*.json ./
 
-# Jalankan Next.js pada port 3000
+# Install dependensi aplikasi
+RUN npm install
+
+# Salin semua file aplikasi
+COPY . .
+
+# Build aplikasi Next.js
+RUN npm run build
+
+# Tentukan port aplikasi
 EXPOSE 3002
 
-# Jalankan aplikasi
-CMD ["npm", "run", "start"]
+# Jalankan server Next.js dalam mode produksi
+CMD ["npm", "start"]
