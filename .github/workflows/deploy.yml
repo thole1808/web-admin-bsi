@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Build Docker Image
-        run: docker build -t nextjs-app-image-dev .
+        run: docker build -t username/nextjs-app-image-dev:latest .
 
       - name: Login to Docker Hub
         env:
@@ -29,7 +29,7 @@ jobs:
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
       - name: Push Docker Image to Docker Hub
-        run: docker push nextjs-app-image-dev
+        run: docker push username/nextjs-app-image-dev:latest
 
       - name: Deploy to Ubuntu Server
         env:
@@ -41,8 +41,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
-            docker pull nextjs-app-image
+            docker pull username/nextjs-app-image-dev:latest
             docker stop nextjs-container || true
             docker rm nextjs-container || true
-            docker run -d --name nextjs-container -p 3000:3000 nextjs-app-image
+            docker run -d --name nextjs-container -p 3000:3000 username/nextjs-app-image-dev:latest
           EOF
