@@ -149,14 +149,14 @@ const SignIn: React.FC = () => {
       <div className="bg-gray-100 w-full flex flex-col items-center justify-center"> {/* Background for the entire section */}
         {/* Image above the form */}
         <div className="flex justify-center mb-10 bg-transparent">
-          {/* <Image
+          <Image
             src="/images/logo/Bank_Syariah_Indonesia.svg" // Replace with your image path
             alt="No Images"
             width={200} // Set the desired width
             height={200} // Set the desired height
             className="rounded-lg" // Maintain any classes you need
             style={{ backgroundColor: 'transparent' }} // This may not apply in the same way to <Image />
-          /> */}
+          />
         </div>
 
         <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
