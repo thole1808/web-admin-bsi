@@ -38,6 +38,8 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
+          # Pastikan direktori .ssh ada sebelum menggunakan kunci SSH
+          mkdir -p ~/.ssh
           echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
@@ -45,5 +47,5 @@ jobs:
             docker pull achmadagus/nextjs-app-image-dev:latest
             docker stop nextjs-container || true
             docker rm nextjs-container || true
-            docker run -d --name nextjs-container -p 3000:3000 achmadagus/nextjs-app-image-dev:latest
+            docker run -d --name nextjs-container -p 3000:3000 myusername/nextjs-app-image-dev:latest
           EOF
