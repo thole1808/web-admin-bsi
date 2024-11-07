@@ -29,7 +29,7 @@ jobs:
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
       - name: Push Docker Image to Docker Hub
-        run: docker push nextjs-app-image
+        run: docker push nextjs-app-image-dev
 
       - name: Deploy to Ubuntu Server
         env:
