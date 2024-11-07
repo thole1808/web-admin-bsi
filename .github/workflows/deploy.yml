@@ -32,33 +32,52 @@ jobs:
       - name: Push Docker Image to Docker Hub
         run: docker push achmadagus/nextjs-app-image-dev:latest
 
+    #   - name: Deploy to Ubuntu Server
+    #     env:
+    #       SSH_HOST: ${{ secrets.SSH_HOST }}
+    #       SSH_USER: ${{ secrets.SSH_USER }}
+    #       SSH_KEY: ${{ secrets.SSH_KEY }}
+    #     # run: |
+    #     #     mkdir -p ~/.ssh
+    #     #     echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    #     #     chmod 600 ~/.ssh/id_rsa
+    #     #     ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    #     #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
+    #     #         docker pull achmadagus/nextjs-app-image
+    #     #         docker stop nextjs-container || true
+    #     #         docker rm nextjs-container || true
+    #     #         docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image
+    #     #     EOF
+
+    #     run: |
+    #         mkdir -p ~/.ssh
+    #         echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    #         chmod 600 ~/.ssh/id_rsa
+    #         ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    #         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
+    #         docker pull achmadagus/nextjs-app-image
+    #         docker stop nextjs-container || true
+    #         docker rm nextjs-container || true
+    #         docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image
+    #         EOF
+
       - name: Deploy to Ubuntu Server
         env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-        # run: |
-        #     mkdir -p ~/.ssh
-        #     echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-        #     chmod 600 ~/.ssh/id_rsa
-        #     ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-        #     ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
-        #         docker pull achmadagus/nextjs-app-image
-        #         docker stop nextjs-container || true
-        #         docker rm nextjs-container || true
-        #         docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image
-        #     EOF
-
+            SSH_HOST: ${{ secrets.SSH_HOST }}
+            SSH_USER: ${{ secrets.SSH_USER }}
+            SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
             mkdir -p ~/.ssh
             echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
+            # Menambahkan SSH host ke known_hosts
             ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+            # Deploy ke server menggunakan SSH
             ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
-            docker pull achmadagus/nextjs-app-image
+            docker pull achmadagus/nextjs-app-image-dev:latest
             docker stop nextjs-container || true
             docker rm nextjs-container || true
-            docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image
+            docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image-dev:latest
             EOF
 
 
