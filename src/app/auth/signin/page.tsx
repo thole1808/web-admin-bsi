@@ -162,9 +162,9 @@ const SignIn: React.FC = () => {
         <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
           <div className="w-full px-8 py-6">
             {/* <h2 className="text-center text-3xl font-bold text-gray-700 mb-6">
-        Sign In
-      </h2> */}
-            <form className="mt-1 space-y-6" onSubmit={handleSubmit}>
+              Sign In
+            </h2> */}
+            <form className="mt-1  space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -246,14 +246,14 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
             </form>
-            <div className="mt-6 text-center text-sm">
+            {/* <div className="mt-6 text-center text-sm">
               <button
                 type="button"
                 className="py-2 px-29 border border-[#00BFB2] text-black-200 rounded-lg bg-transparent hover:bg-[#00BFB2] hover:text-white transition duration-300"
               >
                 Don&#39;t have an account?
               </button>
-            </div>
+            </div> */}
 
           </div>
         </div>
