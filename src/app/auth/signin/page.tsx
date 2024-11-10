@@ -150,7 +150,7 @@ const SignIn: React.FC = () => {
         {/* Image above the form */}
         <div className="flex justify-center mb-10 bg-transparent">
           <Image
-            src="/images/logo/bsi.png" // Replace with your image path
+            src="/images/logo/logo-bsi.png" // Replace with your image path
             alt="No Images"
             width={200} // Set the desired width
             height={200} // Set the desired height
