@@ -370,13 +370,6 @@ import OAuth2Provider from "next-auth/providers/oauth"; // Jika menggunakan OAut
 export default NextAuth({
   providers: [
     OAuth2Provider({
-      // id: "custom-oauth",
-      // name: "OAuth",
-      // clientId: process.env.NEXT_PUBLIC_BACKOFFICE_ID,
-      // clientSecret: process.env.NEXT_PUBLIC_OAUTH_CLIENT_SECRET,
-      // authorizationUrl: `${process.env.NEXT_PUBLIC_OAUTH_AUTH_URL}?response_type=code&scope=${process.env.NEXT_PUBLIC_BACKOFFICE_SCOPE}`,
-      // tokenUrl: process.env.NEXT_PUBLIC_OAUTH_ACCESS_TOKEN_URL,
-      // redirectUri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL,
       id: "custom-oauth",
       name: "OAuth",
       clientId: process.env.NEXT_PUBLIC_BACKOFFICE_ID,
