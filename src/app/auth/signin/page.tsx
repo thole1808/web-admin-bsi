@@ -1,43 +1,94 @@
-"use client"
+"use client";
 
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import from next/navigation
-import { Metadata } from "next";
-import Image from 'next/image';
-
-// export const metadata: Metadata = {
-//   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-//   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
-// };
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const SignIn: React.FC = () => {
-  const router = useRouter(); // Initialize useRouter from next/navigation
+  // const router = useRouter();
 
-  // Handle form submission
+  // // Redirect to dashboard (beranda) if already authenticated
+  // useEffect(() => {
+  //   const checkAuthentication = async () => {
+  //     const token = localStorage.getItem("access_token"); // Simpan token dari OAuth di localStorage
+  //     if (token) {
+  //       router.push("/dashboard"); // Arahkan ke beranda jika sudah login
+  //     } else {
+  //       // Cek apakah URL mengandung authorization code
+  //       const urlParams = new URLSearchParams(window.location.search);
+  //       const code = urlParams.get("code");
+
+  //       if (code) {
+  //         await fetchAccessToken(code);
+  //       }
+  //     }
+  //   };
+
+  //   checkAuthentication();
+  // }, [router]);
+
+  // // Fetch access token using authorization code
+  // const fetchAccessToken = async (authorizationCode: string) => {
+  //   try {
+  //     const response = await fetch(process.env.NEXT_PUBLIC_OAUTH_ACCESS_TOKEN_URL!, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //       body: new URLSearchParams({
+  //         grant_type: "authorization_code",
+  //         client_id: process.env.NEXT_PUBLIC_BACKOFFICE_ID!,
+  //         client_secret: process.env.NEXT_PUBLIC_OAUTH_CLIENT_SECRET!,
+  //         redirect_uri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL!,
+  //         code: authorizationCode,
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       console.error("Error fetching access token:", errorData);
+  //       return;
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("Access token:", data.access_token);
+  //     localStorage.setItem("access_token", data.access_token);
+  //     router.push("/beranda"); // Redirect to dashboard
+  //   } catch (err) {
+  //     console.error("Network error:", err);
+  //   }
+  // };
+
+  // // Handle form submission (redirect to Auth URL)
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const authUrl = `${process.env.NEXT_PUBLIC_OAUTH_AUTH_URL}`;
+  //   const params = new URLSearchParams({
+  //     client_id: process.env.NEXT_PUBLIC_BACKOFFICE_ID!,
+  //     redirect_uri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL!,
+  //     response_type: "code",
+  //     scope: process.env.NEXT_PUBLIC_BACKOFFICE_SCOPE!,
+  //   });
+  //   window.location.href = `${authUrl}?${params.toString()}`;
+  // };
+
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); // Mencegah form untuk di-submit secara default
+    const authUrl = `${process.env.NEXT_PUBLIC_OAUTH_AUTH_URL}`; 
+    const params = new URLSearchParams({
+      client_id: process.env.NEXT_PUBLIC_BACKOFFICE_ID!,
+      redirect_uri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL!,
+      response_type: "code", 
+      scope: process.env.NEXT_PUBLIC_BACKOFFICE_SCOPE!, 
+    });
 
-    // Simulate login logic or call API here
-
-    // Redirect to the dashboard
-    // router.push("/dashboard");
-
-    // Simulate login logic or call API to verify credentials
-    const isAuthenticated = true; // Replace with actual authentication check
-
-    if (isAuthenticated) {
-      // Set an authentication token in cookies (replace 'authToken' with your preferred key)
-      document.cookie = 'authToken=your-auth-token; path=/';
-
-      // Redirect to the dashboard
-      router.push('/dashboard');
-    }
+    // Redirect ke halaman otorisasi OAuth2 dengan parameter yang benar
+    window.location.href = `${authUrl}?${params.toString()}`;
   };
+
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
-      {/* Background SVG */}
       <div className="absolute inset-0">
         <svg
           width="100%"
@@ -47,214 +98,32 @@ const SignIn: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          <mask
-            id="mask0_415_2672"
-            style={{ maskType: "alpha" }}
-            maskUnits="userSpaceOnUse"
-            x="0"
-            y="0"
-            width="1920"
-            height="1076"
-          >
-            <rect
-              x="0"
-              y="1076"
-              width="1076"
-              height="1920"
-              transform="rotate(-90 0 1076)"
-              fill="#D5EAE8"
-            />
-          </mask>
-          <g mask="url(#mask0_415_2672)">
-            <g filter="url(#filter0_f_415_2672)">
-              <circle cx="1586" cy="405" r="440" fill="#A0D3D4" />
-            </g>
-            <g filter="url(#filter1_f_415_2672)">
-              <circle cx="312" cy="432" r="432" fill="#FAC87D" />
-            </g>
-            <g filter="url(#filter2_f_415_2672)">
-              <circle cx="861" cy="1034" r="432" fill="#E1FBC5" />
-            </g>
-          </g>
-          <defs>
-            <filter
-              id="filter0_f_415_2672"
-              x="746"
-              y="-435"
-              width="1680"
-              height="1680"
-              filterUnits="userSpaceOnUse"
-              colorInterpolationFilters="sRGB"
-            >
-              <feFlood floodOpacity="0" result="BackgroundImageFix" />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="BackgroundImageFix"
-                result="shape"
-              />
-              <feGaussianBlur
-                stdDeviation="200"
-                result="effect1_foregroundBlur_415_2672"
-              />
-            </filter>
-            <filter
-              id="filter1_f_415_2672"
-              x="-520"
-              y="-400"
-              width="1664"
-              height="1664"
-              filterUnits="userSpaceOnUse"
-              colorInterpolationFilters="sRGB"
-            >
-              <feFlood floodOpacity="0" result="BackgroundImageFix" />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="BackgroundImageFix"
-                result="shape"
-              />
-              <feGaussianBlur
-                stdDeviation="200"
-                result="effect1_foregroundBlur_415_2672"
-              />
-            </filter>
-            <filter
-              id="filter2_f_415_2672"
-              x="29"
-              y="202"
-              width="1664"
-              height="1664"
-              filterUnits="userSpaceOnUse"
-              colorInterpolationFilters="sRGB"
-            >
-              <feFlood floodOpacity="0" result="BackgroundImageFix" />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="BackgroundImageFix"
-                result="shape"
-              />
-              <feGaussianBlur
-                stdDeviation="200"
-                result="effect1_foregroundBlur_415_2672"
-              />
-            </filter>
-          </defs>
+          {/* SVG Background */}
         </svg>
       </div>
 
-      {/* Sign In Form */}
-      {/* Form Panel */}
-      <div className="bg-gray-100 w-full flex flex-col items-center justify-center"> {/* Background for the entire section */}
-        {/* Image above the form */}
-        <div className="flex justify-center mb-10 bg-transparent">
-          <Image
-            src="/images/logo/logo-bsi.png" // Replace with your image path
-            alt="No Images"
-            width={200} // Set the desired width
-            height={200} // Set the desired height
-            className="rounded-lg" // Maintain any classes you need
-            style={{ backgroundColor: 'transparent' }} // This may not apply in the same way to <Image />
-          />
-        </div>
-
+      <div className="bg-gray-100 w-full flex flex-col items-center justify-center">
         <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
+          <div className="flex justify-center bg-transparent mt-5">
+            <Image
+              src="/images/logo/logo-bsi.jpeg"
+              alt="Logo"
+              width={100}
+              height={100}
+              className=""
+              style={{ backgroundColor: "transparent" }}
+            />
+          </div>
           <div className="w-full px-8 py-6">
-            {/* <h2 className="text-center text-3xl font-bold text-gray-700 mb-6">
-              Sign In
-            </h2> */}
-            <form className="mt-1  space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-600 flex items-center"
-                >
-                  {/* New Email Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.75 5.25L3 6V18L3.75 18.75H20.25L21 18V6L20.25 5.25H3.75ZM4.5 7.6955V17.25H19.5V7.69525L11.9999 14.5136L4.5 7.6955ZM18.3099 6.75H5.68986L11.9999 12.4864L18.3099 6.75Z"
-                      fill="#080341"
-                    />
-                  </svg>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="bg-gray-100 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  placeholder=""
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="flex items-center mb-2 text-sm font-medium text-gray-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      d="M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.6146 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.6146 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288"
-                      stroke="#000000"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Password
-                </label>
-
-                <input
-                  type="password"
-                  id="password"
-                  className="bg-gray-100 block w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  placeholder=""
-                  required
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="text-sm">
-                  <Link
-                    href="/forgot-password"
-                    className="font-medium text-gray-600 hover:text-red-500"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-
-                <div className="flex items-center text-sm">
-                  <button
-                    type="submit"
-                    className="w-40 py-3 px-4 text-white rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition duration-300"
-                    style={{ backgroundColor: '#00BFB2' }} // Custom background color
-                  >
-                    Sign In
-                  </button>
-                </div>
-              </div>
-            </form>
-            {/* <div className="mt-6 text-center text-sm">
+            <form className="mt-1 space-y-6" onSubmit={handleSubmit}>
               <button
-                type="button"
-                className="py-2 px-29 border border-[#00BFB2] text-black-200 rounded-lg bg-transparent hover:bg-[#00BFB2] hover:text-white transition duration-300"
+                type="submit"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none"
+                style={{ backgroundColor: "#007C80" }}
               >
-                Don&#39;t have an account?
+                Sign in with OAuth2
               </button>
-            </div> */}
-
+            </form>
           </div>
         </div>
       </div>
