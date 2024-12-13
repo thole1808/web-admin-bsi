@@ -7,8 +7,8 @@ WORKDIR /app
 # Salin package.json dan package-lock.json terlebih dahulu untuk instalasi dependensi
 COPY package*.json ./
 
-# Install dependensi aplikasi dengan --legacy-peer-deps untuk mengabaikan konflik dependensi
-RUN npm install --legacy-peer-deps
+# Install dependensi aplikasi
+RUN npm install
 
 # Salin semua file aplikasi
 COPY . .
