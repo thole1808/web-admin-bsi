@@ -74,19 +74,20 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Mencegah form untuk di-submit secara default
-    const authUrl = `${process.env.NEXT_PUBLIC_OAUTH_AUTH_URL}`; 
+  
+    const authUrl = `${process.env.NEXT_PUBLIC_OAUTH_AUTH_URL}`; // URL otorisasi OAuth2
     const params = new URLSearchParams({
-      client_id: process.env.NEXT_PUBLIC_BACKOFFICE_ID!,
-      redirect_uri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL!,
-      response_type: "code", 
-      scope: process.env.NEXT_PUBLIC_BACKOFFICE_SCOPE!, 
+      client_id: process.env.NEXT_PUBLIC_BACKOFFICE_ID!, // ID klien OAuth2
+      redirect_uri: process.env.NEXT_PUBLIC_OAUTH_CALLBACK_URL!, // URL callback setelah login
+      response_type: "code", // Jenis response, biasanya 'code' untuk OAuth2 authorization code flow
+      scope: process.env.NEXT_PUBLIC_BACKOFFICE_SCOPE!, // Scope yang diminta
     });
-
-    // Redirect ke halaman otorisasi OAuth2 dengan parameter yang benar
+  
+    // Redirect ke URL otorisasi OAuth2 dengan query params
     window.location.href = `${authUrl}?${params.toString()}`;
   };
 
-
+  
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
       <div className="absolute inset-0">
@@ -106,7 +107,7 @@ const SignIn: React.FC = () => {
         <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
           <div className="flex justify-center bg-transparent mt-5">
             <Image
-              src="/images/logo/logo-bsi.png"
+              src="/images/logo/logo-bsi.jpeg"
               alt="Logo"
               width={100}
               height={100}
