@@ -107,7 +107,7 @@ const SignIn: React.FC = () => {
         <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
           <div className="flex justify-center bg-transparent mt-5">
             <Image
-              src="/images/logo/logo-bsi.jpeg"
+              src="/images/logo/logo-bsi.png"
               alt="Logo"
               width={100}
               height={100}
