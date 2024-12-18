@@ -149,27 +149,87 @@
 
 
 // middleware.js
-import { getToken } from "next-auth/jwt";
-import { NextResponse } from "next/server";
+// import { getToken } from "next-auth/jwt";
+// import { NextResponse } from "next/server";
 
-export default async function middleware(req) {
-  const token = await getToken({ req, secret: process.env.NEXT_PUBLIC_OAUTH_CLIENT_SECRET });
+// export default async function middleware(req) {
+//   const token = await getToken({ req, secret: process.env.NEXT_PUBLIC_OAUTH_CLIENT_SECRET });
 
-  console.log('TOKEB BOSKU',token);
+//   console.log('TOKEB BOSKU',token);
 
+//   if (!token) {
+//     // Redirect pengguna ke halaman login di root (/) jika token tidak ada
+//     return NextResponse.redirect(new URL('/', req.url));
+//   }
+
+//   // Jika token ada, lanjutkan permintaan
+//   return NextResponse.next();
+// }
+
+// export const config = {
+//   matcher: ["/protected-page/:path*"], // Ganti dengan path yang ingin diproteksi
+// };
+
+
+// import { NextRequest, NextResponse } from "next/server";
+
+// export function middleware(req: NextRequest) {
+//     const token = req.cookies.get("next-auth.session-token") || req.cookies.get("__Secure-next-auth.session-token");
+
+//     if ((req.nextUrl.pathname.startsWith("/dashboard") || req.nextUrl.pathname.startsWith("/workbench") || req.nextUrl.pathname.startsWith("/history") || req.nextUrl.pathname.startsWith("/settings")) && !token) {
+//         return NextResponse.redirect(new URL("/", req.url));
+//     }
+
+//     return NextResponse.next();
+// }
+
+// export const config = {
+//     matcher: ["/dashboard/:path*", "/workbench/:path*", "/history/:path*", "/settings/:path*"],
+// };
+
+
+
+
+// import { NextRequest, NextResponse } from 'next/server';
+// import { getToken } from 'next-auth/jwt';
+
+// export async function middleware(req: NextRequest) {
+//   const token = await getToken({ req });
+//   if (!token) {
+//     // Arahkan ke halaman login jika token tidak ada
+//     return NextResponse.redirect(new URL('/auth/signin', req.url));
+//   }
+//   return NextResponse.next();
+// }
+
+// export const config = {
+//   matcher: ['/dashboard', '/profile'], // Tentukan halaman yang ingin diproteksi
+// };
+
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+export async function middleware(req: NextRequest) {
+  // Mengambil token JWT dari request
+  const token = await getToken({ req });
+
+  // Debugging token
+  console.log("Token yang didapat: ", token);
+
+  // Jika token tidak ada, arahkan ke halaman login
   if (!token) {
-    // Redirect pengguna ke halaman login di root (/) jika token tidak ada
-    return NextResponse.redirect(new URL('/', req.url));
+    console.log("Token tidak ditemukan, mengarahkan ke halaman login...");
+    return NextResponse.redirect(new URL('/login/signin', req.url));
   }
 
-  // Jika token ada, lanjutkan permintaan
+  // Jika token ada, lanjutkan ke halaman yang diminta
+  console.log("Token ditemukan, melanjutkan permintaan...");
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/protected-page/:path*"], // Ganti dengan path yang ingin diproteksi
+  matcher: ['/dashboard', '/profile'], // Tentukan halaman yang ingin diproteksi
 };
-
-
 
 

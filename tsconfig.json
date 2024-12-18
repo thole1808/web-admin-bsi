@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -21,9 +25,32 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "target": "ES2017"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Dashboard/Dashboardtsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/Dashboard/Dashboardtsx",
+    "src/pages/api/auth/callback/auth0.js",
+    "src/pages/api/auth/[...nextauth].js",
+    "src/pages/api/auth/callback/protected.js",
+    "src/pages/api/auth/callback/auth0^^^.js",
+    "src/pages/api/auth/nextauth.js",
+    "src/middleware.js",
+    "src/middleware.js",
+    "src/middleware/oauthMiddleware.js",
+    "src/middleware/oauthMiddleware.js",
+    "src/pages/api/auth/callback/auth0^^^.js",
+    "src/components/TodayVisitor/TodayVisitors.js",
+    "src/components/TodayVisitor/TodayVisitors.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
