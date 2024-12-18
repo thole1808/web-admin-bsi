@@ -229,7 +229,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/profile'], // Tentukan halaman yang ingin diproteksi
+  matcher: ['/dashboard', '/antrian','/cabang'], // Tentukan halaman yang ingin diproteksi
 };
 
 
