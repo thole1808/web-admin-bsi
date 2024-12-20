@@ -2,7 +2,7 @@ import React from "react";
 import FormElements from "@/components/FormElements";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import ApprovalMatrix from "@/components/Master/approval-matrix/ApprovalMatrix";
+import ApprovalMatrix from "@/components/Master/ApprovalMatrix/ApprovalMatrix";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export const metadata: Metadata = {
