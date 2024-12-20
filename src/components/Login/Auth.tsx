@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-// import { useRouter } from "next/router";
-import Authbos  from "@/app/login/signin/page";
+import Authbos  from "@/app/login/page";
 
 const Auth: React.FC = () => {
   return  <Authbos/>

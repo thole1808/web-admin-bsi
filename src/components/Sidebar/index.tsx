@@ -32,7 +32,7 @@ const menuGroups = [
         route: '/master',
         icon: <DatabaseIcon />,
         children: [
-          { label: 'Approval Matrix', route: '/approval-matrix' },
+          { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Checklist', route: '/checklist' },
         ],
       },
@@ -73,7 +73,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <Image
               width={176}
               height={32}
-              src={"/images/logo/logo-bsi.png"}
+              src={"/images/logo/logo-bsi.SDSD"}
               alt="Logo"
               priority
             />
