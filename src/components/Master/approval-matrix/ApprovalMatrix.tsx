@@ -29,6 +29,8 @@ const ApprovalMatrix: React.FC = () => {
     const fetchData = async () => {
 
       try {
+        // setLoading(true);
+
         // Fetch data menggunakan token dari session
         const response = await fetch("/api/master/approval-matrix");
 
@@ -103,8 +105,8 @@ const ApprovalMatrix: React.FC = () => {
 
   return (
     <div>
-      <div className="flex mb-10 justify-between items-center py-5 w-full">
-        <div className="container mx-auto p-4 max-w-screen-lg">
+      {/* <div className="flex mb-10 justify-between items-center py-5 w-full"> */}
+        {/* <div className="container mx-auto p-4 max-w-screen-lg"> */}
           <h1 className="text-2xl font-bold mb-4 text-left">Approval Matrix</h1>
 
           {/* <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 mb-6">
@@ -170,8 +172,8 @@ const ApprovalMatrix: React.FC = () => {
               className="shadow-md rounded text-sm"
             />
           )}
-        </div>
-      </div>
+        {/* </div> */}
+      {/* </div> */}
     </div>
   );
 };
