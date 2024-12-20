@@ -10,3 +10,16 @@
 //     },
 // };
 
+
+module.exports = {
+    async redirects() {
+      return [
+        {
+          source: '/approval-matrix',
+          destination: '/master/approval-matrix',  // Redirect jika perlu
+          permanent: false,
+        },
+      ];
+    },
+  };
+  
