@@ -223,13 +223,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  // Jika token ada, lanjutkan ke halaman yang diminta
+  // Jika token ada, lanjutkan ke halaman yang dimint   a
   console.log("Token ditemukan, melanjutkan permintaan...");
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dashboard', '/antrian','/cabang'], // Tentukan halaman yang ingin diproteksi
+  matcher: ['/dashboard', '/antrian','/cabang','/master/approval-matrix'], // Tentukan halaman yang ingin diproteksi
 };
 
 
