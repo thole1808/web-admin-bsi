@@ -133,10 +133,10 @@ const ApprovalMatrix: React.FC = () => {
     setIsModalOpen(false);
     setEditData(null); // Clear editData when modal is closed
   };
-
+  
   const handleSave = async () => {
     if (!editData) return;
-
+  
     try {
       const response = await fetch(`/api/master/approval-matrix/${editData.id}`, {
         method: "PUT",
@@ -145,22 +145,26 @@ const ApprovalMatrix: React.FC = () => {
         },
         body: JSON.stringify(editData), // Data yang akan diupdate
       });
-
+  
       if (response.ok) {
-        const updatedData = await response.json();
-        // Update the local state with the new data
+        const updatedData = await response.json(); // Get the updated data from the API
         setMatrixData((prevData) =>
           prevData.map((item) => (item.id === editData.id ? { ...item, ...updatedData } : item))
         );
         setIsModalOpen(false); // Close the modal after saving
         setEditData(null); // Reset editData after saving
+        alert("Data updated successfully!"); // Display success message (optional)
+        fetchData();
       } else {
-        alert("Failed to update item.");
+        const errorData = await response.json(); // Extract error message from the response
+        alert(`Error: ${errorData.error || 'Failed to update item.'}`); // Display the error message returned by the API
       }
     } catch (error) {
+      console.error("Error occurred while saving item:", error);
       alert("Error occurred while saving item.");
     }
   };
+  
 
   const handleCreate = async () => {
     const newMatrixItem = { ...newMatrix };
