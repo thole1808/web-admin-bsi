@@ -252,15 +252,15 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
       }
   
-      const roleId = user.id;
-      const createdAt = new Date().toISOString();
+      const roleId = 2 ;
+    //   const createdAt = new Date().toISOString();
   
       const payload = {
         modelType,
         event,
         roleId,
         nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
-        createdAt,
+        // createdAt,
       };
   
       console.log("Payload sent to API:", payload);  // Log payload yang dikirimkan

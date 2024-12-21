@@ -57,12 +57,16 @@ const ApprovalMatrix: React.FC = () => {
 
   // Update filtered data whenever search or matrixData changes
   const filteredData = useMemo(() => {
-    return matrixData.filter(
-      (item) =>
-        item.modelType.toLowerCase().includes(search.toLowerCase()) ||
-        item.event.toLowerCase().includes(search.toLowerCase()) ||
-        item.createdAt.toLowerCase().includes(search.toLowerCase())
-    );
+    return matrixData.filter((item) => {
+      const searchTerm = search.toLowerCase();
+
+      // Periksa dan pastikan setiap field adalah string sebelum memanggil .toLowerCase()
+      const modelTypeMatch = item.modelType?.toLowerCase().includes(searchTerm) || false;
+      const eventMatch = item.event?.toLowerCase().includes(searchTerm) || false;
+      const createdAtMatch = item.createdAt?.toLowerCase().includes(searchTerm) || false;
+
+      return modelTypeMatch || eventMatch || createdAtMatch;
+    });
   }, [search, matrixData]);
 
   const columns: TableColumn<MatrixItem>[] = [
@@ -132,6 +136,7 @@ const ApprovalMatrix: React.FC = () => {
   const handleModalClose = () => {
     setIsModalOpen(false);
     setEditData(null); // Clear editData when modal is closed
+    setIsCreateModalOpen(false); // Menutup modal
   };
   // 
   const handleSave = async () => {
@@ -165,9 +170,41 @@ const ApprovalMatrix: React.FC = () => {
     }
   };
 
+  // const handleCreate = async () => {
+  //   const newMatrixItem = { ...newMatrix };
+
+  //   try {
+  //     const response = await fetch("/api/master/approval-matrix", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(newMatrixItem),
+  //     });
+
+  //     if (response.ok) {
+  //       const createdItem = await response.json();
+  //       setMatrixData((prevData) => [...prevData, createdItem]);
+  //       setIsCreateModalOpen(false);
+  //       fetchData();
+  //       setNewMatrix(null);
+  //     } else {
+  //       // Mengambil error message dari API response
+  //       const errorData = await response.json();
+  //       console.error("Error creating item:", errorData); // Log error untuk debugging
+
+  //       // Tampilkan error message jika ada
+  //       alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error occurred while creating item:", error); // Log error untuk debugging
+  //     alert("Error occurred while creating item. Please try again.");
+  //   }
+  // };
+
   const handleCreate = async () => {
     const newMatrixItem = { ...newMatrix };
-
+  
     try {
       const response = await fetch("/api/master/approval-matrix", {
         method: "POST",
@@ -176,16 +213,23 @@ const ApprovalMatrix: React.FC = () => {
         },
         body: JSON.stringify(newMatrixItem),
       });
-
+  
       if (response.ok) {
         const createdItem = await response.json();
         setMatrixData((prevData) => [...prevData, createdItem]);
-        setIsCreateModalOpen(false);
+        setIsCreateModalOpen(false); // Menutup modal
+        fetchData();
+  
+        // Reset input fields after creation
+        setNewMatrix({
+          modelType: "",
+          event: "",
+        });
       } else {
         // Mengambil error message dari API response
         const errorData = await response.json();
         console.error("Error creating item:", errorData); // Log error untuk debugging
-
+  
         // Tampilkan error message jika ada
         alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
       }
@@ -194,6 +238,7 @@ const ApprovalMatrix: React.FC = () => {
       alert("Error occurred while creating item. Please try again.");
     }
   };
+  
 
 
   if (error) {
@@ -300,43 +345,50 @@ const ApprovalMatrix: React.FC = () => {
       {/* Create Modal */}
       <Modal
         isOpen={isCreateModalOpen}
-        onRequestClose={() => setIsCreateModalOpen(false)}
+        onRequestClose={handleModalClose} // Menangani penutupan modal
         contentLabel="Create Approval Matrix"
         className="modal"
+        ariaHideApp={false} // Menonaktifkan aksesibilitas (jika diperlukan)
       >
         <h2 className="text-xl font-bold mb-4">Create Approval Matrix</h2>
-        <div className="mb-4">
-          <label htmlFor="modelType" className="block mb-1">Model Type</label>
-          <input
-            type="text"
-            id="modelType"
-            value={newMatrix.modelType}
-            onChange={(e) => setNewMatrix({ ...newMatrix, modelType: e.target.value })}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="event" className="block mb-1">Event</label>
-          <input
-            type="text"
-            id="event"
-            value={newMatrix.event}
-            onChange={(e) => setNewMatrix({ ...newMatrix, event: e.target.value })}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-        </div>
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={() => setIsCreateModalOpen(false)}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md"
-          >
-            Cancel
-          </button>
-          <button onClick={handleCreate} className="bg-blue-500 text-white px-6 py-2 rounded-md">
-            Create
-          </button>
+        <div>
+          <div className="mb-4">
+            <label htmlFor="modelType" className="block mb-1">Model Type</label>
+            <input
+              type="text"
+              id="modelType"
+              value={newMatrix.modelType}
+              onChange={(e) => setNewMatrix({ ...newMatrix, modelType: e.target.value })}
+              className="w-full px-4 py-2 border rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="event" className="block mb-1">Event</label>
+            <input
+              type="text"
+              id="event"
+              value={newMatrix.event}
+              onChange={(e) => setNewMatrix({ ...newMatrix, event: e.target.value })}
+              className="w-full px-4 py-2 border rounded-md"
+            />
+          </div>
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={handleModalClose} // Menutup modal ketika tombol cancel diklik
+              className="bg-gray-500 text-white px-4 py-2 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreate} // Fungsi untuk membuat item baru
+              className="bg-blue-500 text-white px-6 py-2 rounded-md"
+            >
+              Create
+            </button>
+          </div>
         </div>
       </Modal>
+
     </div>
   );
 };
