@@ -136,7 +136,7 @@ const ApprovalMatrix: React.FC = () => {
   // 
   const handleSave = async () => {
     if (!editData) return;
-  
+
     try {
       const response = await fetch(`/api/master/approval-matrix/${editData.id}`, {
         method: "PUT",
@@ -145,7 +145,7 @@ const ApprovalMatrix: React.FC = () => {
         },
         body: JSON.stringify(editData), // Data yang akan diupdate
       });
-  
+
       if (response.ok) {
         const updatedData = await response.json(); // Get the updated data from the API
         setMatrixData((prevData) =>
@@ -164,7 +164,6 @@ const ApprovalMatrix: React.FC = () => {
       alert("Error occurred while saving item.");
     }
   };
-  
 
   const handleCreate = async () => {
     const newMatrixItem = { ...newMatrix };
@@ -183,12 +182,19 @@ const ApprovalMatrix: React.FC = () => {
         setMatrixData((prevData) => [...prevData, createdItem]);
         setIsCreateModalOpen(false);
       } else {
-        alert("Failed to create item. Please try again.");
+        // Mengambil error message dari API response
+        const errorData = await response.json();
+        console.error("Error creating item:", errorData); // Log error untuk debugging
+
+        // Tampilkan error message jika ada
+        alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
       }
     } catch (error) {
+      console.error("Error occurred while creating item:", error); // Log error untuk debugging
       alert("Error occurred while creating item. Please try again.");
     }
   };
+
 
   if (error) {
     return <div>{error}</div>;

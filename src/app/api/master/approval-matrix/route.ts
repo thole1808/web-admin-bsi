@@ -34,34 +34,225 @@ export async function GET(req: NextRequest) {
 // Definisikan tipe untuk session
 interface Session {
     user: {
-      id: string;
-      // Add other properties of the user if needed
+        id: string;
+        // Add other properties of the user if needed
     };
     accessToken?: string;
-  }
-  
-  export async function POST(req: NextRequest) {
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  
-    // Periksa apakah session ada
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  
-    // Assert tipe session.user ke tipe yang kita definisikan
-    const user = session.user as Session['user'];
-  
+}
+
+// export async function POST(req: NextRequest) {
+//     const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+//     // Periksa apakah session ada
+//     if (!session) {
+//       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//     }
+
+//     // Assert tipe session.user ke tipe yang kita definisikan
+//     const user = session.user as Session['user'];
+
+//     try {
+//       const body = await req.json();
+//       const { modelType, event, nextApprovalId } = body;
+
+//       // Validasi fields yang diperlukan
+//       if (!modelType || !event) {
+//         return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+//       }
+
+//       const roleId = user.id; // Menggunakan id dari user
+
+//       const createdAt = new Date().toISOString();
+
+//       const payload = {
+//         modelType,
+//         event,
+//         roleId,
+//         nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
+//         createdAt,
+//       };
+
+//       const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${session.accessToken || ''}`,
+//         },
+//         body: JSON.stringify(payload),
+//       });
+
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         return NextResponse.json({ error: errorData.error || 'Failed to create approval matrix' }, { status: response.status });
+//       }
+
+//       const data = await response.json();
+//       const { id, ...filteredData } = data;
+
+//       return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+//     } catch (error) {
+//       console.error("Error creating approval matrix:", error);
+//       return NextResponse.json({ error: 'Failed to create approval matrix' }, { status: 500 });
+//     }
+//   }
+
+
+// export async function POST(req: NextRequest) {
+//     try {
+//         const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+//         // Check for session
+//         if (!session) {
+//             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//         }
+
+//         const user = session.user as Session['user'];
+
+//         const body = await req.json();
+//         const { modelType, event, nextApprovalId } = body;
+
+//         // Validate required fields
+//         if (!modelType || !event) {
+//             return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+//         }
+
+//         const roleId = user.id;
+//         const createdAt = new Date().toISOString();
+
+//         const payload = {
+//             modelType,
+//             event,
+//             roleId,
+//             nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
+//             createdAt,
+//         };
+
+//         // Call the external API to create approval matrix
+//         const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${session.accessToken || ''}`,
+//             },
+//             body: JSON.stringify(payload),
+//         });
+
+//         console.log('Response Status:', response.status);
+
+//         if (!response.ok) {
+//             const errorData = await response.json();
+//             console.log('Error Data:', errorData); // Log the error details
+
+//             return NextResponse.json(
+//                 { error: errorData.message || 'Failed to create approval matrix' },
+//                 { status: response.status }
+//             );
+//         }
+
+//         const data = await response.json();
+//         const { id, ...filteredData } = data;
+
+//         return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+
+//     } catch (error) {
+//         console.error('Error in POST /create approval matrix:', error); // Enhanced logging for error
+//         return NextResponse.json({ error: 'Failed to create approval matrix due to server issue.' }, { status: 500 });
+//     }
+// }
+
+
+
+// export async function POST(req: NextRequest) {
+//     try {
+//         const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+//         // Check for session
+//         if (!session) {
+//             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//         }
+
+//         const user = session.user as Session['user'];
+//         const roleId = user.id;
+
+//         console.log("Received Role ID:", roleId); // Log roleId to verify
+
+//         const body = await req.json();
+//         const { modelType, event, nextApprovalId } = body;
+
+//         // Validate required fields
+//         if (!modelType || !event) {
+//             return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+//         }
+
+//         const createdAt = new Date().toISOString();
+
+//         const payload = {
+//             modelType,
+//             event,
+//             roleId,
+//             nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
+//             createdAt,
+//         };
+
+//         // Call the external API to create approval matrix
+//         const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${session.accessToken || ''}`,
+//             },
+//             body: JSON.stringify(payload),
+//         });
+
+//         console.log('Response Status:', response.status);
+
+//         if (!response.ok) {
+//             const errorData = await response.json();
+//             console.log('Error Data:', errorData); // Log the error details
+
+//             return NextResponse.json(
+//                 { error: errorData.message || 'Failed to create approval matrix' },
+//                 { status: response.status }
+//             );
+//         }
+
+//         const data = await response.json();
+//         const { id, ...filteredData } = data;
+
+//         return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+
+//     } catch (error) {
+//         console.error('Error in POST /create approval matrix:', error); // Enhanced logging for error
+//         return NextResponse.json({ error: 'Failed to create approval matrix due to server issue.' }, { status: 500 });
+//     }
+// }
+
+
+export async function POST(req: NextRequest) {
     try {
+      const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  
+      // Check for session
+      if (!session) {
+        console.error("Session not found");  // Log jika session tidak ditemukan
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+  
+      const user = session.user as Session['user'];
+      if (!user || !user.id) {
+        console.error("User or roleId not found in session");
+        return NextResponse.json({ error: 'Role ID missing in session' }, { status: 401 });
+      }
+  
       const body = await req.json();
       const { modelType, event, nextApprovalId } = body;
   
-      // Validasi fields yang diperlukan
+      // Validate required fields
       if (!modelType || !event) {
         return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
       }
   
-      const roleId = user.id; // Menggunakan id dari user
-  
+      const roleId = user.id;
       const createdAt = new Date().toISOString();
   
       const payload = {
@@ -72,6 +263,9 @@ interface Session {
         createdAt,
       };
   
+      console.log("Payload sent to API:", payload);  // Log payload yang dikirimkan
+  
+      // Call the external API to create approval matrix
       const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
         method: 'POST',
         headers: {
@@ -81,18 +275,23 @@ interface Session {
         body: JSON.stringify(payload),
       });
   
+      console.log('Response Status:', response.status);
+  
       if (!response.ok) {
         const errorData = await response.json();
-        return NextResponse.json({ error: errorData.error || 'Failed to create approval matrix' }, { status: response.status });
+        console.log('Error Data:', errorData); // Log error details
+  
+        return NextResponse.json({ error: errorData.message || 'Failed to create approval matrix' }, { status: response.status });
       }
   
       const data = await response.json();
       const { id, ...filteredData } = data;
   
       return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+  
     } catch (error) {
-      console.error("Error creating approval matrix:", error);
-      return NextResponse.json({ error: 'Failed to create approval matrix' }, { status: 500 });
+      console.error('Error in POST /create approval matrix:', error);  // Enhanced logging for error
+      return NextResponse.json({ error: 'Failed to create approval matrix due to server issue.' }, { status: 500 });
     }
   }
   
