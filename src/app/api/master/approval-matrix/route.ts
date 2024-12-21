@@ -3,30 +3,216 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Endpoint untuk GET data approval matrix (sudah ada)
 export async function GET(req: NextRequest) {
-  const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.accessToken || ''}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return NextResponse.json({ error: errorData.error || 'Failed to fetch approval matrix API' }, { status: response.status });
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const data = await response.json();
-    return NextResponse.json(data, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching approval matrix:", error);
-    return NextResponse.json({ error: 'Failed to fetch approval matrix API' }, { status: 500 });
-  }
+    try {
+        const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.accessToken || ''}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return NextResponse.json({ error: errorData.error || 'Failed to fetch approval matrix API' }, { status: response.status });
+        }
+
+        const data = await response.json();
+        return NextResponse.json(data, { status: 200 });
+    } catch (error) {
+        console.error("Error fetching approval matrix:", error);
+        return NextResponse.json({ error: 'Failed to fetch approval matrix API' }, { status: 500 });
+    }
 }
+
+
+// Create Aprroval Matrix
+// export async function POST(req: NextRequest) {
+//   const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+//   // Check for unauthorized access
+//   if (!session) {
+//     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//   }
+
+//   try {
+//     const body = await req.json();
+//     const { modelType, event, nextApprovalId } = body;
+
+//     // Validate required fields
+//     if (!modelType || !event) {
+//       return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+//     }
+
+//     // Use session.user.id for roleId
+//     const roleId = session.user.id; // Assuming session contains user.id
+//     console.log("INI SESSION ID BOSKU:", roleId);
+
+//     // Add the current timestamp to createdAt
+//     const createdAt = new Date().toISOString(); // Current date and time in ISO 8601 format
+
+//     // Build the payload
+//     const payload = {
+//       modelType,
+//       event,
+//       roleId, // Set roleId from session.user.id
+//       nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null, // Ensure `null` is sent only if allowed
+//       createdAt, // Add createdAt field
+//     };
+
+//     // Send data to the backend API
+//     const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${session.accessToken || ''}`,
+//       },
+//       body: JSON.stringify(payload),
+//     });
+
+//     // Handle the response from the backend API
+//     if (!response.ok) {
+//       const errorData = await response.json();
+//       return NextResponse.json({ error: errorData.error || 'Failed to create approval matrix' }, { status: response.status });
+//     }
+
+//     const data = await response.json();
+//     return NextResponse.json({ success: true, data }, { status: 201 });
+//   } catch (error) {
+//     console.error("Error creating approval matrix:", error);
+//     return NextResponse.json({ error: 'Failed to create approval matrix' }, { status: 500 });
+//   }
+// }
+
+
+// export async function POST(req: NextRequest) {
+//     const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  
+//     // Check for unauthorized access
+//     if (!session) {
+//       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//     }
+  
+//     try {
+//       const body = await req.json();
+//       const { modelType, event, nextApprovalId } = body;
+  
+//       // Validate required fields
+//       if (!modelType || !event) {
+//         return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+//       }
+  
+//       // Use session.user.id for roleId
+//       const roleId = session.user.id;
+  
+//       // Add the current timestamp to createdAt
+//       const createdAt = new Date().toISOString(); // Current date and time in ISO 8601 format
+  
+//       // Build the payload (no `id` field)
+//       const payload = {
+//         modelType,
+//         event,
+//         roleId,
+//         nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
+//         createdAt,
+//       };
+  
+//       // Send data to the backend API
+//       const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${session.accessToken || ''}`,
+//         },
+//         body: JSON.stringify(payload),
+//       });
+  
+//       // Handle the response from the backend API
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         return NextResponse.json({ error: errorData.error || 'Failed to create approval matrix' }, { status: response.status });
+//       }
+  
+//       const data = await response.json();
+//       // Filter out any `id` from the response if needed
+//       const { id, ...filteredData } = data;
+  
+//       return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+//     } catch (error) {
+//       console.error("Error creating approval matrix:", error);
+//       return NextResponse.json({ error: 'Failed to create approval matrix' }, { status: 500 });
+//     }
+//   }
+
+
+// Definisikan tipe untuk session
+interface Session {
+    user: {
+      id: string;
+      // Add other properties of the user if needed
+    };
+    accessToken?: string;
+  }
+  
+  export async function POST(req: NextRequest) {
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  
+    // Periksa apakah session ada
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  
+    // Assert tipe session.user ke tipe yang kita definisikan
+    const user = session.user as Session['user'];
+  
+    try {
+      const body = await req.json();
+      const { modelType, event, nextApprovalId } = body;
+  
+      // Validasi fields yang diperlukan
+      if (!modelType || !event) {
+        return NextResponse.json({ error: 'Model Type and Event are required.' }, { status: 400 });
+      }
+  
+      const roleId = user.id; // Menggunakan id dari user
+  
+      const createdAt = new Date().toISOString();
+  
+      const payload = {
+        modelType,
+        event,
+        roleId,
+        nextApprovalId: nextApprovalId !== undefined ? nextApprovalId : null,
+        createdAt,
+      };
+  
+      const response = await fetch(`${process.env.API_URL}/master/approval-matrix`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.accessToken || ''}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        return NextResponse.json({ error: errorData.error || 'Failed to create approval matrix' }, { status: response.status });
+      }
+  
+      const data = await response.json();
+      const { id, ...filteredData } = data;
+  
+      return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
+    } catch (error) {
+      console.error("Error creating approval matrix:", error);
+      return NextResponse.json({ error: 'Failed to create approval matrix' }, { status: 500 });
+    }
+  }
+  
