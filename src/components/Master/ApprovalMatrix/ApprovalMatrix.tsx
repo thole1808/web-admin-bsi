@@ -352,11 +352,11 @@ const ApprovalMatrix: React.FC = () => {
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    {columns.map((col, index) => (
+                    {/* {columns.map((col, index) => (
                       <th key={col.name || index} className="px-4 py-2 border-b">
                         {col.name}
                       </th>
-                    ))}
+                    ))} */}
                   </tr>
                 </thead>
                 <tbody>
