@@ -13,7 +13,7 @@
 @layer components {
 }
 
-@layer utilities {
+@laye   r utilities {
     /* Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
         display: none;
@@ -279,3 +279,65 @@ input[type="search"]::-webkit-search-cancel-button {
     color: #007C80; /* Warna teks opsi */
 }
 
+
+
+/* Modal container */
+.ReactModal__Overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Set overlay menjadi semi transparan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.ReactModal__Content {
+    position: relative;
+    max-width: 90%;
+    /* Agar modal tidak terlalu besar pada perangkat kecil */
+    width: 500px;
+    /* Menetapkan lebar modal yang sesuai */
+    margin: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    overflow-y: auto;
+}
+
+/* Modal title */
+.ReactModal__Content h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Form elements */
+.ReactModal__Content input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.ReactModal__Content button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ReactModal__Content button:hover {
+    opacity: 0.9;
+}
+
+/* Responsiveness for smaller screens */
+@media (max-width: 600px) {
+    .ReactModal__Content {
+        width: 100%;
+        max-width: 100%;
+    }
+}
