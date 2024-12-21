@@ -3,99 +3,113 @@
 import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
+import Link from "next/link"; // Import Link dari Next.js
+import { TableColumn } from 'react-data-table-component'; // Import TableColumn
 
 // Dynamically import DataTable component with SSR disabled
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
 });
 
+// Definisikan tipe data untuk item yang ada di matrixData
+interface MatrixItem {
+  id: number;
+  modelType: string;
+  event: string;
+  createdAt: string;
+  // Tambahkan properti lain sesuai kebutuhan
+}
+
 const ApprovalMatrix: React.FC = () => {
   const [search, setSearch] = useState("");
-  const [visibleColumns, setVisibleColumns] = useState({
-    department: true,
-    role: true,
-    approver: true,
-    approvalLevel: true,
-  });
-  const [matrixData, setMatrixData] = useState<any[]>([]);
+  const [matrixData, setMatrixData] = useState<MatrixItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get session data using useSession hook
   const { data: session, status } = useSession();
 
   // Fetch data inside useEffect to ensure it's executed only on the client-side
   useEffect(() => {
     const fetchData = async () => {
-
       try {
-        // setLoading(true);
+        setLoading(true);
 
-        // Fetch data menggunakan token dari session
         const response = await fetch("/api/master/approval-matrix");
 
-        // Jika respons tidak berhasil, lempar error
         if (!response.ok) {
-          throw new Error(`Gagal mengambil data: ${response.statusText}`);
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log("data:", data);
 
-        // Pastikan data yang diterima adalah array
-        if (Array.isArray(data)) {
-          setMatrixData(data);
-        } 
-        // else {
-        //   setError("Data yang diterima tidak valid.");
-        // }
+        if (data.success && Array.isArray(data.data)) {
+          const modifiedData = data.data.map((item: any, index: number) => ({
+            ...item,
+            id: index + 1, // Auto-increment ID starting from 1
+          }));
+          setMatrixData(modifiedData);
+        } else {
+          setError("Invalid data format or failed to fetch data.");
+        }
       } catch (error: any) {
-        setError("Terjadi kesalahan saat mengambil data");
+        setError("Error occurred while fetching data.");
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [session, status]);
 
-  // Gunakan useMemo untuk mengoptimalkan pemfilteran data
   const filteredData = useMemo(() => {
-    return Array.isArray(matrixData)
-      ? matrixData.filter(
-          (item) =>
-            item.department.toLowerCase().includes(search.toLowerCase()) ||
-            item.role.toLowerCase().includes(search.toLowerCase()) ||
-            item.approver.toLowerCase().includes(search.toLowerCase()) ||
-            item.approvalLevel.toLowerCase().includes(search.toLowerCase())
-        )
-      : [];
+    return matrixData.filter(
+      (item) =>
+        item.modelType.toLowerCase().includes(search.toLowerCase()) ||
+        item.event.toLowerCase().includes(search.toLowerCase()) ||
+        item.createdAt.toLowerCase().includes(search.toLowerCase())
+    );
   }, [search, matrixData]);
 
-  // Definisikan kolom untuk DataTable
-  const columns = [
+  const columns: TableColumn<MatrixItem>[] = [
     {
-      name: "Department",
-      selector: (row: any) => row.department,
+      name: "ID",
+      selector: (row: MatrixItem) => row.id,
       sortable: true,
-      omit: !visibleColumns.department,
+      style: {
+        width: "50px",
+        textAlign: "center", // textAlign harus 'left' | 'center' | 'right'
+      },
     },
     {
-      name: "Role",
-      selector: (row: any) => row.role,
+      name: "Model Type",
+      selector: (row: MatrixItem) => row.modelType,
       sortable: true,
-      omit: !visibleColumns.role,
     },
     {
-      name: "Approver",
-      selector: (row: any) => row.approver,
+      name: "Event",
+      selector: (row: MatrixItem) => row.event,
       sortable: true,
-      omit: !visibleColumns.approver,
     },
     {
-      name: "Approval Level",
-      selector: (row: any) => row.approvalLevel,
-      sortable: true,
-      omit: !visibleColumns.approvalLevel,
+      name: "Actions",
+      cell: (row: MatrixItem) => (
+        <div className="flex space-x-2">
+          <button
+            onClick={() => handleDetail(row)}
+            className="text-blue-500 hover:underline"
+          >
+            Detail
+          </button>
+          <Link href={`/approval-matrix/edit/${row.id}`}>
+            <button className="text-green-500 hover:underline">Edit</button>
+          </Link>
+          <button
+            onClick={() => handleDelete(row.id)}
+            className="text-red-500 hover:underline"
+          >
+            Delete
+          </button>
+        </div>
+      ),
     },
   ];
 
@@ -103,53 +117,45 @@ const ApprovalMatrix: React.FC = () => {
     return <div>{error}</div>;
   }
 
+  const handleDetail = (row: MatrixItem) => {
+    console.log("Detail of", row);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Are you sure you want to delete this item?")) {
+      try {
+        const response = await fetch(`/api/master/approval-matrix/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setMatrixData((prevData) => prevData.filter((item) => item.id !== id));
+        } else {
+          alert("Failed to delete item.");
+        }
+      } catch (error) {
+        alert("Error occurred while deleting item.");
+      }
+    }
+  };
+
   return (
     <div>
-      {/* <div className="flex mb-10 justify-between items-center py-5 w-full"> */}
-        {/* <div className="container mx-auto p-4 max-w-screen-lg"> */}
-          <h1 className="text-2xl font-bold mb-4 text-left">Approval Matrix</h1>
+      <h1 className="text-2xl font-bold mb-4 text-left">Approval Matrix</h1>
 
-          {/* <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 mb-6">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border px-4 py-2 rounded w-full sm:w-1/3"
-            />
-
-            <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
-              {Object.keys(visibleColumns).map((key) => (
-                <button
-                  key={key}
-                  onClick={() =>
-                    setVisibleColumns((prev) => ({
-                      ...prev,
-                      [key]: !prev[key],
-                    }))
-                  }
-                  className={`border px-2 py-1 rounded text-sm ${visibleColumns[key as keyof typeof visibleColumns]
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200"
-                    }`}
-                >
-                  {key}
-                </button>
-              ))}
-            </div>
-          </div> */}
-
-          {/* Tampilkan pesan jika data kosong, namun tetap mempertahankan struktur tabel */}
+      {loading ? (
+        <div className="text-center">Loading...</div>
+      ) : (
+        <>
           {filteredData.length === 0 ? (
             <div className="overflow-x-auto border-t border-b border-l border-r shadow-md rounded text-sm">
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    {columns.map((col) => (
-                      <th key={col.name} className="px-4 py-2 border-b">
+                    {/* {columns.map((col, index) => (
+                      <th key={col.name || index} className="px-4 py-2 border-b">
                         {col.name}
                       </th>
-                    ))}
+                    ))} */}
                   </tr>
                 </thead>
                 <tbody>
@@ -162,7 +168,6 @@ const ApprovalMatrix: React.FC = () => {
               </table>
             </div>
           ) : (
-            // Conditionally render the DataTable to avoid mismatches during hydration
             <DataTable
               columns={columns}
               data={filteredData}
@@ -172,9 +177,8 @@ const ApprovalMatrix: React.FC = () => {
               className="shadow-md rounded text-sm"
             />
           )}
-          {/*  */}
-        {/* </div> */}
-      {/* </div> */}
+        </>
+      )}
     </div>
   );
 };
