@@ -35,7 +35,7 @@ const menuGroups = [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Checklist', route: '/master/checklist' },
           { label: 'Services Types', route: '/master/services-types' },
-          
+          { label: 'Status Messages', route: '/master/status-messages' },
         ],
       },
       {

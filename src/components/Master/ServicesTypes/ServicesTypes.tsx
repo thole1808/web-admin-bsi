@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
 
+
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
 });
@@ -62,12 +63,6 @@ const ServicesTypes: React.FC = () => {
     }, [search, servicesData]);
 
     const columns = [
-        // {
-        //     name: "No.",
-        //     selector: (_: ServiceTypeItem, index: number) => index + 1,
-        //     sortable: false,
-        //     style: { width: "50px", textAlign: "center" },
-        // },
         {
             name: "No.",
             selector: (_: ServiceTypeItem, index: number) => index + 1,
