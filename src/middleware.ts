@@ -230,7 +230,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
 //   matcher: ['/dashboard', '/antrian','/cabang','/master/approval-matrix'], // Tentukan halaman yang ingin diproteksi
-  matcher: ["/dashboard/:path*", "/dashboard/:path*", "/cabang/:path*", "/master/approval-matrix:path*"],
+  matcher: ["/dashboard/:path*", "/dashboard/:path*", "/cabang/:path*", "/master/approval-matrix:path*","/master/checklist:path*"],
 };
 
 
