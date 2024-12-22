@@ -169,39 +169,7 @@ const ApprovalMatrix: React.FC = () => {
       alert("Error occurred while saving item.");
     }
   };
-
-  // const handleCreate = async () => {
-  //   const newMatrixItem = { ...newMatrix };
-
-  //   try {
-  //     const response = await fetch("/api/master/approval-matrix", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(newMatrixItem),
-  //     });
-
-  //     if (response.ok) {
-  //       const createdItem = await response.json();
-  //       setMatrixData((prevData) => [...prevData, createdItem]);
-  //       setIsCreateModalOpen(false);
-  //       fetchData();
-  //       setNewMatrix(null);
-  //     } else {
-  //       // Mengambil error message dari API response
-  //       const errorData = await response.json();
-  //       console.error("Error creating item:", errorData); // Log error untuk debugging
-
-  //       // Tampilkan error message jika ada
-  //       alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error occurred while creating item:", error); // Log error untuk debugging
-  //     alert("Error occurred while creating item. Please try again.");
-  //   }
-  // };
-
+  
   const handleCreate = async () => {
     const newMatrixItem = { ...newMatrix };
   

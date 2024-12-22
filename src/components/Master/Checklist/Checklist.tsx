@@ -119,6 +119,10 @@ const Checklist: React.FC = () => {
         }
     };
 
+    const handleDetail = (row: ChecklistItem) => {
+        console.log("Detail of", row);
+    };
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -153,6 +157,9 @@ const Checklist: React.FC = () => {
             name: "Actions",
             cell: (row: ChecklistItem) => (
                 <div className="flex space-x-2">
+                    <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
+                        Detail
+                    </button>
                     <button
                         onClick={() => {
                             setFormData({
@@ -163,7 +170,7 @@ const Checklist: React.FC = () => {
                             setCurrentItem(row);
                             setIsModalOpen(true);
                         }}
-                        className="text-blue-500 hover:underline"
+                        className="text-green-500 hover:underline"
                     >
                         Edit
                     </button>
@@ -215,7 +222,7 @@ const Checklist: React.FC = () => {
                 />
             )}
 
-            <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+            <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}  className="modal">
                 <h2 className="text-xl font-bold">{currentItem ? "Edit Activity" : "Add Activity"}</h2>
                 <input
                     type="text"
