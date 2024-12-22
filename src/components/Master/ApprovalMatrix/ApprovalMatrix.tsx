@@ -127,7 +127,7 @@ const ApprovalMatrix: React.FC = () => {
       }
     }
   };
-
+  
   const handleEdit = (row: MatrixItem) => {
     setEditData({ ...row }); // Ensure the latest data is set with the correct ID from the API
     setIsModalOpen(true);

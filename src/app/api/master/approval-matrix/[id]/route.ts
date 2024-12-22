@@ -56,3 +56,38 @@ export async function PUT(req: NextRequest) {
         );
     }
 }
+
+
+// // Fungsi untuk menghapus data berdasarkan id
+// export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+//     const { id } = params;
+
+//     try {
+//         // Melakukan penghapusan data berdasarkan ID menggunakan Prisma (atau database lain)
+//         const deletedMatrix = await prisma.approvalMatrix.delete({
+//             where: {
+//                 id: parseInt(id), // Menggunakan parseInt jika ID adalah angka
+//             },
+//         });
+
+//         // Jika penghapusan berhasil
+//         return NextResponse.json(
+//             {
+//                 success: true,
+//                 message: "Approval matrix deleted successfully.",
+//                 data: deletedMatrix,
+//             },
+//             { status: 200 }
+//         );
+//     } catch (error) {
+//         console.error("Error deleting approval matrix:", error);
+//         return NextResponse.json(
+//             {
+//                 success: false,
+//                 message: "Failed to delete approval matrix. Please try again.",
+//                 error: error.message,
+//             },
+//             { status: 500 }
+//         );
+//     }
+// }
