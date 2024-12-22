@@ -36,6 +36,7 @@ const menuGroups = [
           { label: 'Checklist', route: '/master/checklist' },
           { label: 'Services Types', route: '/master/services-types' },
           { label: 'Status Messages', route: '/master/status-messages' },
+          { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
       {
