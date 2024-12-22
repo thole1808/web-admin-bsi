@@ -3,6 +3,7 @@
 // import React, { useState, useEffect, useMemo } from "react";
 // import dynamic from "next/dynamic";
 // import Modal from "react-modal";
+// import { useSession } from "next-auth/react";
 
 // const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -19,25 +20,37 @@
 //     const [isModalOpen, setIsModalOpen] = useState(false);
 //     const [editData, setEditData] = useState<StatusItem | null>(null);
 //     const [newStatus, setNewStatus] = useState("");
-
+//     const { data: session, status } = useSession();
+//     type TextAlign = "left" | "center" | "right";
+    
 //     useEffect(() => {
 //         fetchStatuses();
-//     }, []);
+//     }, [session, status]);
 
+//     const handleDetail = (row: StatusItem) => {
+//         console.log("Detail of", row);
+//     };
 //     const fetchStatuses = async () => {
 //         try {
 //             setLoading(true);
 //             const response = await fetch("/api/master/status-messages");
-//             if (!response.ok) throw new Error("Failed to fetch statuses.");
+//             if (!response.ok) {
+//                 throw new Error(`Failed to fetch data: ${response.statusText}`);
+//             }
 //             const data = await response.json();
-//             setStatuses(data);
-//         } catch (err) {
-//             setError("Failed to load statuses.");
+//             if (data.success && Array.isArray(data.data)) {
+//                 setStatuses(data.data);
+//             } else {
+//                 setError("Invalid data format or failed to fetch data.");
+//             }
+//         } catch {
+//             setError("Error occurred while fetching statuses.");
 //         } finally {
 //             setLoading(false);
 //         }
 //     };
 
+    
 //     const handleCreate = async () => {
 //         try {
 //             const response = await fetch("/api/status-messages", {
@@ -45,15 +58,14 @@
 //                 headers: { "Content-Type": "application/json" },
 //                 body: JSON.stringify({ message: newStatus }),
 //             });
-//             if (response.ok) {
-//                 fetchStatuses();
-//                 setNewStatus("");
-//                 setIsModalOpen(false);
-//             } else {
-//                 alert("Failed to create status.");
+//             if (!response.ok) {
+//                 throw new Error("Failed to create status.");
 //             }
-//         } catch {
-//             alert("Error occurred while creating status.");
+//             fetchStatuses();
+//             setNewStatus("");
+//             setIsModalOpen(false);
+//         } catch (err: any) {
+//             alert(err.message || "Error occurred while creating status.");
 //         }
 //     };
 
@@ -65,14 +77,13 @@
 //                 headers: { "Content-Type": "application/json" },
 //                 body: JSON.stringify(editData),
 //             });
-//             if (response.ok) {
-//                 fetchStatuses();
-//                 setIsModalOpen(false);
-//             } else {
-//                 alert("Failed to update status.");
+//             if (!response.ok) {
+//                 throw new Error("Failed to update status.");
 //             }
-//         } catch {
-//             alert("Error occurred while updating status.");
+//             fetchStatuses();
+//             setIsModalOpen(false);
+//         } catch (err: any) {
+//             alert(err.message || "Error occurred while updating status.");
 //         }
 //     };
 
@@ -80,29 +91,36 @@
 //         if (!confirm("Are you sure you want to delete this status?")) return;
 //         try {
 //             const response = await fetch(`/api/status-messages/${id}`, { method: "DELETE" });
-//             if (response.ok) {
-//                 setStatuses((prev) => prev.filter((status) => status.id !== id));
-//             } else {
-//                 alert("Failed to delete status.");
+//             if (!response.ok) {
+//                 throw new Error("Failed to delete status.");
 //             }
-//         } catch {
-//             alert("Error occurred while deleting status.");
+//             setStatuses((prev) => prev.filter((status) => status.id !== id));
+//         } catch (err: any) {
+//             alert(err.message || "Error occurred while deleting status.");
 //         }
 //     };
 
 //     const filteredStatuses = useMemo(
 //         () =>
-//             statuses.filter((status) =>
-//                 status.message.toLowerCase().includes(search.toLowerCase())
-//             ),
+//             Array.isArray(statuses)
+//                 ? statuses.filter((status) =>
+//                       status.message.toLowerCase().includes(search.toLowerCase())
+//                   )
+//                 : [],
 //         [search, statuses]
 //     );
 
 //     const columns = [
+//         // {
+//         //     name: "ID",
+//         //     selector: (row: StatusItem) => row.id,
+//         //     sortable: true,
+//         // },
 //         {
-//             name: "ID",
-//             selector: (row: StatusItem) => row.id,
+//             name: "No.",
+//             selector: (_: StatusItem, index: number) => index + 1,
 //             sortable: true,
+//             style: { width: "50px", textAlign: "center" as TextAlign },
 //         },
 //         {
 //             name: "Message",
@@ -113,6 +131,9 @@
 //             name: "Actions",
 //             cell: (row: StatusItem) => (
 //                 <div className="flex space-x-2">
+//                     <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
+//                         Detail
+//                     </button>
 //                     <button
 //                         className="text-green-500 hover:underline"
 //                         onClick={() => {
@@ -148,6 +169,7 @@
 //                 <button
 //                     onClick={() => {
 //                         setEditData(null);
+//                         setNewStatus("");
 //                         setIsModalOpen(true);
 //                     }}
 //                     className="bg-blue-500 text-white px-6 py-2 rounded-md"
@@ -173,15 +195,15 @@
 //             <Modal
 //                 isOpen={isModalOpen}
 //                 onRequestClose={() => setIsModalOpen(false)}
-//                 contentLabel="Status Modal"
-//                 className="modal"
+//                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+//                 className="bg-white rounded-md p-6 w-1/3"
 //             >
 //                 <h2 className="text-xl font-bold mb-4">
 //                     {editData ? "Edit Status" : "Create Status"}
 //                 </h2>
 //                 <input
 //                     type="text"
-//                     value={editData?.message || newStatus}
+//                     value={editData ? editData.message : newStatus}
 //                     onChange={(e) =>
 //                         editData
 //                             ? setEditData({ ...editData, message: e.target.value })
@@ -203,7 +225,6 @@
 // export default StatusMessages;
 
 
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -216,6 +237,7 @@ const DataTable = dynamic(() => import("react-data-table-component"), { ssr: fal
 interface StatusItem {
     id: number;
     message: string;
+    status: string; // New field for status
 }
 
 const StatusMessages: React.FC = () => {
@@ -227,6 +249,7 @@ const StatusMessages: React.FC = () => {
     const [editData, setEditData] = useState<StatusItem | null>(null);
     const [newStatus, setNewStatus] = useState("");
     const { data: session, status } = useSession();
+    type TextAlign = "left" | "center" | "right";
     
     useEffect(() => {
         fetchStatuses();
@@ -235,6 +258,7 @@ const StatusMessages: React.FC = () => {
     const handleDetail = (row: StatusItem) => {
         console.log("Detail of", row);
     };
+
     const fetchStatuses = async () => {
         try {
             setLoading(true);
@@ -255,7 +279,6 @@ const StatusMessages: React.FC = () => {
         }
     };
 
-    
     const handleCreate = async () => {
         try {
             const response = await fetch("/api/status-messages", {
@@ -317,8 +340,14 @@ const StatusMessages: React.FC = () => {
 
     const columns = [
         {
-            name: "ID",
-            selector: (row: StatusItem) => row.id,
+            name: "No.",
+            selector: (_: StatusItem, index: number) => index + 1,
+            sortable: true,
+            style: { width: "50px", textAlign: "center" as TextAlign },
+        },
+        {
+            name: "Status",
+            selector: (row: StatusItem) => row.status,  // New column for Status
             sortable: true,
         },
         {
