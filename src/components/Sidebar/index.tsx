@@ -48,7 +48,7 @@ const menuGroups = [
           { label: 'Branch', route: '/branches/branch' },
           { label: 'Service Types', route: '/branches/service-types' },
           { label: 'Counters', route: '/branches/counters' },
-          // { label: 'Status Messages', route: '/master/status-messages' },
+          { label: 'Office Hours', route: '/branches/office-hours' },
           // { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
