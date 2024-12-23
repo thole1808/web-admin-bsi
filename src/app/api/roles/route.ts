@@ -1,7 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Endpoint untuk GET data roles (sudah ada)
 export async function GET(req: NextRequest) {
     const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
@@ -9,7 +8,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {   
+    try {
         const response = await fetch(`${process.env.API_URL}/roles`, {
             method: 'GET',
             headers: {
