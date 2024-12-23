@@ -23,8 +23,10 @@ const Roles: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
     const [editData, setEditData] = useState<RoleItem | null>(null);
     const [newRole, setNewRole] = useState<string>("");
+    const [selectedPermissions, setSelectedPermissions] = useState<RoleItem | null>(null);
     const { data: session, status } = useSession();
 
     useEffect(() => {
@@ -126,9 +128,19 @@ const Roles: React.FC = () => {
         },
         {
             name: "Permissions",
-            selector: (row: RoleItem) =>
-                row.permissions.map((permission) => permission.name).join(", "),
+            selector: (row: RoleItem) => row.permissions.length, // Return the count of permissions
             sortable: true,
+            cell: (row: RoleItem) => (
+                <button
+                    className="text-blue-500 hover:underline"
+                    onClick={() => {
+                        setSelectedPermissions(row);
+                        setIsPermissionsModalOpen(true);
+                    }}
+                >
+                    View Permissions
+                </button>
+            ),
         },
         {
             name: "Actions",
@@ -156,6 +168,7 @@ const Roles: React.FC = () => {
             ),
         },
     ];
+
 
     return (
         <div>
@@ -195,7 +208,8 @@ const Roles: React.FC = () => {
                 />
             )}
 
-            <Modal
+            {/* Modal for Creating or Editing Role */}
+            {/* <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
@@ -220,6 +234,93 @@ const Roles: React.FC = () => {
                 >
                     Save
                 </button>
+            </Modal> */}
+
+            <Modal
+                isOpen={isPermissionsModalOpen}
+                onRequestClose={() => setIsPermissionsModalOpen(false)}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg"
+            >
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Permissions for {selectedPermissions?.name}
+                </h2>
+
+                <div className="mb-4">
+                    {selectedPermissions?.permissions?.length === 0 ? (
+                        <p className="text-center text-gray-500">Roles Permission tidak ada</p>
+                    ) : (
+                        <ul className="space-y-2 mt-2">
+                            {selectedPermissions?.permissions.map((permission) => (
+                                <li
+                                    key={permission.id}
+                                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 rounded-md hover:bg-gray-100"
+                                >
+                                    <span className="text-sm text-gray-700">{permission.name}</span>
+                                    <span
+                                        className="text-xs text-gray-500"
+                                        title={`Permission ID: ${permission.id}`}
+                                    >
+                                        {/* {permission.id} */}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        onClick={() => setIsPermissionsModalOpen(false)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                    >
+                        Close
+                    </button>
+                </div>
+            </Modal>
+
+            {/* Modal for Permissions */}
+            <Modal
+                isOpen={isPermissionsModalOpen}
+                onRequestClose={() => setIsPermissionsModalOpen(false)}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg"
+            >
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Permissions for {selectedPermissions?.name}
+                </h2>
+
+                <div className="mb-4">
+                    {selectedPermissions?.permissions?.length === 0 ? (
+                        <p className="text-center text-gray-500">Permission tidak tersedia</p>
+                    ) : (
+                        <ul className="space-y-2 mt-2">
+                            {selectedPermissions?.permissions.map((permission) => (
+                                <li
+                                    key={permission.id}
+                                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 rounded-md hover:bg-gray-100"
+                                >
+                                    <span className="text-sm text-gray-700">{permission.name}</span>
+                                    <span
+                                        className="text-xs text-gray-500"
+                                        title={`Permission ID: ${permission.id}`}
+                                    >
+                                        {/* {permission.id} */}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        onClick={() => setIsPermissionsModalOpen(false)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                    >
+                        Close
+                    </button>
+                </div>
             </Modal>
         </div>
     );
