@@ -217,7 +217,7 @@ const Branch: React.FC = () => {
 
     return (
         <div>
-            <h1 className="text-xl font-bold mb-4">Branch Management</h1>
+            <h1 className="text-xl font-bold mb-4">Branch</h1>
             <div className="flex justify-between mb-4">
                 <input
                     type="text"
