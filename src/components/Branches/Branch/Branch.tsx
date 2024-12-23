@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Modal from "react-modal";
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
-
+// 
 interface BranchItem {
     id: number;
     type: string;
