@@ -16,8 +16,9 @@ const SignIn: React.FC = () => {
   }, [session, router]);
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="absolute inset-0">
+    <div className="relative flex items-center justify-center min-h-screen bg-gray-100" style={{ backgroundImage: 'url(/images/bg-login/bg-login-bsi.svg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 z-0">
         <svg
           width="100%"
           height="100%"
@@ -26,12 +27,13 @@ const SignIn: React.FC = () => {
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          {/* SVG Background */}
+          {/* SVG content here (if necessary) */}
         </svg>
       </div>
 
-      <div className="bg-gray-100 w-full flex flex-col items-center justify-center">
-        <div className="relative z-10 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
+      {/* Login Form Layer */}
+      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full">
+        <div className="relative z-20 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
           <div className="flex justify-center bg-transparent mt-5">
             <Image
               src="/images/logo/logo-bsi.png"
