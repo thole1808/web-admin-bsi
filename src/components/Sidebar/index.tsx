@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import CabangIcon from "@/components/Icon/CabangIcon";
 import BranchIcon from "@/components/Icon/BranchIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { signOut } from "next-auth/react";  // Import signOut from next-auth
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -49,7 +50,6 @@ const menuGroups = [
           { label: 'Service Types', route: '/branches/service-types' },
           { label: 'Counters', route: '/branches/counters' },
           { label: 'Office Hours', route: '/branches/office-hours' },
-          // { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
       {
@@ -71,11 +71,13 @@ const menuGroups = [
   },
 ];
 
-
-
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+
+  const handleLogout = () => {
+    signOut(); // Memanggil fungsi signOut dari next-auth untuk keluar
+  };
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
@@ -83,13 +85,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
-        {/* <!-- SIDEBAR HEADER --> */}
+        {/* SIDEBAR HEADER */}
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
             <Image
               width={176}
               height={32}
-              src={"/images/logo/logo-bsi.png"}
+              src={"/images/logo/logo-bsi.SDSD"}
               alt="Logo"
               priority
             />
@@ -115,7 +117,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </svg>
           </button>
         </div>
-        {/* <!-- SIDEBAR HEADER --> */}
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
           {/* Sidebar Menu */}
@@ -130,9 +131,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </div>
             ))}
           </nav>
-          {/* Sidebar Menu */}
         </div>
 
+        {/* Sidebar Footer with Logout */}
+        <div className="mt-auto p-4">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-[#00BFB2] text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
     </ClickOutside>
   );
