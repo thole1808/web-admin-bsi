@@ -46,7 +46,7 @@ const menuGroups = [
         icon: <BranchIcon />,
         children: [
           { label: 'Branch', route: '/branches/branch' },
-          // { label: 'Checklist', route: '/master/checklist' },
+          { label: 'Service Types', route: '/branches/service-types' },
           // { label: 'Services Types', route: '/master/services-types' },
           // { label: 'Status Messages', route: '/master/status-messages' },
           // { label: 'National Holiday', route: '/master/national-holiday' },
