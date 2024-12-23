@@ -45,6 +45,7 @@ const Branch: React.FC = () => {
         name: "",
         address: "",
     });
+    const [detailData, setDetailData] = useState<BranchItem | null>(null);
 
     useEffect(() => {
         fetchBranches(currentPage, pageSize);
@@ -77,10 +78,10 @@ const Branch: React.FC = () => {
         () =>
             Array.isArray(branches)
                 ? branches.filter((branch) =>
-                      `${branch.name} ${branch.address ?? ""}`
-                          .toLowerCase()
-                          .includes(search.toLowerCase())
-                  )
+                    `${branch.name} ${branch.address ?? ""}`
+                        .toLowerCase()
+                        .includes(search.toLowerCase())
+                )
                 : [],
         [search, branches]
     );
@@ -112,11 +113,12 @@ const Branch: React.FC = () => {
             cell: (row: BranchItem) => (
                 <div className="flex space-x-2">
                     <button
-                        onClick={() => handleDetail(row)}
+                        onClick={() => handleDetail(row.id)}
                         className="text-blue-500 hover:underline"
                     >
                         Detail
                     </button>
+
                     <button
                         className="text-green-500 hover:underline"
                         onClick={() => {
@@ -137,9 +139,32 @@ const Branch: React.FC = () => {
         },
     ];
 
-    const handleDetail = (row: BranchItem) => {
-        alert(`Detail of Branch: ${row.name}`);
+    const handleDetail = (id: number) => {
+        fetchDetail(id);
     };
+
+    const fetchDetail = async (id: number) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/branches/branch/${id}`);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to fetch branch details.");
+            }
+
+            const data = await response.json();
+            console.log("Fetched Data:", data); // Log the full response
+            setDetailData(data.data); // Ensure data is correctly passed
+            setIsModalOpen(true); // Open the modal
+        } catch (err: any) {
+            console.error("Fetch error:", err);
+            alert(err.message || "Error occurred while fetching branch details.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const handleCreate = async () => {
         try {
@@ -261,6 +286,33 @@ const Branch: React.FC = () => {
                 >
                     Save
                 </button>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={() => {
+                    setIsModalOpen(false);
+                    setDetailData(null); // Reset data when modal is closed
+                }}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-md p-6 w-1/3"
+            >
+                <h2 className="text-xl font-bold mb-4">Branch Detail</h2>
+                {detailData ? (
+                    <div>
+                        <p><strong>Unit:</strong> {detailData.unit}</p>
+                        <p><strong>Code:</strong> {detailData.code}</p>
+                        <p><strong>Name:</strong> {detailData.name}</p>
+                        <p><strong>Address:</strong> {detailData.address}</p>
+                        <p><strong>Region:</strong> {detailData.regionName}</p>
+                        <p><strong>Area:</strong> {detailData.areaName}</p>
+                        <p><strong>Active:</strong> {detailData.active ? "Yes" : "No"}</p>
+                        <p><strong>Created At:</strong> {new Date(detailData.createdAt).toLocaleString()}</p>
+                    </div>
+                ) : (
+                    <p>Loading...</p>
+                )}
             </Modal>
         </div>
     );
