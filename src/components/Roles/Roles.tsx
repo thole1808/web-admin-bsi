@@ -131,37 +131,17 @@ const Roles: React.FC = () => {
     );
 
     const columns = [
-        // {
-        //     name: "No.",
-        //     selector: (_: RoleItem, index: number) => index + 1,
-        //     sortable: true,
-        //     style: { width: "5px",textAlign: "center" as "left" },
-        // },
-        // {
-        //     name: "Role Name",
-        //     selector: (row: RoleItem) => row.name,
-        //     sortable: true,
-        //     style: { width: "50px", textAlign: "center" as "left" },
-        // },
         {
             name: "No.",
-            selector: (_: any, index: number) => index + 1,
+            selector: (_: RoleItem, index: number) => index + 1,
             sortable: true,
-            // style: {
-            //     textAlign: 'center',
-            //     width: 'auto',  // Menyesuaikan dengan isi
-            // },
+            style: { width: "5px",textAlign: "center" as "left" },
         },
         {
             name: "Role Name",
-            selector: (row: any) => row.name,
+            selector: (row: RoleItem) => row.name,
             sortable: true,
-            // style: {
-            //     textAlign: 'left',
-            //     width: 'auto',  // Menyesuaikan dengan isi
-            //     wordWrap: 'break-word',  // Membungkus teks jika terlalu panjang
-            //     whiteSpace: 'normal',  // Menyebabkan pembungkus teks normal
-            // },
+            style: { width: "50px", textAlign: "center" as "left" },
         },
         {
             name: "Permissions",
