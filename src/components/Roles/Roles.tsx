@@ -143,14 +143,14 @@ const Roles: React.FC = () => {
             selector: (row: RoleItem) => row.name,
             sortable: true,
             minWidth: "50px",
-            grow:2,
+            grow:1,
         },
         {
             name: "Permissions",
             selector: (row: RoleItem) => row.permissions.length,
             sortable: true,
-            minWidth: "40px",
-            grow:2,
+            minWidth: "20px",
+            grow:1,
             cell: (row: RoleItem) => (
                 <button
                     className="text-orange-500 hover:underline"
