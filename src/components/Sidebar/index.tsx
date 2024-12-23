@@ -15,6 +15,7 @@ import RolesIcon from "@/components/Icon/RolesIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { signOut } from "next-auth/react";  // Import signOut from next-auth
+import { FiLogOut } from 'react-icons/fi';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -143,9 +144,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <div className="mt-auto p-4">
           <button
             onClick={handleLogout}
-            className="w-full bg-[#00BFB2] text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none"
+            className="w-full bg-[#00BFB2] text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none"
           >
-            Logout
+            {/* Icon Logout */}
+            <FiLogOut size={20} />
+            <span>Logout</span>
           </button>
         </div>
       </aside>
