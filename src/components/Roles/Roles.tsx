@@ -4,6 +4,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { useSession } from "next-auth/react";
+import { ClipLoader } from "react-spinners";
+// import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/solid';
+// import { MagnifyingGlassIcon } from '@heroicons/react/solid';
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -23,11 +28,13 @@ const Roles: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
     const [editData, setEditData] = useState<RoleItem | null>(null);
     const [newRole, setNewRole] = useState<string>("");
     const [selectedPermissions, setSelectedPermissions] = useState<RoleItem | null>(null);
     const { data: session, status } = useSession();
+    const [detailData, setDetailData] = useState<RoleItem | null>(null);
 
     useEffect(() => {
         fetchRoles();
@@ -51,10 +58,6 @@ const Roles: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleDetail = (row: RoleItem) => {
-        console.log("Detail of", row);
     };
 
     const handleCreate = async () => {
@@ -106,6 +109,21 @@ const Roles: React.FC = () => {
         }
     };
 
+    const fetchRoleDetail = async (id: number) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/roles/${id}`);
+            if (!response.ok) throw new Error("Failed to fetch role details.");
+            const data = await response.json();
+            setDetailData(data.data);
+            setIsDetailModalOpen(true);
+        } catch (err: any) {
+            alert(err.message || "Error occurred while fetching role details.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const filteredRoles = useMemo(
         () =>
             roles.filter((role) =>
@@ -113,7 +131,7 @@ const Roles: React.FC = () => {
             ),
         [search, roles]
     );
-    
+
     const columns = [
         {
             name: "No.",
@@ -128,11 +146,11 @@ const Roles: React.FC = () => {
         },
         {
             name: "Permissions",
-            selector: (row: RoleItem) => row.permissions.length, // Return the count of permissions
+            selector: (row: RoleItem) => row.permissions.length,
             sortable: true,
             cell: (row: RoleItem) => (
                 <button
-                    className="text-blue-500 hover:underline"
+                    className="text-orange-500 hover:underline"
                     onClick={() => {
                         setSelectedPermissions(row);
                         setIsPermissionsModalOpen(true);
@@ -146,23 +164,29 @@ const Roles: React.FC = () => {
             name: "Actions",
             cell: (row: RoleItem) => (
                 <div className="flex space-x-2">
-                    <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
-                        Detail
+                    <button
+                        onClick={() => fetchRoleDetail(row.id)}
+                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1"
+                    >
+                        <EyeIcon className="h-5 w-5" />
+                        <span>Detail</span>
                     </button>
                     <button
                         onClick={() => {
                             setEditData(row);
                             setIsModalOpen(true);
                         }}
-                        className="text-green-500 hover:underline"
+                        className="text-green-500 hover:text-green-700 flex items-center space-x-1"
                     >
-                        Edit
+                        <PencilIcon className="h-5 w-5" />
+                        <span>Edit</span>
                     </button>
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="text-red-500 hover:underline"
+                        className="text-red-500 hover:text-red-700 flex items-center space-x-1"
                     >
-                        Delete
+                        <TrashIcon className="h-5 w-5" />
+                        <span>Delete</span>
                     </button>
                 </div>
             ),
@@ -174,14 +198,18 @@ const Roles: React.FC = () => {
         <div>
             <h1 className="text-2xl font-bold mb-4">Roles</h1>
 
+            {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-1/2"
-                />
+                <div className="relative w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border px-4 py-2 rounded-md w-full pr-10" // Add padding-right for the icon
+                    />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+                </div>
                 <button
                     onClick={() => {
                         setEditData(null);
@@ -190,22 +218,29 @@ const Roles: React.FC = () => {
                     }}
                     className="bg-blue-500 text-white px-6 py-2 rounded-md"
                 >
-                    Create Role
+                    Create
                 </button>
             </div>
 
+
             {loading ? (
-                <div className="text-center">Loading...</div>
+                <div className="relative">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <ClipLoader size={50} color="#4B5563" loading={loading} />
+                    </div>
+                </div>
             ) : error ? (
                 <div className="text-red-500 text-center">{error}</div>
             ) : (
-                <DataTable
-                    columns={columns}
-                    data={filteredRoles}
-                    pagination
-                    highlightOnHover
-                    striped
-                />
+                <div className="relative">
+                    <DataTable
+                        columns={columns}
+                        data={filteredRoles}
+                        pagination
+                        highlightOnHover
+                        striped
+                    />
+                </div>
             )}
 
             {/* Modal for Creating or Editing Role */}
@@ -226,16 +261,24 @@ const Roles: React.FC = () => {
                             ? setEditData({ ...editData, name: e.target.value })
                             : setNewRole(e.target.value)
                     }
-                    className="w-full px-4 py-2 border rounded-md"
+                    className="border px-4 py-2 rounded-md w-full mb-4"
                 />
-                <button
-                    onClick={editData ? handleEdit : handleCreate}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
-                >
-                    Save
-                </button>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="bg-gray-300 px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={editData ? handleEdit : handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        {editData ? "Update" : "Create"}
+                    </button>
+                </div>
             </Modal>
-            
+
             {/* modal permsion detail */}
             <Modal
                 isOpen={isPermissionsModalOpen}
@@ -279,9 +322,68 @@ const Roles: React.FC = () => {
                     </button>
                 </div>
             </Modal>
-
             {/* Modal for Permissions */}
-            
+
+            {/* Modal Detail Roles */}
+            <Modal
+                isOpen={isDetailModalOpen} // Gunakan state khusus untuk modal detail
+                onRequestClose={() => setIsDetailModalOpen(false)} // Menutup modal
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
+            >
+                <h2 className="text-2xl font-semibold text-center mb-6">Role Detail</h2>
+
+                {detailData ? (
+                    <div className="overflow-x-auto">
+                        {/* Tabel untuk menampilkan detail role */}
+                        <table className="min-w-full table-auto">
+                            <tbody>
+                                {/* Row untuk Role Name */}
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Role Name</td>
+                                    <td className="px-4 py-2">{detailData.name}</td>
+                                </tr>
+                                {/* Row untuk Code */}
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Code</td>
+                                    <td className="px-4 py-2">{detailData.code}</td>
+                                </tr>
+                                {/* Row untuk Guard Name */}
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Guard Name</td>
+                                    <td className="px-4 py-2">{detailData.guardName}</td>
+                                </tr>
+
+                                {/* Row untuk Permissions List */}
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600 align-top">Permissions</td>
+                                    <td className="px-4 py-2">
+                                        <ul className="list-disc pl-6">
+                                            {detailData.permissions.map((permission) => (
+                                                <li key={permission.id} className="text-lg">{permission.name}</li>
+                                            ))}
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500">No details available.</p>
+                )}
+
+                {/* Button to Close Modal */}
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)} // Menutup modal
+                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                    >
+                        Close
+                    </button>
+                </div>
+            </Modal>
+            {/* Modal Detail Roles */}
+
         </div>
     );
 };
