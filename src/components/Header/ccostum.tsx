@@ -1,0 +1,87 @@
+
+import Link from "next/link";
+import DarkModeSwitcher from "./DarkModeSwitcher";
+import DropdownMessage from "./DropdownMessage";
+import DropdownNotification from "./DropdownNotification";
+import DropdownUser from "./DropdownUser";
+import Image from "next/image";
+
+const Header = (props: {
+  sidebarOpen: string | boolean | undefined;
+  setSidebarOpen: (arg0: boolean) => void;
+}) => {
+  return (
+    <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+      {/* Left: Hamburger and other controls */}
+      <div className="flex items-center gap-10 sm:gap-4 lg:hidden">
+        {/* Hamburger Toggle BTN */}
+        <button
+          aria-controls="sidebar"
+          onClick={(e) => {
+            e.stopPropagation();
+            props.setSidebarOpen(!props.sidebarOpen);
+          }}
+          className="z-99999 block rounded-sm border border-stroke bg-white p-4 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+        >
+          <span className="relative block h-5.5 w-5.5 cursor-pointer">
+            <span className="du-block absolute right-0 h-full w-full">
+              <span
+                className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${
+                  !props.sidebarOpen && "!w-full delay-300"
+                }`}
+              ></span>
+              <span
+                className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-150 duration-200 ease-in-out dark:bg-white ${
+                  !props.sidebarOpen && "delay-400 !w-full"
+                }`}
+              ></span>
+              <span
+                className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-200 duration-200 ease-in-out dark:bg-white ${
+                  !props.sidebarOpen && "!w-full delay-500"
+                }`}
+              ></span>
+            </span>
+            <span className="absolute right-0 h-full w-full rotate-45">
+              <span
+                className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-black delay-300 duration-200 ease-in-out dark:bg-white ${
+                  !props.sidebarOpen && "!h-0 !delay-[0]"
+                }`}
+              ></span>
+              <span
+                className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-black duration-200 ease-in-out dark:bg-white ${
+                  !props.sidebarOpen && "!h-0 !delay-200"
+                }`}
+              ></span>
+            </span>
+          </span>
+        </button>
+        {/* Hamburger Toggle BTN */}
+      </div>
+
+      {/* Center: Icon or Logo, visible only on mobile */}
+      <div className="flex-1 flex justify-start lg:hidden mt-2 p-3">
+        <Link href="/">
+          <Image
+            src="/images/logo/logo-bsi.png" // Ganti dengan path ikon yang sesuai
+            alt="Logo"
+            width={80} // Sesuaikan ukuran ikon
+            height={50} // Sesuaikan ukuran ikon
+            className="cursor-pointer"
+          />
+        </Link>
+      </div>
+
+      {/* Right: Other Elements (User dropdown, notifications, etc.) */}
+      <div className="flex items-center gap-3 2xsm:gap-7">
+        <ul className="flex items-center gap-2 2xsm:gap-4">
+          {/* Other Items */}
+        </ul>
+        {/* User Area */}
+        {/* <DropdownUser /> */}
+        {/* User Area */}
+      </div>
+    </header>
+  );
+};
+
+export default Header;

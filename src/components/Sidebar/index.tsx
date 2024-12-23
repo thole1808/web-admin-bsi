@@ -14,8 +14,10 @@ import BranchIcon from "@/components/Icon/BranchIcon";
 import RolesIcon from "@/components/Icon/RolesIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { signOut } from "next-auth/react";  // Import signOut from next-auth
+import { signOut } from "next-auth/react";
 import { FiLogOut } from 'react-icons/fi';
+import DarkModeSwitcher from "@/components/Header/DarkModeSwitcher";
+
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -141,15 +143,24 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </div>
 
         {/* Sidebar Footer with Logout */}
-        <div className="mt-auto p-4">
-          <button
-            onClick={handleLogout}
-            className="w-full bg-[#00BFB2] text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none"
-          >
-            {/* Icon Logout */}
-            <FiLogOut size={20} />
-            <span>Logout</span>
-          </button>
+        <div className="mt-auto p-4 flex justify-between items-center">
+          {/* Logout Button di Kanan */}
+          <div>
+            <button
+              onClick={handleLogout}
+              className="w-full bg-[#00BFB2] text-white py-2 px-20 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none"
+            >
+              {/* Icon Logout */}
+              <FiLogOut size={20} />
+              <span>Logout</span>
+            </button>
+          </div>
+
+          {/* Dark Mode Switcher di Kiri */}
+          {/* <div>
+            <DarkModeSwitcher />
+          </div> */}
+
         </div>
       </aside>
     </ClickOutside>
