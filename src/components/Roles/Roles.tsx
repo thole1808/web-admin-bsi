@@ -243,8 +243,7 @@ const Roles: React.FC = () => {
                         highlightOnHover
                         striped
                         responsive
-                        // customStyles={customStyles}
-                    // selectableRows
+                        // selectableRows
                     />
                 </div>
             )}
