@@ -47,7 +47,7 @@ const menuGroups = [
         children: [
           { label: 'Branch', route: '/branches/branch' },
           { label: 'Service Types', route: '/branches/service-types' },
-          // { label: 'Services Types', route: '/master/services-types' },
+          { label: 'Counters', route: '/branches/counters' },
           // { label: 'Status Messages', route: '/master/status-messages' },
           // { label: 'National Holiday', route: '/master/national-holiday' },
         ],
@@ -89,7 +89,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <Image
               width={176}
               height={32}
-              src={"/images/logo/logo-bsi.png"}
+              src={"/images/logo/logo-bsi.sdsd"}
               alt="Logo"
               priority
             />

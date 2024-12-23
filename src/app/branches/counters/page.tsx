@@ -2,7 +2,7 @@ import React from "react";
 import FormElements from "@/components/FormElements";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-// import ServicesTypes from "@/components/Branches/ServicesTypes/ServicesTypes";
+// import Counters from "@/components/Branches/Counters/Counters";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ const FormElementsPage = () => {
             <div className="flex flex-col gap-10">
                 {/* <Breadcrumb pageName="Antrian"/> */}
                 {/* # */}
-                {/* <ServicesTypes /> */}
+                {/* <Counters /> */}
             </div>
         </DefaultLayout>
     );
