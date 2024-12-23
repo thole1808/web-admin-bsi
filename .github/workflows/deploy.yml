@@ -52,6 +52,128 @@
 #             EOF
 
 
+# name: Deploy Next.js App to Server BSI (Sentuh)
+
+# on:
+#   push:
+#     branches:
+#       - development
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 18
+
+#       - name: Build Docker Image
+#         run: docker build -t achmadagus/nextjs-app-image-dev:latest .
+
+#       - name: Log in to Docker Hub
+#         env:
+#           DOCKER_USER: ${{ secrets.DOCKER_USER }}
+#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#         run: |
+#           docker logout
+#           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
+#       - name: Push Docker Image to Docker Hub
+#         run: docker push achmadagus/nextjs-app-image-dev:latest
+
+#       - name: Deploy to Ubuntu Server
+#         env:
+#           SSH_HOST: ${{ secrets.SSH_HOST }}
+#           SSH_USER: ${{ secrets.SSH_USER }}
+#           SSH_KEY: ${{ secrets.SSH_KEY }}
+#         run: |
+#             mkdir -p ~/.ssh
+#             echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#             chmod 600 ~/.ssh/id_rsa
+#             # Menambahkan SSH host ke known_hosts
+#             ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+#             # Deploy ke server menggunakan SSH dan jalankan build serta start
+#             ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
+#             # Tarik image terbaru dari Docker Hub
+#             docker pull achmadagus/nextjs-app-image-dev:latest
+#             # Stop dan hapus container yang berjalan sebelumnya
+#             docker stop nextjs-container || true
+#             docker rm nextjs-container || true
+#             # Jalankan container dengan image yang baru
+#             docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image-dev:latest
+#             # Menjalankan build (jika diperlukan, misalnya jika aplikasi belum dibangun di dalam image)
+#             # cd /path/to/nextjs/app && npm install && npm run build
+#             EOF
+
+
+# name: Deploy Next.js App to Server BSI (Sentuh)
+
+# on:
+#   push:
+#     branches:
+#       - development
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 18
+
+#       - name: Build Docker Image
+#         run: docker build -t achmadagus/nextjs-app-image-dev:latest .
+
+#       - name: Log in to Docker Hub
+#         env:
+#           DOCKER_USER: ${{ secrets.DOCKER_USER }}
+#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#         run: |
+#           docker logout
+#           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
+#       - name: Push Docker Image to Docker Hub
+#         run: docker push achmadagus/nextjs-app-image-dev:latest
+
+#       - name: Deploy to Ubuntu Server
+#         env:
+#           SSH_HOST: ${{ secrets.SSH_HOST }}
+#           SSH_USER: ${{ secrets.SSH_USER }}
+#           SSH_KEY: ${{ secrets.SSH_KEY }}
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           # Menambahkan SSH host ke known_hosts
+#           ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+#           # Deploy ke server menggunakan SSH dan jalankan build serta start
+#           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
+#             # Tarik image terbaru dari Docker Hub
+#             docker pull achmadagus/nextjs-app-image-dev:latest
+#             # Stop dan hapus container yang berjalan sebelumnya
+#             docker stop nextjs-container || true
+#             docker rm nextjs-container || true
+#             # Hapus image lama jika ada (untuk menghindari akumulasi image lama)
+#             docker rmi achmadagus/nextjs-app-image-dev:old || true
+#             # Tandai image yang lama (sebelum menjalankan container baru)
+#             docker tag achmadagus/nextjs-app-image-dev:latest achmadagus/nextjs-app-image-dev:old || true
+#             # Jalankan container dengan image yang baru
+#             docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image-dev:latest
+#             # Bersihkan image yang tidak digunakan
+#             docker image prune -f
+#           EOF
+
+
 name: Deploy Next.js App to Server BSI (Sentuh)
 
 on:
@@ -92,20 +214,26 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-            mkdir -p ~/.ssh
-            echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-            # Menambahkan SSH host ke known_hosts
-            ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-            # Deploy ke server menggunakan SSH dan jalankan build serta start
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # Menambahkan SSH host ke known_hosts
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          # Deploy ke server menggunakan SSH dan jalankan build serta start
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SSH_USER@$SSH_HOST << EOF
             # Tarik image terbaru dari Docker Hub
             docker pull achmadagus/nextjs-app-image-dev:latest
             # Stop dan hapus container yang berjalan sebelumnya
             docker stop nextjs-container || true
             docker rm nextjs-container || true
+            # Hapus image lama dengan tag <none> untuk image achmadagus/nextjs-app-image-dev
+            docker images achmadagus/nextjs-app-image-dev -f "dangling=true" -q | xargs -r docker rmi || true
+            # Tandai image yang lama (sebelum menjalankan container baru)
+            docker tag achmadagus/nextjs-app-image-dev:latest achmadagus/nextjs-app-image-dev:old || true
             # Jalankan container dengan image yang baru
             docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image-dev:latest
-            # Menjalankan build (jika diperlukan, misalnya jika aplikasi belum dibangun di dalam image)
-            # cd /path/to/nextjs/app && npm install && npm run build
-            EOF
+            # Hapus image yang tidak digunakan (untuk menghindari image menumpuk)
+            #docker image prune -af
+            # Hapus semua container yang berhenti
+            #docker container prune -f
+          EOF
