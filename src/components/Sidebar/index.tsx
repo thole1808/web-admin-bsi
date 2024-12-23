@@ -38,7 +38,7 @@ const menuGroups = [
       {
         label: 'Master',
         route: '/master',
-        icon: <DatabaseIcon />,\
+        icon: <DatabaseIcon />,
         children: [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Checklist', route: '/master/checklist' },
