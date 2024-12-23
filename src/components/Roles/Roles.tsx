@@ -113,7 +113,7 @@ const Roles: React.FC = () => {
             ),
         [search, roles]
     );
-
+    
     const columns = [
         {
             name: "No.",
@@ -209,7 +209,7 @@ const Roles: React.FC = () => {
             )}
 
             {/* Modal for Creating or Editing Role */}
-            {/* <Modal
+            <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
@@ -234,8 +234,9 @@ const Roles: React.FC = () => {
                 >
                     Save
                 </button>
-            </Modal> */}
-
+            </Modal>
+            
+            {/* modal permsion detail */}
             <Modal
                 isOpen={isPermissionsModalOpen}
                 onRequestClose={() => setIsPermissionsModalOpen(false)}
@@ -280,48 +281,7 @@ const Roles: React.FC = () => {
             </Modal>
 
             {/* Modal for Permissions */}
-            <Modal
-                isOpen={isPermissionsModalOpen}
-                onRequestClose={() => setIsPermissionsModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg"
-            >
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Permissions for {selectedPermissions?.name}
-                </h2>
-
-                <div className="mb-4">
-                    {selectedPermissions?.permissions?.length === 0 ? (
-                        <p className="text-center text-gray-500">Permission tidak tersedia</p>
-                    ) : (
-                        <ul className="space-y-2 mt-2">
-                            {selectedPermissions?.permissions.map((permission) => (
-                                <li
-                                    key={permission.id}
-                                    className="flex items-center justify-between px-4 py-2 border-b border-gray-200 rounded-md hover:bg-gray-100"
-                                >
-                                    <span className="text-sm text-gray-700">{permission.name}</span>
-                                    <span
-                                        className="text-xs text-gray-500"
-                                        title={`Permission ID: ${permission.id}`}
-                                    >
-                                        {/* {permission.id} */}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-                <div className="flex justify-end">
-                    <button
-                        onClick={() => setIsPermissionsModalOpen(false)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-                    >
-                        Close
-                    </button>
-                </div>
-            </Modal>
+            
         </div>
     );
 };
