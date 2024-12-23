@@ -26,7 +26,8 @@ export const config = {
         "/master/checklist:path*", "/master/services-types:path*",
         "/master/status-messages:path*", "/master/national-holiday:path*",
         "/branches/branch:path*", "/branches/service-types:path*",
-        "/branches/counters:path*", "/branches/office-hours:path*"
+        "/branches/counters:path*", "/branches/office-hours:path*",
+        "/roles/:path*"
     ],
 };
 

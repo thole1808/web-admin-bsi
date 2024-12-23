@@ -11,6 +11,7 @@ import AntrianIcon from "@/components/Icon/AntrianIcon";
 import ReportingIcon from "@/components/Icon/ReportingIcon";
 import CabangIcon from "@/components/Icon/CabangIcon";
 import BranchIcon from "@/components/Icon/BranchIcon";
+import RolesIcon from "@/components/Icon/RolesIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { signOut } from "next-auth/react";  // Import signOut from next-auth
@@ -28,6 +29,11 @@ const menuGroups = [
         label: 'Dashboard',
         route: '/dashboard',
         icon: <DashboardIcon />,
+      },
+      {
+        label: 'Roles',
+        route: '/roles',
+        icon: <RolesIcon />,
       },
       {
         label: 'Master',
@@ -91,7 +97,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <Image
               width={176}
               height={32}
-              src={"/images/logo/logo-bsi.png"}
+              src={"/images/logo/logo-bsi.sdsd"}
               alt="Logo"
               priority
             />
