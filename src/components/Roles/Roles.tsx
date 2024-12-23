@@ -135,18 +135,22 @@ const Roles: React.FC = () => {
             name: "No.",
             selector: (_: RoleItem, index: number) => index + 1,
             sortable: true,
-            style: { width: "5px",textAlign: "center" as "left" },
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         {
             name: "Role Name",
             selector: (row: RoleItem) => row.name,
             sortable: true,
-            style: { width: "50px", textAlign: "center" as "left" },
+            minWidth: "50px",
+            grow:2,
         },
         {
             name: "Permissions",
             selector: (row: RoleItem) => row.permissions.length,
             sortable: true,
+            minWidth: "40px",
+            grow:2,
             cell: (row: RoleItem) => (
                 <button
                     className="text-orange-500 hover:underline"
@@ -239,6 +243,7 @@ const Roles: React.FC = () => {
                         highlightOnHover
                         striped
                         responsive
+                        // customStyles={customStyles}
                     // selectableRows
                     />
                 </div>
