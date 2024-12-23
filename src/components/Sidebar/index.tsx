@@ -10,6 +10,7 @@ import DashboardIcon from "@/components/Icon/DashboardIcon";
 import AntrianIcon from "@/components/Icon/AntrianIcon";
 import ReportingIcon from "@/components/Icon/ReportingIcon";
 import CabangIcon from "@/components/Icon/CabangIcon";
+import BranchIcon from "@/components/Icon/BranchIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
@@ -37,6 +38,18 @@ const menuGroups = [
           { label: 'Services Types', route: '/master/services-types' },
           { label: 'Status Messages', route: '/master/status-messages' },
           { label: 'National Holiday', route: '/master/national-holiday' },
+        ],
+      },
+      {
+        label: 'Branches',
+        route: '/Branches',
+        icon: <BranchIcon />,
+        children: [
+          { label: 'Branch', route: '/branches/branch' },
+          // { label: 'Checklist', route: '/master/checklist' },
+          // { label: 'Services Types', route: '/master/services-types' },
+          // { label: 'Status Messages', route: '/master/status-messages' },
+          // { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
       {
