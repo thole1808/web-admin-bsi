@@ -131,16 +131,37 @@ const Roles: React.FC = () => {
     );
 
     const columns = [
+        // {
+        //     name: "No.",
+        //     selector: (_: RoleItem, index: number) => index + 1,
+        //     sortable: true,
+        //     style: { width: "5px",textAlign: "center" as "left" },
+        // },
+        // {
+        //     name: "Role Name",
+        //     selector: (row: RoleItem) => row.name,
+        //     sortable: true,
+        //     style: { width: "50px", textAlign: "center" as "left" },
+        // },
         {
             name: "No.",
-            selector: (_: RoleItem, index: number) => index + 1,
+            selector: (_: any, index: number) => index + 1,
             sortable: true,
-            style: { width: "500px", textAlign: "center" as "left" },
+            // style: {
+            //     textAlign: 'center',
+            //     width: 'auto',  // Menyesuaikan dengan isi
+            // },
         },
         {
             name: "Role Name",
-            selector: (row: RoleItem) => row.name,
+            selector: (row: any) => row.name,
             sortable: true,
+            // style: {
+            //     textAlign: 'left',
+            //     width: 'auto',  // Menyesuaikan dengan isi
+            //     wordWrap: 'break-word',  // Membungkus teks jika terlalu panjang
+            //     whiteSpace: 'normal',  // Menyebabkan pembungkus teks normal
+            // },
         },
         {
             name: "Permissions",
@@ -195,30 +216,30 @@ const Roles: React.FC = () => {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Roles</h1>
-            
+
             {/* Search Input and Create Button */}
-        <div className="flex justify-between mb-4">
-            <div className="relative w-1/2">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-full pr-10" // Add padding-right for the icon
-                />
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+            <div className="flex justify-between mb-4">
+                <div className="relative w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border px-4 py-2 rounded-md w-full pr-10" // Add padding-right for the icon
+                    />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+                </div>
+                <button
+                    onClick={() => {
+                        setEditData(null);
+                        setNewRole("");
+                        setIsModalOpen(true);
+                    }}
+                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                >
+                    Create
+                </button>
             </div>
-            <button
-                onClick={() => {
-                    setEditData(null);
-                    setNewRole("");
-                    setIsModalOpen(true);
-                }}
-                className="bg-blue-500 text-white px-6 py-2 rounded-md"
-            >
-                Create
-            </button>
-        </div>
 
 
             {loading ? (
@@ -236,7 +257,9 @@ const Roles: React.FC = () => {
                         data={filteredRoles}
                         pagination
                         highlightOnHover
-                        striped  
+                        striped
+                        responsive
+                    // selectableRows
                     />
                 </div>
             )}
