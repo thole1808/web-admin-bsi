@@ -67,16 +67,21 @@ const ServicesTypes: React.FC = () => {
             name: "No.",
             selector: (_: ServiceTypeItem, index: number) => index + 1,
             sortable: true,
-            style: { width: "50px", textAlign: "center" as TextAlign },
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         
         {
             name: "Service Type",
             selector: (row: ServiceTypeItem) => row.name,
             sortable: true,
+            minWidth: "50px",
+            grow: 1,
         },
         {
             name: "Actions",
+            minWidth: "50px",
+            grow: 1,
             cell: (row: ServiceTypeItem) => (
                 <div className="flex space-x-2">
                     <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
@@ -176,8 +181,6 @@ const ServicesTypes: React.FC = () => {
                     highlightOnHover
                     striped
                 />
-
-                // <DataTable columns={columns} data={data} />
             )}
 
             <Modal

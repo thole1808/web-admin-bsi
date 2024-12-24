@@ -1,7 +1,6 @@
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-// Endpoint untuk GET data Services Types (sudah ada)
 export async function GET(req: NextRequest) {
     const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
