@@ -128,48 +128,9 @@ const Checklist: React.FC = () => {
 
     const handleModalClose = () => {
         setIsModalOpen(false);
-        // setEditData(null);
         setIsCreateModalOpen(false);
     };
-
     
-    // const fetchChecklistDetail = async (id: number) => {
-    //     try {
-    //         const response = await fetch(`/api/master/checklist/${id}`);
-    //         if (!response.ok) {
-    //             throw new Error(`Failed to fetch checklist detail: ${response.statusText}`);
-    //         }
-    //         const result = await response.json();
-    //         if (result.success) {
-    //             setCurrentItem(result.data);
-    //             setIsDetailModalOpen(true); 
-    //         } else {
-    //             alert(result.message || "Unknown error");
-    //         }
-    //     } catch (error: any) {
-    //         alert(error.message || "Error occurred while fetching checklist detail.");
-    //     }
-    // };
-
-    // const fetchChecklistDetail = async (id: number) => {
-    //     try {
-    //         const response = await fetch(`/api/master/checklist/${id}`);
-    //         if (!response.ok) {
-    //             throw new Error(`Failed to fetch checklist detail: ${response.statusText}`);
-    //         }
-    //         const result = await response.json();
-    //         if (result.success) {
-    //             setCurrentItem(result.data);
-    //             setIsDetailModalOpen(true); 
-    //             console.log("Modal opened:", isDetailModalOpen);  // Debug log
-    //         } else {
-    //             alert(result.message || "Unknown error");
-    //         }
-    //     } catch (error: any) {
-    //         alert(error.message || "Error occurred while fetching checklist detail.");
-    //     }
-    // };
-
     const fetchChecklistDetail = async (id: number) => {
         try {
             setLoading(true); // Menandakan data sedang dimuat
@@ -233,13 +194,6 @@ const Checklist: React.FC = () => {
             grow: 4,
             cell: (row: ChecklistItem) => (
                 <div className="flex space-x-2">
-                    {/* <button 
-                        onClick={() => handleDetail(row)} 
-                        className="text-blue-500 hover:underline flex items-center space-x-1"
-                    >
-                        <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
-                    </button> */}
                     <button
                         onClick={() => fetchChecklistDetail(row.id)}
                         className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
