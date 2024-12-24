@@ -30,6 +30,7 @@ const Checklist: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // For Create Modal
     const [currentItem, setCurrentItem] = useState<ChecklistItem | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // For Detail Modal
 
     const [formData, setFormData] = useState({
         activityName: "",
@@ -122,15 +123,73 @@ const Checklist: React.FC = () => {
     };
 
     const handleDetail = (row: ChecklistItem) => {
-        console.log("Detail of", row);
+        fetchChecklistDetail(row.id);
     };
-
 
     const handleModalClose = () => {
         setIsModalOpen(false);
         // setEditData(null);
         setIsCreateModalOpen(false);
     };
+
+    
+    // const fetchChecklistDetail = async (id: number) => {
+    //     try {
+    //         const response = await fetch(`/api/master/checklist/${id}`);
+    //         if (!response.ok) {
+    //             throw new Error(`Failed to fetch checklist detail: ${response.statusText}`);
+    //         }
+    //         const result = await response.json();
+    //         if (result.success) {
+    //             setCurrentItem(result.data);
+    //             setIsDetailModalOpen(true); 
+    //         } else {
+    //             alert(result.message || "Unknown error");
+    //         }
+    //     } catch (error: any) {
+    //         alert(error.message || "Error occurred while fetching checklist detail.");
+    //     }
+    // };
+
+    // const fetchChecklistDetail = async (id: number) => {
+    //     try {
+    //         const response = await fetch(`/api/master/checklist/${id}`);
+    //         if (!response.ok) {
+    //             throw new Error(`Failed to fetch checklist detail: ${response.statusText}`);
+    //         }
+    //         const result = await response.json();
+    //         if (result.success) {
+    //             setCurrentItem(result.data);
+    //             setIsDetailModalOpen(true); 
+    //             console.log("Modal opened:", isDetailModalOpen);  // Debug log
+    //         } else {
+    //             alert(result.message || "Unknown error");
+    //         }
+    //     } catch (error: any) {
+    //         alert(error.message || "Error occurred while fetching checklist detail.");
+    //     }
+    // };
+
+    const fetchChecklistDetail = async (id: number) => {
+        try {
+            setLoading(true); // Menandakan data sedang dimuat
+            const response = await fetch(`/api/master/checklist/${id}`);
+            if (!response.ok) throw new Error("Failed to fetch checklist detail.");
+            const result = await response.json();
+            
+            if (result.success) {
+            setCurrentItem(result.data); // Set data checklist
+            setIsDetailModalOpen(true); // Buka modal
+            } else {
+            alert(result.message || "Unknown error");
+            }
+        } catch (err: any) {
+            alert(err.message || "Error occurred while fetching checklist detail.");
+        } finally {
+            setLoading(false); // Menandakan proses selesai
+        }
+    };
+    
 
     useEffect(() => {
         fetchData();
@@ -174,13 +233,21 @@ const Checklist: React.FC = () => {
             grow: 4,
             cell: (row: ChecklistItem) => (
                 <div className="flex space-x-2">
-                    <button 
+                    {/* <button 
                         onClick={() => handleDetail(row)} 
                         className="text-blue-500 hover:underline flex items-center space-x-1"
                     >
                         <EyeIcon className="h-5 w-5" />
                         <span>Detail</span>
+                    </button> */}
+                    <button
+                        onClick={() => fetchChecklistDetail(row.id)}
+                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                        >
+                        <EyeIcon className="h-5 w-5" />
+                        <span>Detail</span>
                     </button>
+
                     <button
                         onClick={() => {
                             setFormData({
@@ -324,6 +391,56 @@ const Checklist: React.FC = () => {
                             className="bg-blue-500 text-white px-6 py-2 rounded-md"
                         >
                             Update
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
+                contentLabel="Detail Checklist Item"
+                className="modal"
+            >
+                <div className="modal-content">
+                    <h2 className="text-xl font-bold text-center mb-4">Checklist Detail</h2>
+                    
+                    {currentItem ? (
+                        <table className="table-auto w-full border-collapse">
+                            <tbody>
+                                <tr className="">
+                                    <td className="px-4 py-2 font-semibold text-gray-600">Activity Name</td>
+                                    <td className="px-4 py-2">{currentItem.activityName}</td>
+                                </tr>
+                                <tr className="">
+                                    <td className="px-4 py-2 font-semibold text-gray-600">Activity Type</td>
+                                    <td className="px-4 py-2">{currentItem.activityType}</td>
+                                </tr>
+                                <tr className="">
+                                    <td className="px-4 py-2 font-semibold text-gray-600">Mandatory</td>
+                                    <td className="px-4 py-2">{currentItem.mandatory ? "Yes" : "No"}</td>
+                                </tr>
+                                <tr className="">
+                                    <td className="px-4 py-2 font-semibold text-gray-600">Created At</td>
+                                    <td className="px-4 py-2">{currentItem.createdAt}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600">Updated At</td>
+                                    <td className="px-4 py-2">{currentItem.updatedAt}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+
+                    <div className="flex justify-end mt-6">
+                        <button
+                            onClick={() => setIsDetailModalOpen(false)}
+                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+                        >
+                            Close
                         </button>
                     </div>
                 </div>
