@@ -143,7 +143,7 @@ const Roles: React.FC = () => {
             selector: (row: RoleItem) => row.name,
             sortable: true,
             minWidth: "50px",
-            grow:3,
+            grow:2,
         },
         
         {
