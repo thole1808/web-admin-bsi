@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
-import Modal from "react-modal"; // Import React Modal
+import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { ClipLoader } from "react-spinners";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
   ssr: false,
@@ -26,8 +28,9 @@ const ApprovalMatrix: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // For Create Modal
   const [editData, setEditData] = useState<MatrixItem | null>(null);
   const [newMatrix, setNewMatrix] = useState<{ modelType: string; event: string }>({ modelType: "", event: "" });
-
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { data: session, status } = useSession();
+  const [detailData, setDetailData] = useState<MatrixItem | null>(null);
 
   // Fetching data function
   const fetchData = async () => {
@@ -45,6 +48,21 @@ const ApprovalMatrix: React.FC = () => {
       }
     } catch (error: any) {
       setError("Error occurred while fetching data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchApprovalDetail = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/master/approval-matrix/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch approval matrix details.");
+      const data = await response.json();
+      setDetailData(data.data);
+      setIsDetailModalOpen(true);
+    } catch (err: any) {
+      alert(err.message || "Error occurred while fetching approval matrix details.");
     } finally {
       setLoading(false);
     }
@@ -72,44 +90,57 @@ const ApprovalMatrix: React.FC = () => {
   const columns: TableColumn<MatrixItem>[] = [
     {
       name: "No.",
-      selector: (row: MatrixItem, index: number) => index + 1, // Add serial number
+      selector: (row: MatrixItem, index: number) => index + 1,
       sortable: false,
-      style: { width: "50px", textAlign: "center" },
+      maxWidth: "1px",
+      minWidth: "70px",
     },
     {
       name: "Model Type",
       selector: (row: MatrixItem) => row.modelType,
       sortable: true,
+      minWidth: "5px",
+      grow: 1,
     },
     {
       name: "Event",
       selector: (row: MatrixItem) => row.event,
       sortable: true,
+      minWidth: "50px",
+      grow: 1,
     },
     {
       name: "Actions",
+      grow: 2,
       cell: (row: MatrixItem) => (
-        <div className="flex space-x-2">
-          <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
-            Detail
-          </button>
-          <button
-            onClick={() => handleEdit(row)}
-            className="text-green-500 hover:underline"
-          >
-            Edit
-          </button>
-          <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:underline">
-            Delete
-          </button>
+        <div className="flex flex-wrap gap-2 justify-start w-full">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+            <button
+              onClick={() => fetchApprovalDetail(row.id)}
+              className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+            >
+              <EyeIcon className="h-5 w-5" />
+              <span>Detail</span>
+            </button>
+            <button
+              onClick={() => handleEdit(row)}
+              className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+            >
+              <PencilIcon className="h-5 w-5" />
+              <span>Edit</span>
+            </button>
+            <button
+              onClick={() => handleDelete(row.id)}
+              className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+            >
+              <TrashIcon className="h-5 w-5" />
+              <span>Delete</span>
+            </button>
+          </div>
         </div>
       ),
     },
   ];
-
-  const handleDetail = (row: MatrixItem) => {
-    console.log("Detail of", row);
-  };
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this item?")) {
@@ -127,7 +158,7 @@ const ApprovalMatrix: React.FC = () => {
       }
     }
   };
-  
+
   const handleEdit = (row: MatrixItem) => {
     setEditData({ ...row }); // Ensure the latest data is set with the correct ID from the API
     setIsModalOpen(true);
@@ -169,10 +200,10 @@ const ApprovalMatrix: React.FC = () => {
       alert("Error occurred while saving item.");
     }
   };
-  
+
   const handleCreate = async () => {
     const newMatrixItem = { ...newMatrix };
-  
+
     try {
       const response = await fetch("/api/master/approval-matrix", {
         method: "POST",
@@ -181,13 +212,13 @@ const ApprovalMatrix: React.FC = () => {
         },
         body: JSON.stringify(newMatrixItem),
       });
-  
+
       if (response.ok) {
         const createdItem = await response.json();
         setMatrixData((prevData) => [...prevData, createdItem]);
         setIsCreateModalOpen(false); // Menutup modal
         fetchData();
-  
+
         // Reset input fields after creation
         setNewMatrix({
           modelType: "",
@@ -197,7 +228,7 @@ const ApprovalMatrix: React.FC = () => {
         // Mengambil error message dari API response
         const errorData = await response.json();
         console.error("Error creating item:", errorData); // Log error untuk debugging
-  
+
         // Tampilkan error message jika ada
         alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
       }
@@ -206,12 +237,6 @@ const ApprovalMatrix: React.FC = () => {
       alert("Error occurred while creating item. Please try again.");
     }
   };
-  
-
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div>
@@ -237,7 +262,7 @@ const ApprovalMatrix: React.FC = () => {
         </div>
       </div>
 
-      {loading ? (
+      {/* {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
         <>
@@ -266,6 +291,27 @@ const ApprovalMatrix: React.FC = () => {
             />
           )}
         </>
+      )} */}
+
+      {loading ? (
+        <div className="relative">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <ClipLoader size={50} color="#4B5563" loading={loading} />
+          </div>
+        </div>
+      ) : error ? (
+        <div className="text-red-500 text-center">{error}</div>
+      ) : (
+        <div className="relative">
+          <DataTable
+            columns={columns}
+            data={filteredData}
+            pagination
+            highlightOnHover
+            striped
+            responsive
+          />
+        </div>
       )}
 
       {/* Edit Modal */}
@@ -303,7 +349,7 @@ const ApprovalMatrix: React.FC = () => {
                 Cancel
               </button>
               <button onClick={handleSave} className="bg-blue-500 text-white px-6 py-2 rounded-md">
-                Save
+                Update
               </button>
             </div>
           </div>
@@ -354,6 +400,54 @@ const ApprovalMatrix: React.FC = () => {
               Create
             </button>
           </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isDetailModalOpen} // Gunakan state khusus untuk modal detail
+        onRequestClose={() => setIsDetailModalOpen(false)} // Menutup modal
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+        className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
+      >
+        <h2 className="text-2xl font-semibold text-center mb-6">Approval Matrix Detail</h2>
+
+        {detailData ? (
+          <div className="overflow-x-auto">
+            {/* Tabel untuk menampilkan detail approval matrix */}
+            <table className="min-w-full table-auto">
+              <tbody>
+                {/* Row untuk Model Type */}
+                <tr className="border-b">
+                  <td className="px-4 py-2 font-medium text-gray-600">Model Type</td>
+                  <td className="px-4 py-2">{detailData.modelType}</td>
+                </tr>
+                {/* Row untuk Event */}
+                <tr className="border-b">
+                  <td className="px-4 py-2 font-medium text-gray-600">Event</td>
+                  <td className="px-4 py-2">{detailData.event}</td>
+                </tr>
+                {/* Row untuk Created At */}
+                <tr className="border-b">
+                  <td className="px-4 py-2 font-medium text-gray-600">Created At</td>
+                  <td className="px-4 py-2">
+                    {new Date(detailData.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No details available.</p>
+        )}
+
+        {/* Button to Close Modal */}
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={() => setIsDetailModalOpen(false)} // Menutup modal
+            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+          >
+            Close
+          </button>
         </div>
       </Modal>
 
