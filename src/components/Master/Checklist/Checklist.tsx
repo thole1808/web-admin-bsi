@@ -136,31 +136,43 @@ const Checklist: React.FC = () => {
     const columns: TableColumn<ChecklistItem>[] = [
         {
             name: "No.",
-            selector: (row: ChecklistItem, index: number) => index + 1, // Add serial number
+            selector: (row: ChecklistItem, index: number) => index + 1,
             sortable: false,
-            style: { width: "50px", textAlign: "center" },
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         {
             name: "Activity Name",
             selector: (row: ChecklistItem) => row.activityName,
             sortable: true,
+            minWidth: "50px",
+            grow: 4,
         },
         {
             name: "Activity Type",
             selector: (row: ChecklistItem) => row.activityType,
             sortable: true,
+            minWidth: "50px",
+            grow: 2,
         },
         {
             name: "Mandatory",
             selector: (row: ChecklistItem) => (row.mandatory ? "Yes" : "No"),
             sortable: true,
+            minWidth: "50px",
+            grow: 1,
         },
         {
             name: "Actions",
+            grow: 4,
             cell: (row: ChecklistItem) => (
                 <div className="flex space-x-2">
-                    <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
-                        Detail
+                    <button 
+                        onClick={() => handleDetail(row)} 
+                        className="text-blue-500 hover:underline flex items-center space-x-1"
+                    >
+                        <EyeIcon className="h-5 w-5" />
+                        <span>Detail</span>
                     </button>
                     <button
                         onClick={() => {
@@ -172,22 +184,23 @@ const Checklist: React.FC = () => {
                             setCurrentItem(row);
                             setIsModalOpen(true);
                         }}
-                        className="text-green-500 hover:underline"
+                        className="text-green-500 hover:underline flex items-center space-x-1"
                     >
-                        Edit
+                        <PencilIcon className="h-5 w-5" />
+                        <span>Edit</span>
                     </button>
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="text-red-500 hover:underline"
+                        className="text-red-500 hover:underline flex items-center space-x-1"
                     >
-                        Delete
+                        <TrashIcon className="h-5 w-5" />
+                        <span>Delete</span>
                     </button>
                 </div>
             ),
         },
     ];
-
-
+    
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Checklist</h1>
