@@ -28,6 +28,8 @@ const ServicesTypes: React.FC = () => {
     const [newService, setNewService] = useState<{ name: string }>({ name: "" });
     type TextAlign = "left" | "center" | "right";
     const { data: session, status } = useSession();
+    const [currentItem, setCurrentItem] = useState<ServiceTypeItem | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
 
     const fetchData = async () => {
         try {
@@ -51,6 +53,26 @@ const ServicesTypes: React.FC = () => {
 
     const handleDetail = (row: ServiceTypeItem) => {
         console.log("Detail of", row);
+    };
+
+    const fetchChecklistDetail = async (id: number) => {
+        try {
+            setLoading(true); 
+            const response = await fetch(`/api/master/services-types/${id}`);
+            if (!response.ok) throw new Error("Failed to fetch services types detail.");
+            const result = await response.json();
+            
+            if (result.success) {
+            setCurrentItem(result.data); 
+            setIsDetailModalOpen(true); 
+            } else {
+            alert(result.message || "Unknown error");
+            }
+        } catch (err: any) {
+            alert(err.message || "Error occurred while fetching services types detail.");
+        } finally {
+            setLoading(false); 
+        }
     };
 
     useEffect(() => {
@@ -98,11 +120,6 @@ const ServicesTypes: React.FC = () => {
                     {/* Edit Button */}
                     <button
                         onClick={() => {
-                            setFormData({
-                                activityName: row.activityName,
-                                activityType: row.activityType,
-                                mandatory: row.mandatory,
-                            });
                             setCurrentItem(row);
                             setIsModalOpen(true);
                         }}
@@ -197,7 +214,7 @@ const ServicesTypes: React.FC = () => {
                     </button>
                 </div>
             </div>
-            
+
             {loading ? (
                 <div className="relative">
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

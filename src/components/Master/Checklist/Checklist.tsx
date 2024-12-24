@@ -28,9 +28,9 @@ const Checklist: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // For Create Modal
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); 
     const [currentItem, setCurrentItem] = useState<ChecklistItem | null>(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // For Detail Modal
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
 
     const [formData, setFormData] = useState({
         activityName: "",
@@ -71,7 +71,7 @@ const Checklist: React.FC = () => {
                 const newItem = await response.json();
                 setChecklistData((prevData) => [...prevData, newItem.data]);
                 setFormData({ activityName: "", activityType: "", mandatory: false });
-                setIsCreateModalOpen(false); // Close the Create Modal
+                setIsCreateModalOpen(false); 
             } else {
                 alert("Failed to create activity.");
             }
@@ -133,21 +133,21 @@ const Checklist: React.FC = () => {
     
     const fetchChecklistDetail = async (id: number) => {
         try {
-            setLoading(true); // Menandakan data sedang dimuat
+            setLoading(true); 
             const response = await fetch(`/api/master/checklist/${id}`);
             if (!response.ok) throw new Error("Failed to fetch checklist detail.");
             const result = await response.json();
             
             if (result.success) {
-            setCurrentItem(result.data); // Set data checklist
-            setIsDetailModalOpen(true); // Buka modal
+            setCurrentItem(result.data); 
+            setIsDetailModalOpen(true); 
             } else {
             alert(result.message || "Unknown error");
             }
         } catch (err: any) {
             alert(err.message || "Error occurred while fetching checklist detail.");
         } finally {
-            setLoading(false); // Menandakan proses selesai
+            setLoading(false); 
         }
     };
     
