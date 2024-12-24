@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { ClipLoader } from "react-spinners";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
@@ -190,15 +192,17 @@ const Checklist: React.FC = () => {
         <div>
             <h1 className="text-2xl font-bold mb-4">Checklist</h1>
 
+            {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
-                <div className="w-1/2">
+                <div className="relative w-1/2">
                     <input
                         type="text"
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 w-full rounded-md"
+                        className="border px-4 py-2 rounded-md w-full pr-10"
                     />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
                 <div>
                     <button
@@ -211,17 +215,26 @@ const Checklist: React.FC = () => {
             </div>
 
             {loading ? (
-                <div>Loading...</div>
+                <div className="relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <ClipLoader size={50} color="#4B5563" loading={loading} />
+                </div>
+                </div>
+            ) : error ? (
+                <div className="text-red-500 text-center">{error}</div>
             ) : (
+                <div className="relative">
                 <DataTable
                     columns={columns}
                     data={filteredData}
                     pagination
                     highlightOnHover
                     striped
+                    responsive
                 />
+                </div>
             )}
-
+            
             <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}  className="modal">
                 <h2 className="text-xl font-bold">{currentItem ? "Edit Activity" : "Add Activity"}</h2>
                 <input
