@@ -32,7 +32,7 @@ const ApprovalMatrix: React.FC = () => {
   const { data: session, status } = useSession();
   const [detailData, setDetailData] = useState<MatrixItem | null>(null);
 
-  // Fetching data function
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -42,7 +42,7 @@ const ApprovalMatrix: React.FC = () => {
       }
       const data = await response.json();
       if (data.success && Array.isArray(data.data)) {
-        setMatrixData(data.data); // Directly use the API data without modifying the id
+        setMatrixData(data.data);
       } else {
         setError("Invalid data format or failed to fetch data.");
       }
@@ -68,21 +68,17 @@ const ApprovalMatrix: React.FC = () => {
     }
   };
 
-  // Fetch data on initial load or session changes
+
   useEffect(() => {
     fetchData();
   }, [session, status]);
 
-  // Update filtered data whenever search or matrixData changes
   const filteredData = useMemo(() => {
     return matrixData.filter((item) => {
       const searchTerm = search.toLowerCase();
-
-      // Periksa dan pastikan setiap field adalah string sebelum memanggil .toLowerCase()
       const modelTypeMatch = item.modelType?.toLowerCase().includes(searchTerm) || false;
       const eventMatch = item.event?.toLowerCase().includes(searchTerm) || false;
       const createdAtMatch = item.createdAt?.toLowerCase().includes(searchTerm) || false;
-
       return modelTypeMatch || eventMatch || createdAtMatch;
     });
   }, [search, matrixData]);
@@ -160,14 +156,14 @@ const ApprovalMatrix: React.FC = () => {
   };
 
   const handleEdit = (row: MatrixItem) => {
-    setEditData({ ...row }); // Ensure the latest data is set with the correct ID from the API
+    setEditData({ ...row });
     setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setEditData(null); // Clear editData when modal is closed
-    setIsCreateModalOpen(false); // Menutup modal
+    setEditData(null); 
+    setIsCreateModalOpen(false); 
   };
   // 
   const handleSave = async () => {
@@ -179,22 +175,21 @@ const ApprovalMatrix: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editData), // Data yang akan diupdate
+        body: JSON.stringify(editData), 
       });
 
       if (response.ok) {
-        const updatedData = await response.json(); // Get the updated data from the API
+        const updatedData = await response.json(); 
         setMatrixData((prevData) =>
           prevData.map((item) => (item.id === editData.id ? { ...item, ...updatedData } : item))
         );
-        setIsModalOpen(false); // Close the modal after saving
-        setEditData(null); // Reset editData after saving
-        alert("Data updated successfully!"); // Display success message (optional)
+        setIsModalOpen(false); 
+        setEditData(null); 
+        alert("Data updated successfully!"); 
         fetchData();
       } else {
-        const errorData = await response.json(); // Extract error message from the response
-        alert(`Error: ${errorData.error || 'Failed to update item.'}`); // Display the error message returned by the API
-      }
+        const errorData = await response.json(); 
+        alert(`Error: ${errorData.error || 'Failed to update item.'}`); 
     } catch (error) {
       console.error("Error occurred while saving item:", error);
       alert("Error occurred while saving item.");
@@ -216,24 +211,20 @@ const ApprovalMatrix: React.FC = () => {
       if (response.ok) {
         const createdItem = await response.json();
         setMatrixData((prevData) => [...prevData, createdItem]);
-        setIsCreateModalOpen(false); // Menutup modal
+        setIsCreateModalOpen(false);
         fetchData();
-
-        // Reset input fields after creation
         setNewMatrix({
           modelType: "",
           event: "",
         });
       } else {
-        // Mengambil error message dari API response
         const errorData = await response.json();
-        console.error("Error creating item:", errorData); // Log error untuk debugging
+        console.error("Error creating item:", errorData); 
 
-        // Tampilkan error message jika ada
         alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
       }
     } catch (error) {
-      console.error("Error occurred while creating item:", error); // Log error untuk debugging
+      console.error("Error occurred while creating item:", error); 
       alert("Error occurred while creating item. Please try again.");
     }
   };
@@ -261,37 +252,6 @@ const ApprovalMatrix: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* {loading ? (
-        <div className="text-center">Loading...</div>
-      ) : (
-        <>
-          {filteredData.length === 0 ? (
-            <div className="overflow-x-auto border-t border-b border-l border-r shadow-md rounded text-sm">
-              <table className="min-w-full">
-                <thead>
-                  <tr></tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan={columns.length} className="text-center py-4">
-                      No data available
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <DataTable
-              columns={columns}
-              data={filteredData}
-              pagination
-              highlightOnHover
-              striped
-            />
-          )}
-        </>
-      )} */}
 
       {loading ? (
         <div className="relative">
@@ -359,10 +319,10 @@ const ApprovalMatrix: React.FC = () => {
       {/* Create Modal */}
       <Modal
         isOpen={isCreateModalOpen}
-        onRequestClose={handleModalClose} // Menangani penutupan modal
+        onRequestClose={handleModalClose} 
         contentLabel="Create Approval Matrix"
         className="modal"
-        ariaHideApp={false} // Menonaktifkan aksesibilitas (jika diperlukan)
+        ariaHideApp={false} 
       >
         <h2 className="text-xl font-bold mb-4">Create Approval Matrix</h2>
         <div>
@@ -388,13 +348,13 @@ const ApprovalMatrix: React.FC = () => {
           </div>
           <div className="flex justify-end space-x-2">
             <button
-              onClick={handleModalClose} // Menutup modal ketika tombol cancel diklik
+              onClick={handleModalClose} 
               className="bg-gray-500 text-white px-4 py-2 rounded-md"
             >
               Cancel
             </button>
             <button
-              onClick={handleCreate} // Fungsi untuk membuat item baru
+              onClick={handleCreate} 
               className="bg-blue-500 text-white px-6 py-2 rounded-md"
             >
               Create
@@ -403,8 +363,9 @@ const ApprovalMatrix: React.FC = () => {
         </div>
       </Modal>
 
+        {/* Detail Modal */}
       <Modal
-        isOpen={isDetailModalOpen} // Gunakan state khusus untuk modal detail
+        isOpen={isDetailModalOpen} 
         onRequestClose={() => setIsDetailModalOpen(false)} // Menutup modal
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
@@ -443,7 +404,7 @@ const ApprovalMatrix: React.FC = () => {
         {/* Button to Close Modal */}
         <div className="flex justify-end mt-6">
           <button
-            onClick={() => setIsDetailModalOpen(false)} // Menutup modal
+            onClick={() => setIsDetailModalOpen(false)} 
             className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
           >
             Close
