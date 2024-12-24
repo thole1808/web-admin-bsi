@@ -162,8 +162,8 @@ const ApprovalMatrix: React.FC = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setEditData(null); 
-    setIsCreateModalOpen(false); 
+    setEditData(null);
+    setIsCreateModalOpen(false);
   };
   // 
   const handleSave = async () => {
@@ -175,21 +175,22 @@ const ApprovalMatrix: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editData), 
+        body: JSON.stringify(editData),
       });
 
       if (response.ok) {
-        const updatedData = await response.json(); 
+        const updatedData = await response.json();
         setMatrixData((prevData) =>
           prevData.map((item) => (item.id === editData.id ? { ...item, ...updatedData } : item))
         );
-        setIsModalOpen(false); 
-        setEditData(null); 
-        alert("Data updated successfully!"); 
+        setIsModalOpen(false);
+        setEditData(null);
+        alert("Data updated successfully!");
         fetchData();
       } else {
-        const errorData = await response.json(); 
-        alert(`Error: ${errorData.error || 'Failed to update item.'}`); 
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error || 'Failed to update item.'}`);
+      }
     } catch (error) {
       console.error("Error occurred while saving item:", error);
       alert("Error occurred while saving item.");
@@ -219,12 +220,12 @@ const ApprovalMatrix: React.FC = () => {
         });
       } else {
         const errorData = await response.json();
-        console.error("Error creating item:", errorData); 
+        console.error("Error creating item:", errorData);
 
         alert(errorData.error || errorData.message || "Failed to create item. Please try again.");
       }
     } catch (error) {
-      console.error("Error occurred while creating item:", error); 
+      console.error("Error occurred while creating item:", error);
       alert("Error occurred while creating item. Please try again.");
     }
   };
@@ -233,24 +234,29 @@ const ApprovalMatrix: React.FC = () => {
     <div>
       <h1 className="text-2xl font-bold mb-4 text-left">Approval Matrix</h1>
 
+      {/* Search Input and Create Button */}
       <div className="flex justify-between mb-4">
-        <div className="w-1/2">
+        <div className="relative w-1/2">
           <input
             type="text"
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border px-4 py-2 w-full rounded-md"
+            className="border px-4 py-2 rounded-md w-full pr-10"
           />
+          <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
         </div>
-        <div>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="bg-blue-500 text-white px-6 py-2 rounded-md"
-          >
-            Create
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setEditData(null);
+            setNewMatrix({ modelType: "", event: "" });
+            setIsCreateModalOpen(true); 
+            setIsModalOpen(false); 
+          }}
+          className="bg-blue-500 text-white px-6 py-2 rounded-md"
+        >
+          Create
+        </button>
       </div>
 
       {loading ? (
@@ -319,10 +325,10 @@ const ApprovalMatrix: React.FC = () => {
       {/* Create Modal */}
       <Modal
         isOpen={isCreateModalOpen}
-        onRequestClose={handleModalClose} 
+        onRequestClose={handleModalClose}
         contentLabel="Create Approval Matrix"
         className="modal"
-        ariaHideApp={false} 
+        ariaHideApp={false}
       >
         <h2 className="text-xl font-bold mb-4">Create Approval Matrix</h2>
         <div>
@@ -348,13 +354,13 @@ const ApprovalMatrix: React.FC = () => {
           </div>
           <div className="flex justify-end space-x-2">
             <button
-              onClick={handleModalClose} 
+              onClick={handleModalClose}
               className="bg-gray-500 text-white px-4 py-2 rounded-md"
             >
               Cancel
             </button>
             <button
-              onClick={handleCreate} 
+              onClick={handleCreate}
               className="bg-blue-500 text-white px-6 py-2 rounded-md"
             >
               Create
@@ -363,10 +369,10 @@ const ApprovalMatrix: React.FC = () => {
         </div>
       </Modal>
 
-        {/* Detail Modal */}
+      {/* Detail Modal */}
       <Modal
-        isOpen={isDetailModalOpen} 
-        onRequestClose={() => setIsDetailModalOpen(false)} // Menutup modal
+        isOpen={isDetailModalOpen}
+        onRequestClose={() => setIsDetailModalOpen(false)}
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
       >
@@ -404,7 +410,7 @@ const ApprovalMatrix: React.FC = () => {
         {/* Button to Close Modal */}
         <div className="flex justify-end mt-6">
           <button
-            onClick={() => setIsDetailModalOpen(false)} 
+            onClick={() => setIsDetailModalOpen(false)} // Menutup modal
             className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
           >
             Close
