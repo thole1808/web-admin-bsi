@@ -146,7 +146,7 @@ const Checklist: React.FC = () => {
             selector: (row: ChecklistItem) => row.activityName,
             sortable: true,
             minWidth: "50px",
-            grow: 4,
+            grow: 6,
         },
         {
             name: "Activity Type",
@@ -160,7 +160,7 @@ const Checklist: React.FC = () => {
             selector: (row: ChecklistItem) => (row.mandatory ? "Yes" : "No"),
             sortable: true,
             minWidth: "50px",
-            grow: 1,
+            grow: 2,
         },
         {
             name: "Actions",
@@ -200,7 +200,7 @@ const Checklist: React.FC = () => {
             ),
         },
     ];
-    
+
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Checklist</h1>
