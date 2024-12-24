@@ -143,6 +143,14 @@ const Roles: React.FC = () => {
             selector: (row: RoleItem) => row.name,
             sortable: true,
             minWidth: "50px",
+            grow:3,
+        },
+        
+        {
+            name: "Guard",
+            selector: (row: RoleItem) => row.guardName,
+            sortable: true,
+            minWidth: "50px",
             grow:1,
         },
         {
@@ -150,7 +158,7 @@ const Roles: React.FC = () => {
             selector: (row: RoleItem) => row.permissions.length,
             sortable: true,
             minWidth: "20px",
-            grow:1,
+            grow:2,
             cell: (row: RoleItem) => (
                 <button
                     className="text-orange-500 hover:underline"
@@ -165,6 +173,7 @@ const Roles: React.FC = () => {
         },
         {
             name: "Actions",
+            grow:2,
             cell: (row: RoleItem) => (
                 <div className="flex space-x-2">
                     <button
