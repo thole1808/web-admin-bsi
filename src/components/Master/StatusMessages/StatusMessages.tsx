@@ -12,7 +12,7 @@ const DataTable = dynamic(() => import("react-data-table-component"), { ssr: fal
 interface StatusItem {
     id: number;
     message: string;
-    status: string; // New field for status
+    status: string; 
 }
 
 const StatusMessages: React.FC = () => {
@@ -25,6 +25,8 @@ const StatusMessages: React.FC = () => {
     const [newStatus, setNewStatus] = useState("");
     const { data: session, status } = useSession();
     type TextAlign = "left" | "center" | "right";
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState<StatusItem | null>(null);
 
     useEffect(() => {
         fetchStatuses();
@@ -103,6 +105,27 @@ const StatusMessages: React.FC = () => {
         }
     };
 
+    const fetchStatusDetail = async (id: number) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/master/status-messages/${id}`);
+            if (!response.ok) throw new Error("Failed to fetch status detail.");
+    
+            const result = await response.json();
+    
+            if (result.success) {
+                setCurrentItem(result.data); 
+                setIsDetailModalOpen(true); 
+            } else {
+                alert(result.message || "Unknown error");
+            }
+        } catch (err) {
+            alert(err.message || "Error occurred while fetching status detail.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     const filteredStatuses = useMemo(
         () =>
             Array.isArray(statuses)
@@ -139,9 +162,14 @@ const StatusMessages: React.FC = () => {
             name: "Actions",
             cell: (row: StatusItem) => (
                 <div className="flex space-x-2">
-                    <button onClick={() => handleDetail(row)} className="text-blue-500 hover:underline">
-                        Detail
+                    <button
+                        onClick={() => fetchStatusDetail(row.id)}
+                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                    >
+                        {/* <EyeIcon className="h-5 w-5" /> */}
+                        <span>Detail</span>
                     </button>
+
                     <button
                         className="text-green-500 hover:underline"
                         onClick={() => {
@@ -165,26 +193,6 @@ const StatusMessages: React.FC = () => {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Status Messages</h1>
-
-            {/* <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-1/2"
-                />
-                <button
-                    onClick={() => {
-                        setEditData(null);
-                        setNewStatus("");
-                        setIsModalOpen(true);
-                    }}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                >
-                    Create
-                </button>
-            </div> */}
 
             {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
@@ -233,6 +241,7 @@ const StatusMessages: React.FC = () => {
                 </div>
             )}
 
+            {/* Edit  & Create Status */}
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
@@ -258,6 +267,46 @@ const StatusMessages: React.FC = () => {
                 >
                     Save
                 </button>
+            </Modal>
+            
+            {/* Detail Status */}
+            <Modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
+                contentLabel="Detail Status Message"
+                className="modal"
+            >
+                <div className="modal-content">
+                    <h2 className="text-xl font-bold text-center mb-4">Status Detail</h2>
+
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : currentItem ? (
+                        <table className="table-auto w-full border-collapse border border-gray-300">
+                            <tbody>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Status</td>
+                                    <td className="px-4 py-2 border">{currentItem.status}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Message</td>
+                                    <td className="px-4 py-2 border">{currentItem.message}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No data available</p>
+                    )}
+
+                    <div className="flex justify-end mt-6">
+                        <button
+                            onClick={() => setIsDetailModalOpen(false)}
+                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

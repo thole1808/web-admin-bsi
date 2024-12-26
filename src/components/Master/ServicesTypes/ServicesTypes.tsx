@@ -79,6 +79,7 @@ const ServicesTypes: React.FC = () => {
         }
     };
 
+
     useEffect(() => {
         fetchData();
     }, [session, status]);
