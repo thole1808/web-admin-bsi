@@ -51,9 +51,6 @@ const ServicesTypes: React.FC = () => {
         }
     };
 
-    const handleDetail = (row: ServiceTypeItem) => {
-        console.log("Detail of", row);
-    };
 
     const fetchChecklistDetail = async (id: number) => {
         try {
@@ -259,6 +256,74 @@ const ServicesTypes: React.FC = () => {
                     </div>
                 )}
             </Modal>
+
+            {/* Detail */}
+            <Modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
+                contentLabel="Detail Service Type"
+                className="modal"
+            >
+                <div className="modal-content">
+                    <h2 className="text-xl font-bold text-center mb-4">Service Type Detail</h2>
+
+                    {currentItem ? (
+                        <table className="table-auto w-full border-collapse border border-gray-300">
+                            <tbody>
+                                {/* <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Code</td>
+                                    <td className="px-4 py-2 border">{currentItem.code}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">RSV Code</td>
+                                    <td className="px-4 py-2 border">{currentItem.rsvCode || "N/A"}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Product Code</td>
+                                    <td className="px-4 py-2 border">{currentItem.productCode || "N/A"}</td>
+                                </tr> */}
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Name</td>
+                                    <td className="px-4 py-2 border">{currentItem.name}</td>
+                                </tr>
+                                {/* <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Prefix</td>
+                                    <td className="px-4 py-2 border">{currentItem.prefix}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Parent ID</td>
+                                    <td className="px-4 py-2 border">{currentItem.parentId}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Min Duration</td>
+                                    <td className="px-4 py-2 border">{currentItem.slaMinDuration} minutes</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Max Duration</td>
+                                    <td className="px-4 py-2 border">{currentItem.slaMaxDuration} minutes</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Form Fields</td>
+                                    <td className="px-4 py-2 border">{currentItem.formFields || "N/A"}</td>
+                                </tr> */}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+
+                    <div className="flex justify-end mt-6">
+                        <button
+                            onClick={() => setIsDetailModalOpen(false)}
+                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+
         </div>
     );
 };

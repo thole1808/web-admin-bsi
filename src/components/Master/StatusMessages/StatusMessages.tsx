@@ -213,17 +213,24 @@ const StatusMessages: React.FC = () => {
             </div>
 
             {loading ? (
-                <div className="text-center">Loading...</div>
+                <div className="relative">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <ClipLoader size={50} color="#4B5563" loading={loading} />
+                    </div>
+                </div>
             ) : error ? (
                 <div className="text-red-500 text-center">{error}</div>
             ) : (
-                <DataTable
-                    columns={columns}
-                    data={filteredStatuses}
-                    pagination
-                    highlightOnHover
-                    striped
-                />
+                <div className="relative">
+                    <DataTable
+                        columns={columns}
+                        data={filteredStatuses}
+                        pagination
+                        highlightOnHover
+                        striped
+                        responsive
+                    />
+                </div>
             )}
 
             <Modal
