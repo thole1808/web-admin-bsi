@@ -20,18 +20,35 @@ const NationalHolidayMessages: React.FC = () => {
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
     const [editData, setEditData] = useState<NationalHolidayItem | null>(null);
     const [newHoliday, setNewHoliday] = useState({ date: "", name: "" });
+    const [holidayDetail, setHolidayDetail] = useState<NationalHolidayItem | null>(null); 
     const { data: session, status } = useSession();
-    type TextAlign = "left" | "center" | "right";
+    
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     useEffect(() => {
         fetchHolidays();
     }, [session, status]);
 
-    const handleDetail = (row: NationalHolidayItem) => {
-        console.log("Detail of", row);
+    const handleDetail = async (row: NationalHolidayItem) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/master/national-holidays/${row.id}`);
+            const data = await response.json();
+            if (data.success && data.data) {
+                setHolidayDetail(data.data); 
+                setIsDetailModalOpen(true);
+            } else {
+                alert("Failed to fetch holiday details.");
+            }
+        } catch (err) {
+            alert("Error occurred while fetching holiday details.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const fetchHolidays = async () => {
@@ -66,7 +83,7 @@ const NationalHolidayMessages: React.FC = () => {
             }
             fetchHolidays();
             setNewHoliday({ date: "", name: "" });
-            setIsModalOpen(false);
+            setIsCreateModalOpen(false); 
         } catch (err: any) {
             alert(err.message || "Error occurred while creating holiday.");
         }
@@ -84,7 +101,7 @@ const NationalHolidayMessages: React.FC = () => {
                 throw new Error("Failed to update holiday.");
             }
             fetchHolidays();
-            setIsModalOpen(false);
+            setIsEditModalOpen(false);
         } catch (err: any) {
             alert(err.message || "Error occurred while updating holiday.");
         }
@@ -107,7 +124,6 @@ const NationalHolidayMessages: React.FC = () => {
         () =>
             Array.isArray(holidays)
                 ? holidays.filter((holiday) => {
-                    // Check if holiday has a name property and it's a valid string
                     return holiday.name?.toLowerCase().includes(search.toLowerCase());
                 })
                 : [],
@@ -148,7 +164,7 @@ const NationalHolidayMessages: React.FC = () => {
                         className="text-green-500 hover:underline flex items-center space-x-1"
                         onClick={() => {
                             setEditData(row);
-                            setIsModalOpen(true);
+                            setIsEditModalOpen(true); 
                         }}
                     >
                         <PencilIcon className="h-5 w-5" />
@@ -170,27 +186,6 @@ const NationalHolidayMessages: React.FC = () => {
         <div>
             <h1 className="text-2xl font-bold mb-4">National Holidays</h1>
 
-            {/* <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-1/2"
-                />
-                <button
-                    onClick={() => {
-                        setEditData(null);
-                        setNewHoliday({ date: "", name: "" });
-                        setIsModalOpen(true);
-                    }}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                >
-                    Create
-                </button>
-            </div> */}
-
-            {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
                 <div className="relative w-1/2">
                     <input
@@ -207,7 +202,7 @@ const NationalHolidayMessages: React.FC = () => {
                         onClick={() => {
                             setEditData(null);
                             setNewHoliday({ date: "", name: "" });
-                            setIsModalOpen(true);
+                            setIsCreateModalOpen(true); 
                         }}
                         className="bg-blue-500 text-white px-6 py-2 rounded-md"
                     >
@@ -223,57 +218,138 @@ const NationalHolidayMessages: React.FC = () => {
                     </div>
                 </div>
             ) : error ? (
-                <div className="text-red-500 text-center">{error}</div>
+                <div className="text-red-500">{error}</div>
             ) : (
-                <div className="relative">
-                    <DataTable
-                        columns={columns}
-                        data={filteredHolidays}
-                        pagination
-                        highlightOnHover
-                        striped
-                        responsive
-                    />
-                </div>
+                <DataTable
+                    columns={columns}
+                    data={filteredHolidays}
+                    pagination
+                    highlightOnHover
+                    pointerOnHover
+                />
             )}
 
+            {/* Create Modal */}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                isOpen={isCreateModalOpen}
+                onRequestClose={() => setIsCreateModalOpen(false)}
+                contentLabel="Create Holiday"
+                className="bg-white rounded-md w-1/3 p-6"
             >
-                <h2 className="text-xl font-bold mb-4">
-                    {editData ? "Edit Holiday" : "Create Holiday"}
-                </h2>
-                <input
-                    type="text"
-                    placeholder="Holiday Name"
-                    value={editData ? editData.name : newHoliday.name}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, name: e.target.value })
-                            : setNewHoliday({ ...newHoliday, name: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <input
-                    type="date"
-                    value={editData ? editData.date : newHoliday.date}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, date: e.target.value })
-                            : setNewHoliday({ ...newHoliday, date: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <button
-                    onClick={editData ? handleEdit : handleCreate}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
-                >
-                    Save
-                </button>
+                <h2 className="text-xl font-bold mb-4">Create National Holiday</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Holiday Name</label>
+                    <input
+                        type="text"
+                        value={newHoliday.name}
+                        onChange={(e) => setNewHoliday({ ...newHoliday, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Date</label>
+                    <input
+                        type="date"
+                        value={newHoliday.date}
+                        onChange={(e) => setNewHoliday({ ...newHoliday, date: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsCreateModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </Modal>
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onRequestClose={() => setIsEditModalOpen(false)}
+                contentLabel="Edit Holiday"
+                className="bg-white rounded-md w-1/3 p-6"
+            >
+                <h2 className="text-xl font-bold mb-4">Edit National Holiday</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Holiday Name</label>
+                    <input
+                        type="text"
+                        value={editData?.name || ""}
+                        onChange={(e) => setEditData({ ...editData!, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Date</label>
+                    <input
+                        type="date"
+                        value={editData?.date || ""}
+                        onChange={(e) => setEditData({ ...editData!, date: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleEdit}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Update
+                    </button>
+                </div>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
+            >
+                <h2 className="text-2xl font-semibold text-center mb-6">Holiday Detail</h2>
+                {holidayDetail ? (
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full table-auto">
+                            <tbody>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Holiday Name</td>
+                                    <td className="px-4 py-2">{holidayDetail.name}</td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Date</td>
+                                    <td className="px-4 py-2">{new Date(holidayDetail.date).toLocaleDateString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500">No details available.</p>
+                )}
+
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                    >
+                        Close
+                    </button>
+                </div>
+            </Modal>
+
         </div>
     );
 };

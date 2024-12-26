@@ -146,7 +146,7 @@ const StatusMessages: React.FC = () => {
         },
         {
             name: "Status",
-            selector: (row: StatusItem) => row.status,  // New column for Status
+            selector: (row: StatusItem) => row.status, 
             sortable: true,
             minWidth: "150px",
             grow: 0,
