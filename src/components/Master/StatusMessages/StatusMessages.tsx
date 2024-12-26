@@ -20,12 +20,13 @@ const StatusMessages: React.FC = () => {
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [editData, setEditData] = useState<StatusItem | null>(null);
     const [newStatus, setNewStatus] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
     const { data: session, status } = useSession();
-    type TextAlign = "left" | "center" | "right";
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState<StatusItem | null>(null);
 
     useEffect(() => {
@@ -33,7 +34,13 @@ const StatusMessages: React.FC = () => {
     }, [session, status]);
 
     const handleDetail = (row: StatusItem) => {
-        console.log("Detail of", row);
+        setCurrentItem(row);
+        setIsDetailModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsEditModalOpen(false);
+        setIsCreateModalOpen(false);
     };
 
     const fetchStatuses = async () => {
@@ -68,9 +75,11 @@ const StatusMessages: React.FC = () => {
             }
             fetchStatuses();
             setNewStatus("");
-            setIsModalOpen(false);
+            setIsCreateModalOpen(false);
+            setStatusMessage("Status created successfully!");
         } catch (err: any) {
             alert(err.message || "Error occurred while creating status.");
+            setStatusMessage("Failed to create status. Please try again."); 
         }
     };
 
@@ -86,9 +95,11 @@ const StatusMessages: React.FC = () => {
                 throw new Error("Failed to update status.");
             }
             fetchStatuses();
-            setIsModalOpen(false);
+            setIsEditModalOpen(false);
+            setStatusMessage("Status updated successfully!"); 
         } catch (err: any) {
             alert(err.message || "Error occurred while updating status.");
+            setStatusMessage("Failed to update status. Please try again.");
         }
     };
 
@@ -100,29 +111,10 @@ const StatusMessages: React.FC = () => {
                 throw new Error("Failed to delete status.");
             }
             setStatuses((prev) => prev.filter((status) => status.id !== id));
+            setStatusMessage("Status deleted successfully!"); 
         } catch (err: any) {
             alert(err.message || "Error occurred while deleting status.");
-        }
-    };
-
-    const fetchStatusDetail = async (id: number) => {
-        try {
-            setLoading(true);
-            const response = await fetch(`/api/master/status-messages/${id}`);
-            if (!response.ok) throw new Error("Failed to fetch status detail.");
-
-            const result = await response.json();
-
-            if (result.success) {
-                setCurrentItem(result.data);
-                setIsDetailModalOpen(true);
-            } else {
-                alert(result.message || "Unknown error");
-            }
-        } catch (err) {
-            alert(err.message || "Error occurred while fetching status detail.");
-        } finally {
-            setLoading(false);
+            setStatusMessage("Failed to delete status. Please try again."); 
         }
     };
 
@@ -165,7 +157,7 @@ const StatusMessages: React.FC = () => {
             cell: (row: StatusItem) => (
                 <div className="flex space-x-2">
                     <button
-                        onClick={() => fetchStatusDetail(row.id)}
+                        onClick={() => handleDetail(row)}
                         className="flex items-center text-blue-500 hover:text-blue-700 text-xs sm:text-sm px-2 py-1"
                     >
                         <EyeIcon className="h-5 w-5" />
@@ -175,7 +167,8 @@ const StatusMessages: React.FC = () => {
                     <button
                         onClick={() => {
                             setEditData(row);
-                            setIsModalOpen(true);
+                            setIsEditModalOpen(true);
+                            setStatusMessage(""); 
                         }}
                         className="flex items-center text-green-500 hover:text-green-700 text-xs sm:text-sm px-2 py-1"
                     >
@@ -193,7 +186,6 @@ const StatusMessages: React.FC = () => {
                 </div>
             ),
         },
-        
     ];
 
     return (
@@ -217,7 +209,8 @@ const StatusMessages: React.FC = () => {
                         onClick={() => {
                             setEditData(null);
                             setNewStatus("");
-                            setIsModalOpen(true);
+                            setIsCreateModalOpen(true);
+                            setStatusMessage(""); 
                         }}
                         className="bg-blue-500 text-white px-6 py-2 rounded-md"
                     >
@@ -247,35 +240,68 @@ const StatusMessages: React.FC = () => {
                 </div>
             )}
 
-            {/* Edit  & Create Status */}
+            {/* Create Status Modal */}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
+                isOpen={isCreateModalOpen}
+                onRequestClose={() => setIsCreateModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 className="bg-white rounded-md p-6 w-1/3"
             >
-                <h2 className="text-xl font-bold mb-4">
-                    {editData ? "Edit Status" : "Create Status"}
-                </h2>
+                <h2 className="text-xl font-bold mb-4">Create Status</h2>
                 <input
                     type="text"
-                    value={editData ? editData.message : newStatus}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, message: e.target.value })
-                            : setNewStatus(e.target.value)
-                    }
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
                     className="w-full px-4 py-2 border rounded-md"
                 />
-                <button
-                    onClick={editData ? handleEdit : handleCreate}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
-                >
-                    Save
-                </button>
+
+                <div className="flex justify-end space-x-2">
+                    <button
+                    onClick={handleModalClose}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    >
+                    Cancel
+                    </button>
+                    <button
+                    onClick={handleCreate}
+                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                    Create
+                    </button>
+                </div>
+                {statusMessage && <p className="mt-2 text-green-500">{statusMessage}</p>}
             </Modal>
 
-            {/* Detail Status */}
+            {/* Edit Status Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onRequestClose={() => setIsEditModalOpen(false)}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-md p-6 w-1/3"
+            >
+                <h2 className="text-xl font-bold mb-4">Edit Status</h2>
+                {editData && (
+                    <>
+                        <input
+                            type="text"
+                            value={editData.message}
+                            onChange={(e) => setEditData({ ...editData, message: e.target.value })}
+                            className="w-full px-4 py-2 border rounded-md"
+                        />
+                        <div className="flex justify-end space-x-2">
+                            <button onClick={handleModalClose} className="bg-gray-500 text-white px-4 py-2 rounded-md">
+                                Cancel
+                            </button>
+                            <button onClick={handleEdit} className="bg-blue-500 text-white px-6 py-2 rounded-md">
+                                Update
+                            </button>
+                        </div>
+                        {statusMessage && <p className="mt-2 text-green-500">{statusMessage}</p>}
+                    </>
+                )}
+            </Modal>
+
+            {/* Detail Status Modal */}
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
@@ -307,7 +333,7 @@ const StatusMessages: React.FC = () => {
                     <div className="flex justify-end mt-6">
                         <button
                             onClick={() => setIsDetailModalOpen(false)}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+                            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
                         >
                             Close
                         </button>
