@@ -139,11 +139,6 @@ const ServicesTypes: React.FC = () => {
         }
     ];
 
-    const handleEdit = (row: ServiceTypeItem) => {
-        setEditData({ ...row });
-        setIsModalOpen(true);
-    };
-
     const handleDelete = async (id: number) => {
         if (confirm("Are you sure you want to delete this item?")) {
             try {
@@ -233,7 +228,7 @@ const ServicesTypes: React.FC = () => {
                 </div>
             )}
 
-            <Modal
+            {/* <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
                 contentLabel="Edit Service Type"
@@ -255,7 +250,97 @@ const ServicesTypes: React.FC = () => {
                         </button>
                     </div>
                 )}
+            </Modal> */}
+
+            <Modal
+                isOpen={isCreateModalOpen}
+                onRequestClose={() => setIsCreateModalOpen(false)}
+                contentLabel="Create Service Type"
+                className="modal"
+            >
+                <div>
+                    <h2 className="text-xl font-bold mb-4">Create Service Type</h2>
+                    <input
+                        type="text"
+                        value={newService.name}
+                        onChange={(e) =>
+                            setNewService({ ...newService, name: e.target.value })
+                        }
+                        placeholder="Enter service type name"
+                        className="w-full px-4 py-2 border rounded-md mb-4"
+                    />
+                    <div className="flex justify-end space-x-2">
+                        <button
+                            onClick={() => setIsCreateModalOpen(false)}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={async () => {
+                                try {
+                                    const response = await fetch("/api/master/service-types", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify(newService),
+                                    });
+                                    if (response.ok) {
+                                        fetchData();
+                                        setIsCreateModalOpen(false);
+                                        setNewService({ name: "" });
+                                    } else {
+                                        alert("Failed to create service type.");
+                                    }
+                                } catch {
+                                    alert("Error occurred while creating service type.");
+                                }
+                            }}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                        >
+                            Create
+                        </button>
+                    </div>
+                </div>
             </Modal>
+
+            <Modal
+                isOpen={isModalOpen}
+                onRequestClose={() => setIsModalOpen(false)}
+                contentLabel="Edit Service Type"
+                className="modal"
+            >
+                {editData && (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Edit Service Type</h2>
+                        <input
+                            type="text"
+                            value={editData.name}
+                            onChange={(e) =>
+                                setEditData({ ...editData, name: e.target.value })
+                            }
+                            placeholder="Enter service type name"
+                            className="w-full px-4 py-2 border rounded-md mb-4"
+                        />
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
+
 
             {/* Detail */}
             <Modal
