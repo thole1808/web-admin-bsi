@@ -12,7 +12,7 @@ const DataTable = dynamic(() => import("react-data-table-component"), { ssr: fal
 interface StatusItem {
     id: number;
     message: string;
-    status: string; 
+    status: string;
 }
 
 const StatusMessages: React.FC = () => {
@@ -110,12 +110,12 @@ const StatusMessages: React.FC = () => {
             setLoading(true);
             const response = await fetch(`/api/master/status-messages/${id}`);
             if (!response.ok) throw new Error("Failed to fetch status detail.");
-    
+
             const result = await response.json();
-    
+
             if (result.success) {
-                setCurrentItem(result.data); 
-                setIsDetailModalOpen(true); 
+                setCurrentItem(result.data);
+                setIsDetailModalOpen(true);
             } else {
                 alert(result.message || "Unknown error");
             }
@@ -125,7 +125,7 @@ const StatusMessages: React.FC = () => {
             setLoading(false);
         }
     };
-    
+
     const filteredStatuses = useMemo(
         () =>
             Array.isArray(statuses)
@@ -155,39 +155,45 @@ const StatusMessages: React.FC = () => {
             name: "Message",
             selector: (row: StatusItem) => row.message,
             sortable: true,
-            minWidth: "200px",
-            grow: 2,    
+            minWidth: "50px",
+            grow: 2,
         },
         {
             name: "Actions",
+            minWidth: "50px", 
+            grow: 1,
             cell: (row: StatusItem) => (
                 <div className="flex space-x-2">
                     <button
                         onClick={() => fetchStatusDetail(row.id)}
-                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                        className="flex items-center text-blue-500 hover:text-blue-700 text-xs sm:text-sm px-2 py-1"
                     >
-                        {/* <EyeIcon className="h-5 w-5" /> */}
+                        <EyeIcon className="h-5 w-5" />
                         <span>Detail</span>
                     </button>
-
+        
                     <button
-                        className="text-green-500 hover:underline"
                         onClick={() => {
                             setEditData(row);
                             setIsModalOpen(true);
                         }}
+                        className="flex items-center text-green-500 hover:text-green-700 text-xs sm:text-sm px-2 py-1"
                     >
-                        Edit
+                        <PencilIcon className="h-5 w-5" />
+                        <span>Edit</span>
                     </button>
+        
                     <button
-                        className="text-red-500 hover:underline"
                         onClick={() => handleDelete(row.id)}
+                        className="flex items-center text-red-500 hover:text-red-700 text-xs sm:text-sm px-2 py-1"
                     >
-                        Delete
+                        <TrashIcon className="h-5 w-5" />
+                        <span>Delete</span>
                     </button>
                 </div>
             ),
         },
+        
     ];
 
     return (
@@ -268,7 +274,7 @@ const StatusMessages: React.FC = () => {
                     Save
                 </button>
             </Modal>
-            
+
             {/* Detail Status */}
             <Modal
                 isOpen={isDetailModalOpen}
