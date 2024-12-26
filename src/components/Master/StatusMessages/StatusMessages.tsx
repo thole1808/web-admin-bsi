@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { useSession } from "next-auth/react";
+import { ClipLoader } from "react-spinners";
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -116,17 +118,22 @@ const StatusMessages: React.FC = () => {
             name: "No.",
             selector: (_: StatusItem, index: number) => index + 1,
             sortable: true,
-            style: { width: "50px", textAlign: "center" as TextAlign },
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         {
             name: "Status",
             selector: (row: StatusItem) => row.status,  // New column for Status
             sortable: true,
+            minWidth: "150px",
+            grow: 0,
         },
         {
             name: "Message",
             selector: (row: StatusItem) => row.message,
             sortable: true,
+            minWidth: "200px",
+            grow: 2,    
         },
         {
             name: "Actions",
@@ -159,7 +166,7 @@ const StatusMessages: React.FC = () => {
         <div>
             <h1 className="text-2xl font-bold mb-4">Status Messages</h1>
 
-            <div className="flex justify-between mb-4">
+            {/* <div className="flex justify-between mb-4">
                 <input
                     type="text"
                     placeholder="Search..."
@@ -177,6 +184,32 @@ const StatusMessages: React.FC = () => {
                 >
                     Create
                 </button>
+            </div> */}
+
+            {/* Search Input and Create Button */}
+            <div className="flex justify-between mb-4">
+                <div className="relative w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border px-4 py-2 rounded-md w-full pr-10"
+                    />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+                </div>
+                <div>
+                    <button
+                        onClick={() => {
+                            setEditData(null);
+                            setNewStatus("");
+                            setIsModalOpen(true);
+                        }}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </div>
 
             {loading ? (
