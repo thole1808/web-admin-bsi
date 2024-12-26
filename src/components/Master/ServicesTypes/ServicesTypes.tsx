@@ -7,7 +7,6 @@ import Modal from "react-modal";
 import { ClipLoader } from "react-spinners";
 import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
-
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
 });
@@ -29,7 +28,16 @@ const ServicesTypes: React.FC = () => {
     type TextAlign = "left" | "center" | "right";
     const { data: session, status } = useSession();
     const [currentItem, setCurrentItem] = useState<ServiceTypeItem | null>(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+    const handleEditClick = (row: ServiceTypeItem) => {
+        setCurrentItem(row);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
 
     const fetchData = async () => {
         try {
@@ -51,24 +59,23 @@ const ServicesTypes: React.FC = () => {
         }
     };
 
-
     const fetchChecklistDetail = async (id: number) => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const response = await fetch(`/api/master/services-types/${id}`);
             if (!response.ok) throw new Error("Failed to fetch services types detail.");
             const result = await response.json();
-            
+
             if (result.success) {
-            setCurrentItem(result.data); 
-            setIsDetailModalOpen(true); 
+                setCurrentItem(result.data);
+                setIsDetailModalOpen(true);
             } else {
-            alert(result.message || "Unknown error");
+                alert(result.message || "Unknown error");
             }
         } catch (err: any) {
             alert(err.message || "Error occurred while fetching services types detail.");
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -116,11 +123,8 @@ const ServicesTypes: React.FC = () => {
 
                     {/* Edit Button */}
                     <button
-                        onClick={() => {
-                            setCurrentItem(row);
-                            setIsModalOpen(true);
-                        }}
-                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm"
+                        onClick={() => handleEditClick(row)}
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
                         <PencilIcon className="h-5 w-5" />
                         <span>Edit</span>
@@ -159,15 +163,15 @@ const ServicesTypes: React.FC = () => {
     };
 
     const handleSave = async () => {
-        if (!editData) return;
+        if (!currentItem) return;
 
         try {
-            const response = await fetch(`/api/master/service-types/${editData.id}`, {
+            const response = await fetch(`/api/master/service-types/${currentItem.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(editData),
+                body: JSON.stringify(currentItem),
             });
 
             if (response.ok) {
@@ -228,30 +232,7 @@ const ServicesTypes: React.FC = () => {
                 </div>
             )}
 
-            {/* <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                contentLabel="Edit Service Type"
-                className="modal"
-            >
-                {editData && (
-                    <div>
-                        <h2 className="text-xl font-bold mb-4">Edit Service Type</h2>
-                        <input
-                            type="text"
-                            value={editData.name}
-                            onChange={(e) =>
-                                setEditData({ ...editData, name: e.target.value })
-                            }
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
-                        <button onClick={handleSave} className="bg-green-500 text-white px-4 py-2 rounded-md">
-                            Save
-                        </button>
-                    </div>
-                )}
-            </Modal> */}
-
+            {/* Created */}
             <Modal
                 isOpen={isCreateModalOpen}
                 onRequestClose={() => setIsCreateModalOpen(false)}
@@ -305,34 +286,38 @@ const ServicesTypes: React.FC = () => {
                 </div>
             </Modal>
 
+
+            {/* Edit Modal */}
             <Modal
                 isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
+                onRequestClose={handleCloseModal}
                 contentLabel="Edit Service Type"
                 className="modal"
             >
-                {editData && (
+                {currentItem && (
                     <div>
                         <h2 className="text-xl font-bold mb-4">Edit Service Type</h2>
                         <input
                             type="text"
-                            value={editData.name}
+                            value={currentItem.name}
                             onChange={(e) =>
-                                setEditData({ ...editData, name: e.target.value })
+                                setCurrentItem({
+                                    ...currentItem,
+                                    name: e.target.value,
+                                })
                             }
-                            placeholder="Enter service type name"
                             className="w-full px-4 py-2 border rounded-md mb-4"
                         />
                         <div className="flex justify-end space-x-2">
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={handleCloseModal}
                                 className="bg-gray-500 text-white px-4 py-2 rounded-md"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                                className="bg-blue-500 text-white px-6 py-2 rounded-md"
                             >
                                 Save
                             </button>
@@ -341,74 +326,32 @@ const ServicesTypes: React.FC = () => {
                 )}
             </Modal>
 
-
-            {/* Detail */}
+            {/* Detail Modal */}
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
-                contentLabel="Detail Service Type"
+                contentLabel="Service Type Detail"
                 className="modal"
             >
-                <div className="modal-content">
-                    <h2 className="text-xl font-bold text-center mb-4">Service Type Detail</h2>
-
+                <div>
                     {currentItem ? (
-                        <table className="table-auto w-full border-collapse border border-gray-300">
-                            <tbody>
-                                {/* <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.code}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">RSV Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.rsvCode || "N/A"}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Product Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.productCode || "N/A"}</td>
-                                </tr> */}
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Name</td>
-                                    <td className="px-4 py-2 border">{currentItem.name}</td>
-                                </tr>
-                                {/* <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Prefix</td>
-                                    <td className="px-4 py-2 border">{currentItem.prefix}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Parent ID</td>
-                                    <td className="px-4 py-2 border">{currentItem.parentId}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Min Duration</td>
-                                    <td className="px-4 py-2 border">{currentItem.slaMinDuration} minutes</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Max Duration</td>
-                                    <td className="px-4 py-2 border">{currentItem.slaMaxDuration} minutes</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Form Fields</td>
-                                    <td className="px-4 py-2 border">{currentItem.formFields || "N/A"}</td>
-                                </tr> */}
-                            </tbody>
-                        </table>
+                        <div>
+                            <h2 className="text-xl font-bold mb-4">Service Type Detail</h2>
+                            <p>Name: {currentItem.name}</p>
+                        </div>
                     ) : (
-                        <p>Loading...</p>
+                        <div>Loading...</div>
                     )}
-
-                    <div className="flex justify-end mt-6">
+                    <div className="flex justify-end space-x-2">
                         <button
                             onClick={() => setIsDetailModalOpen(false)}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
                         >
                             Close
                         </button>
                     </div>
                 </div>
             </Modal>
-
-
         </div>
     );
 };
