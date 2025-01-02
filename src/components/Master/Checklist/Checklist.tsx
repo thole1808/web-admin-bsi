@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { ClipLoader } from "react-spinners";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
@@ -28,9 +28,9 @@ const Checklist: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); 
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState<ChecklistItem | null>(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         activityName: "",
@@ -71,7 +71,7 @@ const Checklist: React.FC = () => {
                 const newItem = await response.json();
                 setChecklistData((prevData) => [...prevData, newItem.data]);
                 setFormData({ activityName: "", activityType: "", mandatory: false });
-                setIsCreateModalOpen(false); 
+                setIsCreateModalOpen(false);
             } else {
                 alert("Failed to create activity.");
             }
@@ -130,27 +130,27 @@ const Checklist: React.FC = () => {
         setIsModalOpen(false);
         setIsCreateModalOpen(false);
     };
-    
+
     const fetchChecklistDetail = async (id: number) => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const response = await fetch(`/api/master/checklist/${id}`);
             if (!response.ok) throw new Error("Failed to fetch checklist detail.");
             const result = await response.json();
-            
+
             if (result.success) {
-            setCurrentItem(result.data); 
-            setIsDetailModalOpen(true); 
+                setCurrentItem(result.data);
+                setIsDetailModalOpen(true);
             } else {
-            alert(result.message || "Unknown error");
+                alert(result.message || "Unknown error");
             }
         } catch (err: any) {
             alert(err.message || "Error occurred while fetching checklist detail.");
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
-    
+
 
     useEffect(() => {
         fetchData();
@@ -162,46 +162,58 @@ const Checklist: React.FC = () => {
 
     const columns: TableColumn<ChecklistItem>[] = [
         {
-            name: "No.",
-            selector: (row: ChecklistItem, index: number) => index + 1,
-            sortable: false,
+            name: "ID",
+            selector: (row: ChecklistItem) => row.id,
+            sortable: true,
             maxWidth: "1px",
             minWidth: "70px",
         },
         {
-            name: "Activity Name",
+            name: "Activity",
             selector: (row: ChecklistItem) => row.activityName,
             sortable: true,
-            minWidth: "50px",
-            grow: 6,
+            minWidth: "200px",
+            wrap: true,
+            grow: 3,
         },
         {
-            name: "Activity Type",
+            name: "Type",
             selector: (row: ChecklistItem) => row.activityType,
             sortable: true,
             minWidth: "50px",
-            grow: 2,
         },
         {
             name: "Mandatory",
             selector: (row: ChecklistItem) => (row.mandatory ? "Yes" : "No"),
             sortable: true,
-            minWidth: "50px",
-            grow: 2,
+            center: true,
+        },
+        {
+            name: "Updated at",
+            selector: (row: ChecklistItem) => (
+                new Intl.DateTimeFormat('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                }).format(new Date(row.updatedAt))
+            ),
+            sortable: true,
+            right: true,
         },
         {
             name: "Actions",
-            grow: 4,
+            right: true,
             cell: (row: ChecklistItem) => (
-                <div className="flex space-x-2">
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button
                         onClick={() => fetchChecklistDetail(row.id)}
-                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                        >
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
+                    >
                         <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
                     </button>
-
                     <button
                         onClick={() => {
                             setFormData({
@@ -212,17 +224,15 @@ const Checklist: React.FC = () => {
                             setCurrentItem(row);
                             setIsModalOpen(true);
                         }}
-                        className="text-green-500 hover:underline flex items-center space-x-1"
+                        className="text-orange-500 hover:text-orange-700 p-1.5"
                     >
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Edit</span>
+                        <PencilSquareIcon className="h-5 w-5" />
                     </button>
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="text-red-500 hover:underline flex items-center space-x-1"
+                        className="text-red-500 hover:text-red-700 p-1.5"
                     >
                         <TrashIcon className="h-5 w-5" />
-                        <span>Delete</span>
                     </button>
                 </div>
             ),
@@ -241,14 +251,14 @@ const Checklist: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
                 <div>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
@@ -264,7 +274,7 @@ const Checklist: React.FC = () => {
             ) : error ? (
                 <div className="text-red-500 text-center">{error}</div>
             ) : (
-                <div className="relative">
+                <div className="bg-white py-1 rounded-lg border">
                     <DataTable
                         columns={columns}
                         data={filteredData}
@@ -280,10 +290,10 @@ const Checklist: React.FC = () => {
             <Modal
                 isOpen={isCreateModalOpen}
                 onRequestClose={() => setIsCreateModalOpen(false)}
-                contentLabel="Create Checklist Item"
+                contentLabel="Create"
                 className="modal"
             >
-                <h2 className="text-xl font-bold">Create Checklist Item</h2>
+                <h2 className="text-xl font-bold">Create</h2>
                 <div className="mt-4">
                     <input
                         type="text"
@@ -317,32 +327,44 @@ const Checklist: React.FC = () => {
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={() => setIsModalOpen(false)}
-                contentLabel="Edit Checklist Item"
+                contentLabel="Edit"
                 className="modal"
             >
-                <h2 className="text-xl font-bold">Edit Checklist Item</h2>
+                <h2 className="text-xl font-bold">Edit</h2>
                 <div className="mt-4">
-                    <input
-                        type="text"
-                        placeholder="Activity Name"
-                        value={formData.activityName}
-                        onChange={(e) => setFormData({ ...formData, activityName: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full mb-4"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Activity Type"
-                        value={formData.activityType}
-                        onChange={(e) => setFormData({ ...formData, activityType: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full mb-4"
-                    />
-                    <div className="flex justify-end space-x-2">
-                        <button onClick={handleModalClose} className="bg-gray-500 text-white px-4 py-2 rounded-md">
+                    <div className="grid">
+                        <div>
+                            <div className="text-sm text-gray-500">Activity</div>
+                            <div className="mt-1 font-medium">
+                                <input
+                                    type="text"
+                                    placeholder="Activity Name"
+                                    value={formData.activityName}
+                                    onChange={(e) => setFormData({ ...formData, activityName: e.target.value })}
+                                    className="border border-gray-300 text-sm p-2 rounded-md w-full"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Type</div>
+                            <div className="mt-1 font-medium">
+                                <select
+                                    onChange={(e) => setFormData({ ...formData, activityType: e.target.value })}
+                                    className="border border-gray-300 text-sm p-3 rounded-md w-full"
+                                >
+                                    <option value="SOD">SOD</option>
+                                    <option value="EOD">EOD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex justify-end space-x-2 mt-8">
+                        <button onClick={handleModalClose} className="bg-gray-500 text-white text-sm px-2 py-1 rounded-md">
                             Cancel
                         </button>
                         <button
                             onClick={() => handleEdit(currentItem?.id ?? 0)}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                            className="bg-blue-500 text-white text-sm px-2 py-1 rounded-md"
                         >
                             Update
                         </button>
@@ -354,49 +376,63 @@ const Checklist: React.FC = () => {
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
-                contentLabel="Detail Checklist Item"
+                contentLabel="Detail"
                 className="modal"
             >
                 <div className="modal-content">
-                    <h2 className="text-xl font-bold text-center mb-4">Checklist Detail</h2>
-                    
+                    <div className="flex justify-between items-start">
+                        <h2 className="text-lg font-bold mb-4">Checklist Detail</h2>
+                        <a href="#"
+                            onClick={() => setIsDetailModalOpen(false)}
+                            className="text-gray-500 hover:underline"
+                        ><span>Close</span></a>
+                    </div>
+
+
                     {currentItem ? (
-                        <table className="table-auto w-full border-collapse">
-                            <tbody>
-                                <tr className="">
-                                    <td className="px-4 py-2 font-semibold text-gray-600">Activity Name</td>
-                                    <td className="px-4 py-2">{currentItem.activityName}</td>
-                                </tr>
-                                <tr className="">
-                                    <td className="px-4 py-2 font-semibold text-gray-600">Activity Type</td>
-                                    <td className="px-4 py-2">{currentItem.activityType}</td>
-                                </tr>
-                                <tr className="">
-                                    <td className="px-4 py-2 font-semibold text-gray-600">Mandatory</td>
-                                    <td className="px-4 py-2">{currentItem.mandatory ? "Yes" : "No"}</td>
-                                </tr>
-                                <tr className="">
-                                    <td className="px-4 py-2 font-semibold text-gray-600">Created At</td>
-                                    <td className="px-4 py-2">{currentItem.createdAt}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600">Updated At</td>
-                                    <td className="px-4 py-2">{currentItem.updatedAt}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div className="grid gap-4">
+                            <div>
+                                <div className="text-sm text-gray-500">Activity Name</div>
+                                <div className="mt-1 font-medium">{currentItem.activityName}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-500">Activity Type</div>
+                                <div className="mt-1 font-medium">{currentItem.activityType}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-500">Mandatory</div>
+                                <div className="mt-1 font-medium">{currentItem.mandatory ? "Yes" : "No"}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-500">Created At</div>
+                                <div className="mt-1 font-medium">
+                                    {new Intl.DateTimeFormat('id-ID', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true,
+                                    }).format(new Date(currentItem.createdAt))}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-500">Updated At</div>
+                                <div className="mt-1 font-medium">
+                                    {new Intl.DateTimeFormat('id-ID', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true,
+                                    }).format(new Date(currentItem.updatedAt))}
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         <p>Loading...</p>
                     )}
-
-                    <div className="flex justify-end mt-6">
-                        <button
-                            onClick={() => setIsDetailModalOpen(false)}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-                        >
-                            Close
-                        </button>
-                    </div>
                 </div>
             </Modal>
         </div>

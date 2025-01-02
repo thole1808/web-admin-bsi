@@ -31,17 +31,17 @@ const menuGroups = [
       {
         label: 'Dashboard',
         route: '/dashboard',
-        icon: <DashboardIcon />,
+        icon: 'DashboardIcon',
       },
       {
         label: 'Roles',
         route: '/roles',
-        icon: <RolesIcon />,
+        icon: 'RolesIcon',
       },
       {
         label: 'Master',
         route: '/master',
-        icon: <DatabaseIcon />,
+        icon: "DatabaseIcon",
         children: [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Checklist', route: '/master/checklist' },
@@ -53,7 +53,7 @@ const menuGroups = [
       {
         label: 'Branches',
         route: '/Branches',
-        icon: <BranchIcon />,
+        icon: "BranchIcon",
         children: [
           { label: 'Branch', route: '/branches/branch' },
           { label: 'Service Types', route: '/branches/service-types' },
@@ -64,17 +64,17 @@ const menuGroups = [
       {
         label: 'Antrian',
         route: '/antrian',
-        icon: <AntrianIcon />,
+        icon: "AntrianIcon",
       },
       {
         label: 'Cabang',
         route: '/cabang',
-        icon: <CabangIcon />,
+        icon: "CabangIcon",
       },
       {
         label: 'Reporting',
         route: '/reporting',
-        icon: <ReportingIcon />,
+        icon: "ReportingIcon",
       },
     ],
   },
@@ -95,7 +95,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           }`}
       >
         {/* SIDEBAR HEADER */}
-        <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+        <div className="flex items-center justify-between gap-2 px-6 py-4">
           <Link href="/">
             <Image
               width={176}
@@ -129,7 +129,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
           {/* Sidebar Menu */}
-          <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
+          <nav className="px-3 mt-3">
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex}>
                 <ul>

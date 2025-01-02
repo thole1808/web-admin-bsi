@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {   
+    try {
         const response = await fetch(`${process.env.API_URL}/master/checklists`, {
             method: 'GET',
             headers: {

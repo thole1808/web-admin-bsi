@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
+import { FaHome, FaUsers, FaDatabase, FaCalendarAlt, FaChartBar, FaRegBuilding } from 'react-icons/fa';
+
+const IconMap: { [key: string]: JSX.Element } = {
+  DashboardIcon: <FaHome className="w-5 h-5" />,
+  RolesIcon: <FaUsers className="w-5 h-5" />,
+  DatabaseIcon: <FaDatabase className="w-5 h-5" />,
+  BranchIcon: <FaRegBuilding className="w-5 h-5" />,
+  AntrianIcon: <FaCalendarAlt className="w-5 h-5" />,
+  CabangIcon: <FaRegBuilding className="w-5 h-5" />,
+  ReportingIcon: <FaChartBar className="w-5 h-5" />,
+};
 
 const SidebarItem = ({ item }: any) => {
   const [isOpen, setIsOpen] = useState(false); // Status apakah sub-menu terbuka
@@ -35,11 +46,11 @@ const SidebarItem = ({ item }: any) => {
   };
 
   return (
-    <li className="relative mb-2">
+    <li className="relative mb-1">
       {/* Indikator aktif */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-1 bg-[#00BFB2] transition-all duration-300 ease-in-out ${
-          isItemActive ? "opacity-100" : "opacity-0"
+        className={`absolute left-1 top-2 bottom-2 w-1 transition-all duration-300 ease-in-out ${
+          isItemActive ? "bg-teal-400 rounded-lg opacity-100" : "opacity-0"
         }`}
       />
 
@@ -47,17 +58,25 @@ const SidebarItem = ({ item }: any) => {
       <div
         onClick={handleItemClick}
         className={`${
-          isItemActive ? "bg-transparan dark:bg-meta-4 with-border" : ""
-        } group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out cursor-pointer hover:bg-graydark dark:hover:bg-meta-4`}
-        style={{ color: "#00BFB2" }}
+          isItemActive
+            ? "bg-teal-400 text-white dark:bg-meta-4"
+            : "text-teal-600 hover:bg-teal-100 dark:hover:bg-meta-4"
+        } flex gap-3 items-center px-4 py-3 font-medium duration-300 ease-in-out cursor-pointer rounded-lg`}
       >
-        {item.icon}
-        {item.label}
+        <span
+          className={`${
+            isItemActive ? "text-white" : "text-teal-600"
+          } transition-colors duration-300`}
+        >
+          {/* Render ikon berdasarkan nama */}
+          {item.icon && IconMap[item.icon]}
+        </span>
+        <span>{item.label}</span>
         {item.children && (
           <svg
             className={`ml-auto h-4 w-4 transform transition-transform ${
               isOpen ? "rotate-90" : ""
-            }`}
+            } ${isItemActive ? "text-white" : "text-gray-600"}`}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
