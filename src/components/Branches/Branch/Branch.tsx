@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
+import { ClipLoader } from "react-spinners";
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -48,20 +50,12 @@ const Branch: React.FC = () => {
     });
     const [detailData, setDetailData] = useState<BranchItem | null>(null);
     const [tooltip, setTooltip] = useState({ text: "", x: 0, y: 0, visible: false });
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
     
     useEffect(() => {
         fetchBranches(currentPage, pageSize);
     }, [currentPage, pageSize]);
-
-
-    // const handleMouseEnter = (text: string, e: React.MouseEvent) => {
-    //     const { clientX, clientY } = e;
-    //     setTooltip({ text, x: clientX, y: clientY, visible: true });
-    // };
-
-    // const handleMouseLeave = () => {
-    //     setTooltip({ text: "", x: 0, y: 0, visible: false });
-    // };
 
     const handleMouseEnter = (text: string, e: React.MouseEvent) => {
         const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -163,53 +157,54 @@ const Branch: React.FC = () => {
             minWidth: "150px",
             grow: 1.5,
             cell: (row: BranchItem) => (
-                <div className="flex space-x-2">
+                <div className="flex space-x-4">
                     <button
                         onClick={() => handleDetail(row.id)}
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-500 hover:underline flex items-center space-x-2"
                     >
-                        Detail
+                        <EyeIcon className="h-5 w-5" />
+                        <span>Detail</span>
                     </button>
-    
+        
                     <button
-                        className="text-green-500 hover:underline"
+                        className="text-green-500 hover:underline flex items-center space-x-2"
                         onClick={() => {
                             setEditData(row);
                             setIsModalOpen(true);
                         }}
                     >
-                        Edit
+                        <PencilIcon className="h-5 w-5" />
+                        <span>Edit</span>
                     </button>
+        
                     <button
-                        className="text-red-500 hover:underline"
+                        className="text-red-500 hover:underline flex items-center space-x-2"
                         onClick={() => handleDelete(row.id)}
                     >
-                        Delete
+                        <TrashIcon className="h-5 w-5" />
+                        <span>Delete</span>
                     </button>
                 </div>
             ),
-        },
+        }             
     ];
     
-
+    
     const handleDetail = (id: number) => {
         fetchDetail(id);
+        setIsDetailModalOpen(true);
     };
 
     const fetchDetail = async (id: number) => {
         try {
             setLoading(true);
             const response = await fetch(`/api/branches/branch/${id}`);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || "Failed to fetch branch details.");
             }
-
             const data = await response.json();
-            console.log("Fetched Data:", data); // Log the full response
-            setDetailData(data.data); // Ensure data is correctly passed
-            setIsModalOpen(true); // Open the modal
+            setDetailData(data.data);
         } catch (err: any) {
             console.error("Fetch error:", err);
             alert(err.message || "Error occurred while fetching branch details.");
@@ -217,7 +212,6 @@ const Branch: React.FC = () => {
             setLoading(false);
         }
     };
-
 
     const handleCreate = async () => {
         try {
@@ -309,7 +303,7 @@ const Branch: React.FC = () => {
                     style={{
                         top: tooltip.y,
                         left: tooltip.x,
-                        transform: "translateY(0)", // Dekatkan dengan elemen
+                        transform: "translateY(0)", 
                         zIndex: 1000,
                     }}
                 >
@@ -358,29 +352,43 @@ const Branch: React.FC = () => {
 
             {/* Detail Modal */}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => {
-                    setIsModalOpen(false);
-                    setDetailData(null); // Reset data when modal is closed
-                }}
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <h2 className="text-xl font-bold mb-4">Branch Detail</h2>
+                <h2 className="text-2xl font-semibold text-center mb-6">Branch Details</h2>
                 {detailData ? (
-                    <div>
-                        <p><strong>Unit:</strong> {detailData.unit}</p>
-                        <p><strong>Code:</strong> {detailData.code}</p>
-                        <p><strong>Name:</strong> {detailData.name}</p>
-                        <p><strong>Address:</strong> {detailData.address}</p>
-                        <p><strong>Region:</strong> {detailData.regionName}</p>
-                        <p><strong>Area:</strong> {detailData.areaName}</p>
-                        <p><strong>Active:</strong> {detailData.active ? "Yes" : "No"}</p>
-                        <p><strong>Created At:</strong> {new Date(detailData.createdAt).toLocaleString()}</p>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full table-auto">
+                            <tbody>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Name</td>
+                                    <td className="px-4 py-2">{detailData.name}</td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Address</td>
+                                    <td className="px-4 py-2">{detailData.address || "-"}</td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">City</td>
+                                    <td className="px-4 py-2">{detailData.city || "-"}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 ) : (
-                    <p>Loading...</p>
+                    <p className="text-center text-gray-500">Loading details...</p>
                 )}
+
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                    >
+                        Close
+                    </button>
+                </div>
             </Modal>
         </div>
     );
