@@ -48,11 +48,13 @@ const Branch: React.FC = () => {
         name: "",
         address: "",
     });
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [detailData, setDetailData] = useState<BranchItem | null>(null);
     const [tooltip, setTooltip] = useState({ text: "", x: 0, y: 0, visible: false });
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-    
+
     useEffect(() => {
         fetchBranches(currentPage, pageSize);
     }, [currentPage, pageSize]);
@@ -62,7 +64,7 @@ const Branch: React.FC = () => {
         setTooltip({
             text,
             x: rect.left,
-            y: rect.top + rect.height + 5, // Letakkan sedikit di bawah elemen
+            y: rect.top + rect.height + 5,
             visible: true,
         });
     };
@@ -165,18 +167,19 @@ const Branch: React.FC = () => {
                         <EyeIcon className="h-5 w-5" />
                         <span>Detail</span>
                     </button>
-        
+
                     <button
                         className="text-green-500 hover:underline flex items-center space-x-2"
                         onClick={() => {
+                            setIsEditModalOpen(true);
                             setEditData(row);
-                            setIsModalOpen(true);
-                        }}
+                        }
+                        }
                     >
                         <PencilIcon className="h-5 w-5" />
                         <span>Edit</span>
                     </button>
-        
+
                     <button
                         className="text-red-500 hover:underline flex items-center space-x-2"
                         onClick={() => handleDelete(row.id)}
@@ -186,10 +189,9 @@ const Branch: React.FC = () => {
                     </button>
                 </div>
             ),
-        }             
+        }
     ];
-    
-    
+
     const handleDetail = (id: number) => {
         fetchDetail(id);
         setIsDetailModalOpen(true);
@@ -266,36 +268,44 @@ const Branch: React.FC = () => {
         <div>
             <h1 className="text-xl font-bold mb-4">Branch</h1>
             <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search.."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-1/2"
-                />
+                <div className="relative w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border px-4 py-2 rounded-md w-full pr-10"
+                    />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+                </div>
                 <button
-                    onClick={() => {
-                        setEditData(null);
-                        setNewBranch({ name: "", address: "" });
-                        setIsModalOpen(true);
-                    }}
+                    onClick={() => setIsCreateModalOpen(true)}
                     className="bg-blue-500 text-white px-6 py-2 rounded-md"
                 >
                     Create
                 </button>
             </div>
 
-            <DataTable
-                columns={columns}
-                data={filteredBranches}
-                pagination
-                paginationServer
-                paginationTotalRows={totalRows}
-                onChangePage={(page) => setCurrentPage(page)}
-                onChangeRowsPerPage={(size) => setPageSize(size)}
-                progressPending={loading}
-            />
-
+            {loading ? (
+                <div className="relative">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <ClipLoader size={50} color="#4B5563" loading={loading} />
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="text-red-500">{error}</div>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={filteredBranches}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalRows}
+                    onChangePage={(page) => setCurrentPage(page)}
+                    onChangeRowsPerPage={(size) => setPageSize(size)}
+                    progressPending={loading}
+                />
+            )}
 
             {tooltip.visible && (
                 <div
@@ -303,7 +313,7 @@ const Branch: React.FC = () => {
                     style={{
                         top: tooltip.y,
                         left: tooltip.x,
-                        transform: "translateY(0)", 
+                        transform: "translateY(0)",
                         zIndex: 1000,
                     }}
                 >
@@ -311,44 +321,91 @@ const Branch: React.FC = () => {
                 </div>
             )}
 
+            {/* Create Branch Modal */}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                isOpen={isCreateModalOpen}
+                onRequestClose={() => setIsCreateModalOpen(false)}
+                contentLabel="Create Branch"
+                className="bg-white rounded-md w-1/3 p-6"
             >
-                <h2 className="text-xl font-bold mb-4">
-                    {editData ? "Edit Branch" : "Create Branch"}
-                </h2>
-                <input
-                    type="text"
-                    placeholder="Branch Name"
-                    value={editData ? editData.name : newBranch.name}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, name: e.target.value })
-                            : setNewBranch({ ...newBranch, name: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <input
-                    type="text"
-                    placeholder="Address"
-                    value={editData ? editData.address ?? "" : newBranch.address ?? ""}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, address: e.target.value })
-                            : setNewBranch({ ...newBranch, address: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <button
-                    onClick={editData ? handleEdit : handleCreate}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
-                >
-                    Save
-                </button>
+                <h2 className="text-xl font-bold mb-4">Create Branch</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Branch Name</label>
+                    <input
+                        type="text"
+                        value={newBranch.name}
+                        onChange={(e) => setNewBranch({ ...newBranch, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Address</label>
+                    <input
+                        type="text"
+                        value={newBranch.address ?? ""}
+                        onChange={(e) => setNewBranch({ ...newBranch, address: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsCreateModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </Modal>
+
+            {/* Edit Branch Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onRequestClose={() => setIsEditModalOpen(false)}
+                contentLabel="Edit Branch"
+                className="bg-white rounded-md w-1/3 p-6"
+            >
+                <h2 className="text-xl font-bold mb-4">Edit Branch</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Branch Name</label>
+                    <input
+                        type="text"
+                        value={editData?.name || ""}
+                        onChange={(e) => setEditData({ ...editData!, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Address</label>
+                    <input
+                        type="text"
+                        value={editData?.address ?? ""}
+                        onChange={(e) => setEditData({ ...editData!, address: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleEdit}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Update
+                    </button>
+                </div>
+            </Modal>
+
+
 
             {/* Detail Modal */}
             <Modal
