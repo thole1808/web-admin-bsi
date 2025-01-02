@@ -39,6 +39,11 @@ const menuGroups = [
         icon: <RolesIcon />,
       },
       {
+        label: 'Users',
+        route: '/users',
+        icon: <RolesIcon />,
+      },
+      {
         label: 'Master',
         route: '/master',
         icon: <DatabaseIcon />,
