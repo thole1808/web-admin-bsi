@@ -35,7 +35,7 @@ const Checklist: React.FC = () => {
     const [formData, setFormData] = useState({
         activityName: "",
         activityType: "",
-        mandatory: false,
+        mandatory: "",
     });
 
     // Fetch data from API
@@ -93,7 +93,7 @@ const Checklist: React.FC = () => {
                 setChecklistData((prevData) =>
                     prevData.map((item) => (item.id === id ? updatedItem.data : item))
                 );
-                setFormData({ activityName: "", activityType: "", mandatory: false });
+                setFormData({ activityName: "", activityType: "", mandatory: "" });
                 setCurrentItem(null);
                 setIsModalOpen(false);
             } else {
@@ -349,11 +349,25 @@ const Checklist: React.FC = () => {
                             <div className="text-sm text-gray-500">Type</div>
                             <div className="mt-1 font-medium">
                                 <select
+                                    value={formData.activityType}
                                     onChange={(e) => setFormData({ ...formData, activityType: e.target.value })}
                                     className="border border-gray-300 text-sm p-3 rounded-md w-full"
                                 >
                                     <option value="SOD">SOD</option>
                                     <option value="EOD">EOD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500 mt-3">Mandatory</div>
+                            <div className="mt-2 font-medium">
+                                <select
+                                    value={formData.mandatory === true ? "true" : "false"}
+                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value === "true" })}
+                                    className="border border-gray-300 text-sm p-3 rounded-md w-full"
+                                >
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
                                 </select>
                             </div>
                         </div>
@@ -371,6 +385,7 @@ const Checklist: React.FC = () => {
                     </div>
                 </div>
             </Modal>
+
 
             {/* Detail Modal */}
             <Modal
