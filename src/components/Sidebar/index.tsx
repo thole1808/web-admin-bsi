@@ -39,11 +39,6 @@ const menuGroups = [
         route: '/roles',
         icon: 'RolesIcon',
       },
-      // {
-      //   label: 'Users',
-      //   route: '/users',
-      //   icon: <UsersIcon />,
-      // },
       {
         label: 'Master',
         route: '/master',
@@ -56,16 +51,21 @@ const menuGroups = [
           { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
+      // {
+      //   label: 'Branches',
+      //   route: '/Branches',
+      //   icon: "BranchIcon",
+      //   children: [
+      //     { label: 'Branch', route: '/branches/branch' },
+      //     { label: 'Service Types', route: '/branches/service-types' },
+      //     { label: 'Counters', route: '/branches/counters' },
+      //     { label: 'Office Hours', route: '/branches/office-hours' },
+      //   ],
+      // },
       {
         label: 'Branches',
-        route: '/Branches',
+        route: '/branches/branch',
         icon: "BranchIcon",
-        children: [
-          { label: 'Branch', route: '/branches/branch' },
-          { label: 'Service Types', route: '/branches/service-types' },
-          { label: 'Counters', route: '/branches/counters' },
-          { label: 'Office Hours', route: '/branches/office-hours' },
-        ],
       },
       {
         label: 'Antrian',
@@ -91,7 +91,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
 
   const handleLogout = () => {
-    signOut(); // Memanggil fungsi signOut dari next-auth untuk keluar
+    signOut(); 
   };
 
   return (
