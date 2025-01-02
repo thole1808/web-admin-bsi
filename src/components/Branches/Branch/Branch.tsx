@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
+import { TableColumn } from 'react-data-table-component';
+import { ClipLoader } from "react-spinners";
+import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -45,11 +48,30 @@ const Branch: React.FC = () => {
         name: "",
         address: "",
     });
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [detailData, setDetailData] = useState<BranchItem | null>(null);
+    const [tooltip, setTooltip] = useState({ text: "", x: 0, y: 0, visible: false });
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
 
     useEffect(() => {
         fetchBranches(currentPage, pageSize);
     }, [currentPage, pageSize]);
+
+    const handleMouseEnter = (text: string, e: React.MouseEvent) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        setTooltip({
+            text,
+            x: rect.left,
+            y: rect.top + rect.height + 5,
+            visible: true,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip({ text: "", x: 0, y: 0, visible: false });
+    };
 
     const fetchBranches = async (page: number, size: number) => {
         try {
@@ -86,77 +108,105 @@ const Branch: React.FC = () => {
         [search, branches]
     );
 
-    const columns = [
+    const columns: TableColumn<BranchItem>[] = [
         {
             name: "No.",
             selector: (_: BranchItem, index: number) =>
                 (currentPage - 1) * pageSize + index + 1,
             sortable: false,
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         {
             name: "Code",
             selector: (row: BranchItem) => row.code,
             sortable: true,
+            minWidth: "100px",
+            grow: 0,
         },
         {
             name: "Branch Name",
-            selector: (row: BranchItem) => row.name,
+            cell: (row: BranchItem) => (
+                <div
+                    onMouseEnter={(e) => handleMouseEnter(row.name, e)}
+                    onMouseLeave={handleMouseLeave}
+                    className="truncate w-40"
+                >
+                    {row.name}
+                </div>
+            ),
             sortable: true,
+            minWidth: "150px",
+            grow: 1,
         },
         {
             name: "Address",
-            selector: (row: BranchItem) => row.address || "-",
+            cell: (row: BranchItem) => (
+                <div
+                    onMouseEnter={(e) => handleMouseEnter(row.address || "-", e)}
+                    onMouseLeave={handleMouseLeave}
+                    className="truncate w-60"
+                >
+                    {row.address || "-"}
+                </div>
+            ),
             sortable: false,
+            minWidth: "300px",
+            grow: 2,
         },
         {
             name: "Actions",
+            minWidth: "150px",
+            grow: 1.5,
             cell: (row: BranchItem) => (
-                <div className="flex space-x-2">
+                <div className="flex space-x-4">
                     <button
                         onClick={() => handleDetail(row.id)}
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-500 hover:underline flex items-center space-x-2"
                     >
-                        Detail
+                        <EyeIcon className="h-5 w-5" />
+                        <span>Detail</span>
                     </button>
 
                     <button
-                        className="text-green-500 hover:underline"
+                        className="text-green-500 hover:underline flex items-center space-x-2"
                         onClick={() => {
+                            setIsEditModalOpen(true);
                             setEditData(row);
-                            setIsModalOpen(true);
-                        }}
+                        }
+                        }
                     >
-                        Edit
+                        <PencilIcon className="h-5 w-5" />
+                        <span>Edit</span>
                     </button>
+
                     <button
-                        className="text-red-500 hover:underline"
+                        className="text-red-500 hover:underline flex items-center space-x-2"
                         onClick={() => handleDelete(row.id)}
                     >
-                        Delete
+                        <TrashIcon className="h-5 w-5" />
+                        <span>Delete</span>
                     </button>
                 </div>
             ),
-        },
+        }
     ];
 
     const handleDetail = (id: number) => {
         fetchDetail(id);
+        setIsDetailModalOpen(true);
     };
 
     const fetchDetail = async (id: number) => {
         try {
             setLoading(true);
             const response = await fetch(`/api/branches/branch/${id}`);
-
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || "Failed to fetch branch details.");
             }
-
             const data = await response.json();
-            console.log("Fetched Data:", data); // Log the full response
-            setDetailData(data.data); // Ensure data is correctly passed
-            setIsModalOpen(true); // Open the modal
+            setDetailData(data.data);
         } catch (err: any) {
             console.error("Fetch error:", err);
             alert(err.message || "Error occurred while fetching branch details.");
@@ -164,7 +214,6 @@ const Branch: React.FC = () => {
             setLoading(false);
         }
     };
-
 
     const handleCreate = async () => {
         try {
@@ -219,100 +268,184 @@ const Branch: React.FC = () => {
         <div>
             <h1 className="text-xl font-bold mb-4">Branch</h1>
             <div className="flex justify-between mb-4">
-                <input
-                    type="text"
-                    placeholder="Search.."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border px-4 py-2 rounded-md w-1/2"
-                />
+                <div className="relative w-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="border px-4 py-2 rounded-md w-full pr-10"
+                    />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
+                </div>
                 <button
-                    onClick={() => {
-                        setEditData(null);
-                        setNewBranch({ name: "", address: "" });
-                        setIsModalOpen(true);
-                    }}
+                    onClick={() => setIsCreateModalOpen(true)}
                     className="bg-blue-500 text-white px-6 py-2 rounded-md"
                 >
                     Create
                 </button>
             </div>
 
-            <DataTable
-                columns={columns}
-                data={filteredBranches}
-                pagination
-                paginationServer
-                paginationTotalRows={totalRows}
-                onChangePage={(page) => setCurrentPage(page)}
-                onChangeRowsPerPage={(size) => setPageSize(size)}
-                progressPending={loading}
-            />
+            {loading ? (
+                <div className="relative">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <ClipLoader size={50} color="#4B5563" loading={loading} />
+                    </div>
+                </div>
+            ) : error ? (
+                <div className="text-red-500">{error}</div>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={filteredBranches}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalRows}
+                    onChangePage={(page) => setCurrentPage(page)}
+                    onChangeRowsPerPage={(size) => setPageSize(size)}
+                    progressPending={loading}
+                />
+            )}
 
-            <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
-            >
-                <h2 className="text-xl font-bold mb-4">
-                    {editData ? "Edit Branch" : "Create Branch"}
-                </h2>
-                <input
-                    type="text"
-                    placeholder="Branch Name"
-                    value={editData ? editData.name : newBranch.name}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, name: e.target.value })
-                            : setNewBranch({ ...newBranch, name: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <input
-                    type="text"
-                    placeholder="Address"
-                    value={editData ? editData.address ?? "" : newBranch.address ?? ""}
-                    onChange={(e) =>
-                        editData
-                            ? setEditData({ ...editData, address: e.target.value })
-                            : setNewBranch({ ...newBranch, address: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border rounded-md mb-4"
-                />
-                <button
-                    onClick={editData ? handleEdit : handleCreate}
-                    className="bg-green-500 text-white px-4 py-2 rounded-md mt-2"
+            {tooltip.visible && (
+                <div
+                    className="absolute bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-md"
+                    style={{
+                        top: tooltip.y,
+                        left: tooltip.x,
+                        transform: "translateY(0)",
+                        zIndex: 1000,
+                    }}
                 >
-                    Save
-                </button>
+                    {tooltip.text}
+                </div>
+            )}
+
+            {/* Create Branch Modal */}
+            <Modal
+                isOpen={isCreateModalOpen}
+                onRequestClose={() => setIsCreateModalOpen(false)}
+                contentLabel="Create Branch"
+                className="bg-white rounded-md w-1/3 p-6"
+            >
+                <h2 className="text-xl font-bold mb-4">Create Branch</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Branch Name</label>
+                    <input
+                        type="text"
+                        value={newBranch.name}
+                        onChange={(e) => setNewBranch({ ...newBranch, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Address</label>
+                    <input
+                        type="text"
+                        value={newBranch.address ?? ""}
+                        onChange={(e) => setNewBranch({ ...newBranch, address: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsCreateModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </Modal>
+
+            {/* Edit Branch Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onRequestClose={() => setIsEditModalOpen(false)}
+                contentLabel="Edit Branch"
+                className="bg-white rounded-md w-1/3 p-6"
+            >
+                <h2 className="text-xl font-bold mb-4">Edit Branch</h2>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Branch Name</label>
+                    <input
+                        type="text"
+                        value={editData?.name || ""}
+                        onChange={(e) => setEditData({ ...editData!, name: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold">Address</label>
+                    <input
+                        type="text"
+                        value={editData?.address ?? ""}
+                        onChange={(e) => setEditData({ ...editData!, address: e.target.value })}
+                        className="border px-4 py-2 rounded-md w-full"
+                    />
+                </div>
+                <div className="flex justify-end space-x-2">
+                    <button
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleEdit}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Update
+                    </button>
+                </div>
+            </Modal>
+
+
 
             {/* Detail Modal */}
             <Modal
-                isOpen={isModalOpen}
-                onRequestClose={() => {
-                    setIsModalOpen(false);
-                    setDetailData(null); // Reset data when modal is closed
-                }}
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <h2 className="text-xl font-bold mb-4">Branch Detail</h2>
+                <h2 className="text-2xl font-semibold text-center mb-6">Branch Details</h2>
                 {detailData ? (
-                    <div>
-                        <p><strong>Unit:</strong> {detailData.unit}</p>
-                        <p><strong>Code:</strong> {detailData.code}</p>
-                        <p><strong>Name:</strong> {detailData.name}</p>
-                        <p><strong>Address:</strong> {detailData.address}</p>
-                        <p><strong>Region:</strong> {detailData.regionName}</p>
-                        <p><strong>Area:</strong> {detailData.areaName}</p>
-                        <p><strong>Active:</strong> {detailData.active ? "Yes" : "No"}</p>
-                        <p><strong>Created At:</strong> {new Date(detailData.createdAt).toLocaleString()}</p>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full table-auto">
+                            <tbody>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Name</td>
+                                    <td className="px-4 py-2">{detailData.name}</td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">Address</td>
+                                    <td className="px-4 py-2">{detailData.address || "-"}</td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="px-4 py-2 font-medium text-gray-600">City</td>
+                                    <td className="px-4 py-2">{detailData.city || "-"}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 ) : (
-                    <p>Loading...</p>
+                    <p className="text-center text-gray-500">Loading details...</p>
                 )}
+
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                    >
+                        Close
+                    </button>
+                </div>
             </Modal>
         </div>
     );

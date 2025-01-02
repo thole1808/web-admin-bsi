@@ -12,6 +12,7 @@ import ReportingIcon from "@/components/Icon/ReportingIcon";
 import CabangIcon from "@/components/Icon/CabangIcon";
 import BranchIcon from "@/components/Icon/BranchIcon";
 import RolesIcon from "@/components/Icon/RolesIcon";
+import UsersIcon from "@/components/Icon/UsersIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { signOut } from "next-auth/react";
@@ -38,6 +39,11 @@ const menuGroups = [
         route: '/roles',
         icon: 'RolesIcon',
       },
+      // {
+      //   label: 'Users',
+      //   route: '/users',
+      //   icon: <UsersIcon />,
+      // },
       {
         label: 'Master',
         route: '/master',
