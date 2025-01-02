@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Modal from "react-modal";
+import { TableColumn } from 'react-data-table-component';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -46,10 +47,35 @@ const Branch: React.FC = () => {
         address: "",
     });
     const [detailData, setDetailData] = useState<BranchItem | null>(null);
-
+    const [tooltip, setTooltip] = useState({ text: "", x: 0, y: 0, visible: false });
+    
     useEffect(() => {
         fetchBranches(currentPage, pageSize);
     }, [currentPage, pageSize]);
+
+
+    // const handleMouseEnter = (text: string, e: React.MouseEvent) => {
+    //     const { clientX, clientY } = e;
+    //     setTooltip({ text, x: clientX, y: clientY, visible: true });
+    // };
+
+    // const handleMouseLeave = () => {
+    //     setTooltip({ text: "", x: 0, y: 0, visible: false });
+    // };
+
+    const handleMouseEnter = (text: string, e: React.MouseEvent) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        setTooltip({
+            text,
+            x: rect.left,
+            y: rect.top + rect.height + 5, // Letakkan sedikit di bawah elemen
+            visible: true,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip({ text: "", x: 0, y: 0, visible: false });
+    };
 
     const fetchBranches = async (page: number, size: number) => {
         try {
@@ -86,30 +112,56 @@ const Branch: React.FC = () => {
         [search, branches]
     );
 
-    const columns = [
+    const columns: TableColumn<BranchItem>[] = [
         {
             name: "No.",
             selector: (_: BranchItem, index: number) =>
                 (currentPage - 1) * pageSize + index + 1,
             sortable: false,
+            maxWidth: "1px",
+            minWidth: "70px",
         },
         {
             name: "Code",
             selector: (row: BranchItem) => row.code,
             sortable: true,
+            minWidth: "100px",
+            grow: 0,
         },
         {
             name: "Branch Name",
-            selector: (row: BranchItem) => row.name,
+            cell: (row: BranchItem) => (
+                <div
+                    onMouseEnter={(e) => handleMouseEnter(row.name, e)}
+                    onMouseLeave={handleMouseLeave}
+                    className="truncate w-40"
+                >
+                    {row.name}
+                </div>
+            ),
             sortable: true,
+            minWidth: "150px",
+            grow: 1,
         },
         {
             name: "Address",
-            selector: (row: BranchItem) => row.address || "-",
+            cell: (row: BranchItem) => (
+                <div
+                    onMouseEnter={(e) => handleMouseEnter(row.address || "-", e)}
+                    onMouseLeave={handleMouseLeave}
+                    className="truncate w-60"
+                >
+                    {row.address || "-"}
+                </div>
+            ),
             sortable: false,
+            minWidth: "300px",
+            grow: 2,
         },
         {
             name: "Actions",
+            minWidth: "150px",
+            grow: 1.5,
             cell: (row: BranchItem) => (
                 <div className="flex space-x-2">
                     <button
@@ -118,7 +170,7 @@ const Branch: React.FC = () => {
                     >
                         Detail
                     </button>
-
+    
                     <button
                         className="text-green-500 hover:underline"
                         onClick={() => {
@@ -138,6 +190,7 @@ const Branch: React.FC = () => {
             ),
         },
     ];
+    
 
     const handleDetail = (id: number) => {
         fetchDetail(id);
@@ -248,6 +301,21 @@ const Branch: React.FC = () => {
                 onChangeRowsPerPage={(size) => setPageSize(size)}
                 progressPending={loading}
             />
+
+
+            {tooltip.visible && (
+                <div
+                    className="absolute bg-gray-800 text-white text-xs rounded-md px-2 py-1 shadow-md"
+                    style={{
+                        top: tooltip.y,
+                        left: tooltip.x,
+                        transform: "translateY(0)", // Dekatkan dengan elemen
+                        zIndex: 1000,
+                    }}
+                >
+                    {tooltip.text}
+                </div>
+            )}
 
             <Modal
                 isOpen={isModalOpen}

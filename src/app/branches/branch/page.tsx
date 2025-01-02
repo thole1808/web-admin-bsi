@@ -10,12 +10,12 @@ export const metadata: Metadata = {
         "Web Admin BSI - Template",
     description: "Web Admin BSI",
 };
-// const NoSSR = dynamic(() => import('@/components/no-ssr'), { ssr: false });
+
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
             <div className="flex flex-col gap-10">
-                {/* <Breadcrumb pageName="Antrian"/> */}
+                {/* <Breadcrumb pageName="Branch"/> */}
                 {/* # */}
                 <Branch />
             </div>
