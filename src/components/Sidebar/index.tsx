@@ -9,7 +9,6 @@ import DatabaseIcon from "@/components/Icon/DatabaseIcon";
 import DashboardIcon from "@/components/Icon/DashboardIcon";
 import AntrianIcon from "@/components/Icon/AntrianIcon";
 import ReportingIcon from "@/components/Icon/ReportingIcon";
-import CabangIcon from "@/components/Icon/CabangIcon";
 import BranchIcon from "@/components/Icon/BranchIcon";
 import RolesIcon from "@/components/Icon/RolesIcon";
 import UsersIcon from "@/components/Icon/UsersIcon";
@@ -51,17 +50,6 @@ const menuGroups = [
           { label: 'National Holiday', route: '/master/national-holiday' },
         ],
       },
-      // {
-      //   label: 'Branches',
-      //   route: '/Branches',
-      //   icon: "BranchIcon",
-      //   children: [
-      //     { label: 'Branch', route: '/branches/branch' },
-      //     { label: 'Service Types', route: '/branches/service-types' },
-      //     { label: 'Counters', route: '/branches/counters' },
-      //     { label: 'Office Hours', route: '/branches/office-hours' },
-      //   ],
-      // },
       {
         label: 'Branches',
         route: '/branches/branch',
@@ -71,11 +59,6 @@ const menuGroups = [
         label: 'Antrian',
         route: '/antrian',
         icon: "AntrianIcon",
-      },
-      {
-        label: 'Cabang',
-        route: '/cabang',
-        icon: "CabangIcon",
       },
       {
         label: 'Reporting',

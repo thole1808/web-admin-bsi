@@ -70,7 +70,7 @@ const Checklist: React.FC = () => {
             if (response.ok) {
                 const newItem = await response.json();
                 setChecklistData((prevData) => [...prevData, newItem.data]);
-                setFormData({ activityName: "", activityType: "", mandatory: false });
+                setFormData({ activityName: "", activityType: "", mandatory: "" });
                 setIsCreateModalOpen(false);
             } else {
                 alert("Failed to create activity.");
@@ -219,7 +219,7 @@ const Checklist: React.FC = () => {
                             setFormData({
                                 activityName: row.activityName,
                                 activityType: row.activityType,
-                                mandatory: row.mandatory,
+                                mandatory: row.mandatory.toString(),
                             });
                             setCurrentItem(row);
                             setIsModalOpen(true);
@@ -362,13 +362,14 @@ const Checklist: React.FC = () => {
                             <div className="text-sm text-gray-500 mt-3">Mandatory</div>
                             <div className="mt-2 font-medium">
                                 <select
-                                    value={formData.mandatory === true ? "true" : "false"}
-                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value === "true" })}
+                                    value={formData.mandatory === "true" ? "true" : "false"}
+                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value })}
                                     className="border border-gray-300 text-sm p-3 rounded-md w-full"
                                 >
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </select>
+
                             </div>
                         </div>
                     </div>
