@@ -17,6 +17,7 @@ interface MatrixItem {
   modelType: string;
   event: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 const ApprovalMatrix: React.FC = () => {
@@ -386,7 +387,6 @@ const ApprovalMatrix: React.FC = () => {
 
         {detailData ? (
           <div className="grid gap-4">
-            {/* Detail Approval Matrix */}
             <div>
               <div className="text-sm text-gray-500">Model Type</div>
               <div className="mt-1 font-medium">{detailData.modelType}</div>
@@ -409,17 +409,11 @@ const ApprovalMatrix: React.FC = () => {
                   : "N/A"}
               </div>
             </div>
-            <div>
-              <div className="text-sm text-gray-500">Mandatory</div>
-              <div className="mt-1 font-medium">{detailData.mandatory ? "Yes" : "No"}</div>
-            </div>
           </div>
         ) : (
           <p className="text-center text-gray-500">No details available.</p>
         )}
       </Modal>
-
-
     </div>
   );
 };
