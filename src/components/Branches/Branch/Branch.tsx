@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
 import { ClipLoader } from "react-spinners";
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -156,38 +156,31 @@ const Branch: React.FC = () => {
         },
         {
             name: "Actions",
-            minWidth: "150px",
-            grow: 1.5,
+            right: true,
             cell: (row: BranchItem) => (
-                <div className="flex space-x-4">
-                    <button
-                        onClick={() => handleDetail(row.id)}
-                        className="text-blue-500 hover:underline flex items-center space-x-2"
-                    >
-                        <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
-                    </button>
-
-                    <button
-                        className="text-green-500 hover:underline flex items-center space-x-2"
-                        onClick={() => {
-                            setIsEditModalOpen(true);
-                            setEditData(row);
-                        }
-                        }
-                    >
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Edit</span>
-                    </button>
-
-                    <button
-                        className="text-red-500 hover:underline flex items-center space-x-2"
-                        onClick={() => handleDelete(row.id)}
-                    >
-                        <TrashIcon className="h-5 w-5" />
-                        <span>Delete</span>
-                    </button>
-                </div>
+              <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
+                <button
+                  onClick={() => handleDetail(row.id)}
+                  className="text-blue-500 hover:text-blue-700 p-1.5"
+                >
+                  <EyeIcon className="h-5 w-5" />
+                </button>
+                <button
+                    onClick={() => {
+                        setIsEditModalOpen(true);
+                        setEditData(row);
+                    }}
+                  className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                >
+                  <PencilSquareIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => handleDelete(row.id)}
+                  className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+              </div>
             ),
         }
     ];
@@ -267,6 +260,8 @@ const Branch: React.FC = () => {
     return (
         <div>
             <h1 className="text-xl font-bold mb-4">Branch</h1>
+
+            {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
                 <div className="relative w-1/2">
                     <input
@@ -274,16 +269,18 @@ const Branch: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
-                <button
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                >
-                    Create
-                </button>
+                <div>
+                    <button
+                            onClick={() => setIsCreateModalOpen(true)}
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -414,38 +411,34 @@ const Branch: React.FC = () => {
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <h2 className="text-2xl font-semibold text-center mb-6">Branch Details</h2>
-                {detailData ? (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto">
-                            <tbody>
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Name</td>
-                                    <td className="px-4 py-2">{detailData.name}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Address</td>
-                                    <td className="px-4 py-2">{detailData.address || "-"}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">City</td>
-                                    <td className="px-4 py-2">{detailData.city || "-"}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                ) : (
-                    <p className="text-center text-gray-500">Loading details...</p>
-                )}
-
-                <div className="flex justify-end mt-6">
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-center">Branch Details</h2>
                     <button
                         onClick={() => setIsDetailModalOpen(false)}
-                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                        className="text-gray-500 hover:text-gray-800 transition"
                     >
-                        Close
+                        ✖
                     </button>
                 </div>
+
+                {detailData ? (
+                    <div className="grid gap-4">
+                        <div>
+                            <div className="text-sm text-gray-500">Name</div>
+                            <div className="mt-1 font-medium">{detailData.name || "N/A"}</div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Address</div>
+                            <div className="mt-1 font-medium">{detailData.address || "-"}</div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">City</div>
+                            <div className="mt-1 mb-3 font-medium">{detailData.city || "-"}</div>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">Loading details...</p>
+                )}
             </Modal>
         </div>
     );
