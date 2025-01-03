@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
 import { ClipLoader } from "react-spinners";
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
     ssr: false,
@@ -91,6 +91,7 @@ const ServicesTypes: React.FC = () => {
         );
     }, [search, servicesData]);
 
+
     const columns = [
         {
             name: "No.",
@@ -109,35 +110,26 @@ const ServicesTypes: React.FC = () => {
         },
         {
             name: "Actions",
-            minWidth: "50px",
-            grow: 1,
+            right: true,
             cell: (row: ServiceTypeItem) => (
-                <div className="flex space-x-2">
-                    {/* Detail Button */}
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button
                         onClick={() => fetchChecklistDetail(row.id)}
-                        className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
                     >
                         <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
                     </button>
-
-                    {/* Edit Button */}
                     <button
                         onClick={() => handleEditClick(row)}
                         className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Edit</span>
+                        <PencilSquareIcon className="h-5 w-5" />
                     </button>
-
-                    {/* Delete Button */}
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm"
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
                         <TrashIcon className="h-5 w-5" />
-                        <span>Delete</span>
                     </button>
                 </div>
             ),
@@ -198,14 +190,14 @@ const ServicesTypes: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
                 <div>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
@@ -320,7 +312,7 @@ const ServicesTypes: React.FC = () => {
                                 onClick={handleSave}
                                 className="bg-blue-500 text-white px-6 py-2 rounded-md"
                             >
-                                Save
+                                Update
                             </button>
                         </div>
                     </div>
@@ -331,68 +323,30 @@ const ServicesTypes: React.FC = () => {
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
-                contentLabel="Detail Service Type"
-                className="modal"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <div className="modal-content">
-                    <h2 className="text-xl font-bold text-center mb-4">Service Type Detail</h2>
-
-                    {currentItem ? (
-                        <table className="table-auto w-full border-collapse border border-gray-300">
-                            <tbody>
-                                {/* <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.code}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">RSV Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.rsvCode || "N/A"}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Product Code</td>
-                                    <td className="px-4 py-2 border">{currentItem.productCode || "N/A"}</td>
-                                </tr> */}
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Name</td>
-                                    <td className="px-4 py-2 border">{currentItem.name}</td>
-                                </tr>
-                                {/* <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Prefix</td>
-                                    <td className="px-4 py-2 border">{currentItem.prefix}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Parent ID</td>
-                                    <td className="px-4 py-2 border">{currentItem.parentId}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Min Duration</td>
-                                    <td className="px-4 py-2 border">{currentItem.slaMinDuration} minutes</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">SLA Max Duration</td>
-                                    <td className="px-4 py-2 border">{currentItem.slaMaxDuration} minutes</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Form Fields</td>
-                                    <td className="px-4 py-2 border">{currentItem.formFields || "N/A"}</td>
-                                </tr> */}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>Loading...</p>
-                    )}
-
-                    <div className="flex justify-end mt-6">
-                        <button
-                            onClick={() => setIsDetailModalOpen(false)}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-                        >
-                            Close
-                        </button>
-                    </div>
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-center">Service Type Detail</h2>
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
+                    >
+                        ✖
+                    </button>
                 </div>
-            </Modal>
 
+                {currentItem ? (
+                    <div className="grid gap-4">
+                        <div>
+                            <div className="text-sm text-gray-500">Name</div>
+                            <div className="mt-1 font-medium">{currentItem.name || "N/A"}</div>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">Loading...</p>
+                )}
+            </Modal>
         </div>
     );
 };
