@@ -155,7 +155,7 @@ const NationalHolidayMessages: React.FC = () => {
         {
             name: "Actions",
             right: true,
-            cell: (row: StatusItem) => (
+            cell: (row: NationalHolidayItem) => (
                 <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button
                         onClick={() => handleDetail(row)}
@@ -318,42 +318,6 @@ const NationalHolidayMessages: React.FC = () => {
             </Modal>
 
             {/* Detail Modal */}
-            {/* <Modal
-                isOpen={isDetailModalOpen}
-                onRequestClose={() => setIsDetailModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
-            >
-                <h2 className="text-2xl font-semibold text-center mb-6">Holiday Detail</h2>
-                {holidayDetail ? (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto">
-                            <tbody>
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Holiday Name</td>
-                                    <td className="px-4 py-2">{holidayDetail.name}</td>
-                                </tr>
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Date</td>
-                                    <td className="px-4 py-2">{new Date(holidayDetail.date).toLocaleDateString()}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                ) : (
-                    <p className="text-center text-gray-500">No details available.</p>
-                )}
-
-                <div className="flex justify-end mt-6">
-                    <button
-                        onClick={() => setIsDetailModalOpen(false)}
-                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
-                    >
-                        Close
-                    </button>
-                </div>
-            </Modal> */}
-
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
