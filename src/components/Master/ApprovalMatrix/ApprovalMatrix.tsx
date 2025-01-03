@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import Modal from "react-modal";
 import { TableColumn } from 'react-data-table-component';
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { ClipLoader } from "react-spinners";
 
 const DataTable = dynamic(() => import("react-data-table-component"), {
@@ -95,8 +95,9 @@ const ApprovalMatrix: React.FC = () => {
       name: "Model Type",
       selector: (row: MatrixItem) => row.modelType,
       sortable: true,
-      minWidth: "5px",
-      grow: 1,
+      wrap: true,
+      maxWidth: "200px",
+      minWidth: "70px",
     },
     {
       name: "Event",
@@ -107,32 +108,27 @@ const ApprovalMatrix: React.FC = () => {
     },
     {
       name: "Actions",
-      grow: 2,
+      right: true,
       cell: (row: MatrixItem) => (
-        <div className="flex flex-wrap gap-2 justify-start w-full">
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-            <button
-              onClick={() => fetchApprovalDetail(row.id)}
-              className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-            >
-              <EyeIcon className="h-5 w-5" />
-              <span>Detail</span>
-            </button>
-            <button
-              onClick={() => handleEdit(row)}
-              className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-            >
-              <PencilIcon className="h-5 w-5" />
-              <span>Edit</span>
-            </button>
-            <button
-              onClick={() => handleDelete(row.id)}
-              className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-            >
-              <TrashIcon className="h-5 w-5" />
-              <span>Delete</span>
-            </button>
-          </div>
+        <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
+          <button
+            onClick={() => fetchApprovalDetail(row.id)}
+            className="text-blue-500 hover:text-blue-700 p-1.5"
+          >
+            <EyeIcon className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => handleEdit(row)}
+            className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+          >
+            <PencilSquareIcon className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => handleDelete(row.id)}
+            className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+          >
+            <TrashIcon className="h-5 w-5" />
+          </button>
         </div>
       ),
     },
@@ -242,21 +238,23 @@ const ApprovalMatrix: React.FC = () => {
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border px-4 py-2 rounded-md w-full pr-10"
+            className="px-4 py-2 rounded-md w-full pr-10 border"
           />
           <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
         </div>
-        <button
-          onClick={() => {
-            setEditData(null);
-            setNewMatrix({ modelType: "", event: "" });
-            setIsCreateModalOpen(true); 
-            setIsModalOpen(false); 
-          }}
-          className="bg-blue-500 text-white px-6 py-2 rounded-md"
-        >
-          Create
-        </button>
+        <div>
+          <button
+            onClick={() => {
+              setEditData(null);
+              setNewMatrix({ modelType: "", event: "" });
+              setIsCreateModalOpen(true);
+              setIsModalOpen(false);
+            }}
+            className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
+          >
+            Create
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -376,47 +374,51 @@ const ApprovalMatrix: React.FC = () => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
       >
-        <h2 className="text-2xl font-semibold text-center mb-6">Approval Matrix Detail</h2>
+        <div className="modal-header flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Approval Matrix Detail</h2>
+          <button
+            onClick={() => setIsDetailModalOpen(false)}
+            className="text-gray-500 hover:text-gray-800 transition"
+          >
+            ✖
+          </button>
+        </div>
 
         {detailData ? (
-          <div className="overflow-x-auto">
-            {/* Tabel untuk menampilkan detail approval matrix */}
-            <table className="min-w-full table-auto">
-              <tbody>
-                {/* Row untuk Model Type */}
-                <tr className="border-b">
-                  <td className="px-4 py-2 font-medium text-gray-600">Model Type</td>
-                  <td className="px-4 py-2">{detailData.modelType}</td>
-                </tr>
-                {/* Row untuk Event */}
-                <tr className="border-b">
-                  <td className="px-4 py-2 font-medium text-gray-600">Event</td>
-                  <td className="px-4 py-2">{detailData.event}</td>
-                </tr>
-                {/* Row untuk Created At */}
-                <tr className="border-b">
-                  <td className="px-4 py-2 font-medium text-gray-600">Created At</td>
-                  <td className="px-4 py-2">
-                    {new Date(detailData.createdAt).toLocaleString()}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="grid gap-4">
+            {/* Detail Approval Matrix */}
+            <div>
+              <div className="text-sm text-gray-500">Model Type</div>
+              <div className="mt-1 font-medium">{detailData.modelType}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Event</div>
+              <div className="mt-1 font-medium">{detailData.event}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Created At</div>
+              <div className="mt-1 font-medium">
+                {new Date(detailData.createdAt).toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Updated At</div>
+              <div className="mt-1 font-medium">
+                {detailData.updatedAt
+                  ? new Date(detailData.updatedAt).toLocaleString()
+                  : "N/A"}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Mandatory</div>
+              <div className="mt-1 font-medium">{detailData.mandatory ? "Yes" : "No"}</div>
+            </div>
           </div>
         ) : (
           <p className="text-center text-gray-500">No details available.</p>
         )}
-
-        {/* Button to Close Modal */}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={() => setIsDetailModalOpen(false)} // Menutup modal
-            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
-          >
-            Close
-          </button>
-        </div>
       </Modal>
+
 
     </div>
   );

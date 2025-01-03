@@ -392,64 +392,63 @@ const Checklist: React.FC = () => {
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
-                contentLabel="Detail"
-                className="modal"
-            >
-                <div className="modal-content">
-                    <div className="flex justify-between items-start">
-                        <h2 className="text-lg font-bold mb-4">Checklist Detail</h2>
-                        <a href="#"
-                            onClick={() => setIsDetailModalOpen(false)}
-                            className="text-gray-500 hover:underline"
-                        ><span>Close</span></a>
-                    </div>
-
-
-                    {currentItem ? (
-                        <div className="grid gap-4">
-                            <div>
-                                <div className="text-sm text-gray-500">Activity Name</div>
-                                <div className="mt-1 font-medium">{currentItem.activityName}</div>
-                            </div>
-                            <div>
-                                <div className="text-sm text-gray-500">Activity Type</div>
-                                <div className="mt-1 font-medium">{currentItem.activityType}</div>
-                            </div>
-                            <div>
-                                <div className="text-sm text-gray-500">Mandatory</div>
-                                <div className="mt-1 font-medium">{currentItem.mandatory ? "Yes" : "No"}</div>
-                            </div>
-                            <div>
-                                <div className="text-sm text-gray-500">Created At</div>
-                                <div className="mt-1 font-medium">
-                                    {new Intl.DateTimeFormat('id-ID', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: true,
-                                    }).format(new Date(currentItem.createdAt))}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-sm text-gray-500">Updated At</div>
-                                <div className="mt-1 font-medium">
-                                    {new Intl.DateTimeFormat('id-ID', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: true,
-                                    }).format(new Date(currentItem.updatedAt))}
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
+                >
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold">Checklist Detail</h2>
+                    <button
+                    onClick={() => setIsDetailModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-800 transition"
+                    >
+                    ✖
+                    </button>
                 </div>
+
+                {currentItem ? (
+                    <div className="grid gap-4">
+                    <div>
+                        <div className="text-sm text-gray-500">Activity Name</div>
+                        <div className="mt-1 font-medium">{currentItem.activityName}</div>
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-500">Activity Type</div>
+                        <div className="mt-1 font-medium">{currentItem.activityType}</div>
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-500">Mandatory</div>
+                        <div className="mt-1 font-medium">{currentItem.mandatory ? "Yes" : "No"}</div>
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-500">Created At</div>
+                        <div className="mt-1 font-medium">
+                        {new Intl.DateTimeFormat("id-ID", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                        }).format(new Date(currentItem.createdAt))}
+                        </div>
+                    </div>
+                    <div>
+                        <div className="text-sm text-gray-500">Updated At</div>
+                        <div className="mt-1 font-medium">
+                        {new Intl.DateTimeFormat("id-ID", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                        }).format(new Date(currentItem.updatedAt))}
+                        </div>
+                    </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500">Loading...</p>
+                )}
             </Modal>
         </div>
     );
