@@ -321,7 +321,7 @@ const StatusMessages: React.FC = () => {
                         </div>
                         <div>
                             <div className="text-sm text-gray-500">Message</div>
-                            <div className="mt-1 font-medium">{currentItem.message || "N/A"}</div>
+                            <div className="mt-1 mb-3 font-medium">{currentItem.message || "N/A"}</div>
                         </div>
                     </div>
                 ) : (

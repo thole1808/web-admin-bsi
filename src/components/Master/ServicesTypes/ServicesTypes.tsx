@@ -340,7 +340,7 @@ const ServicesTypes: React.FC = () => {
                     <div className="grid gap-4">
                         <div>
                             <div className="text-sm text-gray-500">Name</div>
-                            <div className="mt-1 font-medium">{currentItem.name || "N/A"}</div>
+                            <div className="mt-1 mb-3 font-medium">{currentItem.name || "N/A"}</div>
                         </div>
                     </div>
                 ) : (

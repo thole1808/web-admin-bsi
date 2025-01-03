@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { useSession } from "next-auth/react";
 import { ClipLoader } from "react-spinners";
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -154,38 +154,41 @@ const NationalHolidayMessages: React.FC = () => {
         },
         {
             name: "Actions",
-            cell: (row: NationalHolidayItem) => (
-                <div className="flex space-x-2">
-                    <button onClick={() => handleDetail(row)} className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto">
+            right: true,
+            cell: (row: StatusItem) => (
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
+                    <button
+                        onClick={() => handleDetail(row)}
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
+                    >
                         <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
                     </button>
                     <button
-                        className="text-green-500 hover:underline flex items-center space-x-1"
                         onClick={() => {
                             setEditData(row);
                             setIsEditModalOpen(true); 
                         }}
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Edit</span>
+                        <PencilSquareIcon className="h-5 w-5" />
                     </button>
                     <button
-                        className="flex items-center text-red-500 hover:text-red-700 text-xs sm:text-sm px-2 py-1"
                         onClick={() => handleDelete(row.id)}
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
                         <TrashIcon className="h-5 w-5" />
-                        <span>Delete</span>
                     </button>
                 </div>
             ),
-        },
+        }
+
     ];
 
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">National Holidays</h1>
 
+            {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
                 <div className="relative w-1/2">
                     <input
@@ -193,7 +196,7 @@ const NationalHolidayMessages: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
@@ -204,12 +207,13 @@ const NationalHolidayMessages: React.FC = () => {
                             setNewHoliday({ date: "", name: "" });
                             setIsCreateModalOpen(true); 
                         }}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
                 </div>
             </div>
+
 
             {loading ? (
                 <div className="relative">
@@ -314,7 +318,7 @@ const NationalHolidayMessages: React.FC = () => {
             </Modal>
 
             {/* Detail Modal */}
-            <Modal
+            {/* <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
@@ -348,8 +352,43 @@ const NationalHolidayMessages: React.FC = () => {
                         Close
                     </button>
                 </div>
-            </Modal>
+            </Modal> */}
 
+            <Modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
+            >
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-center">Holiday Detail</h2>
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
+                    >
+                        ✖
+                    </button>
+                </div>
+
+                {holidayDetail ? (
+                    <div className="grid gap-4">
+                        <div>
+                            <div className="text-sm text-gray-500">Holiday Name</div>
+                            <div className="mt-1 font-medium">{holidayDetail.name || "N/A"}</div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Date</div>
+                            <div className="mt-1 mb-3 font-medium">
+                                {holidayDetail.date
+                                    ? new Date(holidayDetail.date).toLocaleDateString()
+                                    : "N/A"}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No details available.</p>
+                )}
+            </Modal>
         </div>
     );
 };

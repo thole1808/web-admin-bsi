@@ -403,7 +403,7 @@ const ApprovalMatrix: React.FC = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Updated At</div>
-              <div className="mt-1 font-medium">
+              <div className="mt-1 mb-3 font-medium">
                 {detailData.updatedAt
                   ? new Date(detailData.updatedAt).toLocaleString()
                   : "N/A"}
