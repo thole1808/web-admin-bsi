@@ -158,29 +158,29 @@ const Branch: React.FC = () => {
             name: "Actions",
             right: true,
             cell: (row: BranchItem) => (
-              <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
-                <button
-                  onClick={() => handleDetail(row.id)}
-                  className="text-blue-500 hover:text-blue-700 p-1.5"
-                >
-                  <EyeIcon className="h-5 w-5" />
-                </button>
-                <button
-                    onClick={() => {
-                        setIsEditModalOpen(true);
-                        setEditData(row);
-                    }}
-                  className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                >
-                  <PencilSquareIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => handleDelete(row.id)}
-                  className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </div>
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
+                    <button
+                        onClick={() => handleDetail(row.id)}
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
+                    >
+                        <EyeIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                        onClick={() => {
+                            setIsEditModalOpen(true);
+                            setEditData(row);
+                        }}
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                    >
+                        <PencilSquareIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                        onClick={() => handleDelete(row.id)}
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                    >
+                        <TrashIcon className="h-5 w-5" />
+                    </button>
+                </div>
             ),
         }
     ];
@@ -275,7 +275,7 @@ const Branch: React.FC = () => {
                 </div>
                 <div>
                     <button
-                            onClick={() => setIsCreateModalOpen(true)}
+                        onClick={() => setIsCreateModalOpen(true)}
                         className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
@@ -401,8 +401,6 @@ const Branch: React.FC = () => {
                     </button>
                 </div>
             </Modal>
-
-
 
             {/* Detail Modal */}
             <Modal

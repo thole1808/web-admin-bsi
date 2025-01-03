@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { useSession } from "next-auth/react";
 import { ClipLoader } from "react-spinners";
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 // Import DataTable with dynamic loading
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
@@ -172,46 +172,40 @@ const Roles: React.FC = () => {
         },
         {
             name: "Actions",
-            grow: 2,
+            right: true,
             cell: (row: RoleItem) => (
-                <div className="flex flex-wrap gap-2 sm:gap-4 justify-start w-full">
-                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-                        <button
-                            onClick={() => fetchRoleDetail(row.id)}
-                            className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                        >
-                            <EyeIcon className="h-5 w-5" />
-                            <span>Detail</span>
-                        </button>
-                        <button
-                            onClick={() => {
-                                setEditData(row);
-                                setIsModalOpen(true);
-                            }}
-                            className="text-green-500 hover:text-green-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                        >
-                            <PencilIcon className="h-5 w-5" />
-                            <span>Edit</span>
-                        </button>
-                        <button
-                            onClick={() => handleDelete(row.id)}
-                            className="text-red-500 hover:text-red-700 flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
-                        >
-                            <TrashIcon className="h-5 w-5" />
-                            <span>Delete</span>
-                        </button>
-                    </div>
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
+                    <button
+                        onClick={() => fetchRoleDetail(row.id)}
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
+                    >
+                        <EyeIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                        onClick={() => {
+                            setEditData(row);
+                            setIsModalOpen(true);
+                        }}
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                    >
+                        <PencilSquareIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                        onClick={() => handleDelete(row.id)}
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                    >
+                        <TrashIcon className="h-5 w-5" />
+                    </button>
                 </div>
             ),
-        },
+        }
     ];
-    
     
     
     return (
         <div>
             <h1 className="text-2xl font-bold mb-4">Roles</h1>
-
+            
             {/* Search Input and Create Button */}
             <div className="flex justify-between mb-4">
                 <div className="relative w-1/2">
@@ -220,20 +214,22 @@ const Roles: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
-                <button
-                    onClick={() => {
-                        setEditData(null);
-                        setNewRole("");
-                        setIsModalOpen(true);
-                    }}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                >
-                    Create
-                </button>
+                <div>
+                    <button
+                        onClick={() => {
+                            setEditData(null);
+                            setNewRole("");
+                            setIsModalOpen(true);
+                        }}
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -299,89 +295,92 @@ const Roles: React.FC = () => {
                 isOpen={isPermissionsModalOpen}
                 onRequestClose={() => setIsPermissionsModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                className="bg-white rounded-lg p-6 w-2/3 max-w-md shadow-lg"
             >
-                <h2 className="text-xl font-bold mb-4">Permissions</h2>
-                <div>
+                {/* Header Modal */}
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-gray-700">Permissions</h2>
+                    <button
+                        onClick={() => setIsPermissionsModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
+                    >
+                        ✖
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="modal-content">
                     {selectedPermissions?.permissions?.length ? (
-                        <ul>
+                        <ul className="list-disc pl-6 space-y-2 text-gray-700">
                             {selectedPermissions.permissions.map((perm) => (
-                                <li key={perm.id}>{perm.name}</li>
+                                <li key={perm.id} className="text-lg">
+                                    {perm.name}
+                                </li>
                             ))}
                         </ul>
                     ) : (
-                        <p>No permissions assigned.</p>
+                        <p className="text-gray-500 text-center">No permissions assigned.</p>
                     )}
-                </div>
-                <div className="flex justify-end">
-                    <button
-                        onClick={() => setIsPermissionsModalOpen(false)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                    >
-                        Close
-                    </button>
                 </div>
             </Modal>
 
+
             {/* Modal Detail Roles */}
+            
             <Modal
-                isOpen={isDetailModalOpen} // Gunakan state khusus untuk modal detail
-                onRequestClose={() => setIsDetailModalOpen(false)} // Menutup modal
+                isOpen={isDetailModalOpen}
+                onRequestClose={() => setIsDetailModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <h2 className="text-2xl font-semibold text-center mb-6">Role Detail</h2>
-
-                {detailData ? (
-                    <div className="overflow-x-auto">
-                        {/* Tabel untuk menampilkan detail role */}
-                        <table className="min-w-full table-auto">
-                            <tbody>
-                                {/* Row untuk Role Name */}
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Role Name</td>
-                                    <td className="px-4 py-2">{detailData.name}</td>
-                                </tr>
-                                {/* Row untuk Code */}
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Code</td>
-                                    <td className="px-4 py-2">{detailData.code}</td>
-                                </tr>
-                                {/* Row untuk Guard Name */}
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600">Guard Name</td>
-                                    <td className="px-4 py-2">{detailData.guardName}</td>
-                                </tr>
-
-                                {/* Row untuk Permissions List */}
-                                <tr className="border-b">
-                                    <td className="px-4 py-2 font-medium text-gray-600 align-top">Permissions</td>
-                                    <td className="px-4 py-2">
-                                        <ul className="list-disc pl-6">
-                                            {detailData.permissions.map((permission) => (
-                                                <li key={permission.id} className="text-lg">{permission.name}</li>
-                                            ))}
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                ) : (
-                    <p className="text-center text-gray-500">No details available.</p>
-                )}
-
-                {/* Button to Close Modal */}
-                <div className="flex justify-end mt-6">
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-center w-full">Role Detail</h2>
                     <button
-                        onClick={() => setIsDetailModalOpen(false)} // Menutup modal
-                        className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition duration-300"
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
                     >
-                        Close
+                        ✖
                     </button>
                 </div>
+
+                {detailData ? (
+                    <div className="grid gap-4">
+                        {/* Role Name */}
+                        <div>
+                            <div className="text-sm text-gray-500">Role Name</div>
+                            <div className="mt-1 font-medium">{detailData.name || "N/A"}</div>
+                        </div>
+                        {/* Code */}
+                        <div>
+                            <div className="text-sm text-gray-500">Code</div>
+                            <div className="mt-1 font-medium">{detailData.code || "N/A"}</div>
+                        </div>
+                        {/* Guard Name */}
+                        <div>
+                            <div className="text-sm text-gray-500">Guard Name</div>
+                            <div className="mt-1 font-medium">{detailData.guardName || "N/A"}</div>
+                        </div>
+                        {/* Permissions */}
+                        <div>
+                            <div className="text-sm text-gray-500">Permissions</div>
+                            <ul className="list-disc pl-6 mt-1 mb-3">   
+                                {detailData.permissions.length > 0 ? (
+                                    detailData.permissions.map((permission) => (
+                                        <li key={permission.id} className="text-lg text-gray-700">
+                                            {permission.name}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="text-gray-500">No permissions available</li>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No details available.</p>
+                )}
             </Modal>
-            {/* Modal Detail Roles */}
+            
         </div>
     );
 };
