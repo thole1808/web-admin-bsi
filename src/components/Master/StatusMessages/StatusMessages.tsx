@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Modal from "react-modal";
 import { useSession } from "next-auth/react";
 import { ClipLoader } from "react-spinners";
-import { PencilIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const DataTable = dynamic(() => import("react-data-table-component"), { ssr: false });
 
@@ -79,7 +79,7 @@ const StatusMessages: React.FC = () => {
             setStatusMessage("Status created successfully!");
         } catch (err: any) {
             alert(err.message || "Error occurred while creating status.");
-            setStatusMessage("Failed to create status. Please try again."); 
+            setStatusMessage("Failed to create status. Please try again.");
         }
     };
 
@@ -96,7 +96,7 @@ const StatusMessages: React.FC = () => {
             }
             fetchStatuses();
             setIsEditModalOpen(false);
-            setStatusMessage("Status updated successfully!"); 
+            setStatusMessage("Status updated successfully!");
         } catch (err: any) {
             alert(err.message || "Error occurred while updating status.");
             setStatusMessage("Failed to update status. Please try again.");
@@ -111,10 +111,10 @@ const StatusMessages: React.FC = () => {
                 throw new Error("Failed to delete status.");
             }
             setStatuses((prev) => prev.filter((status) => status.id !== id));
-            setStatusMessage("Status deleted successfully!"); 
+            setStatusMessage("Status deleted successfully!");
         } catch (err: any) {
             alert(err.message || "Error occurred while deleting status.");
-            setStatusMessage("Failed to delete status. Please try again."); 
+            setStatusMessage("Failed to delete status. Please try again.");
         }
     };
 
@@ -138,7 +138,7 @@ const StatusMessages: React.FC = () => {
         },
         {
             name: "Status",
-            selector: (row: StatusItem) => row.status, 
+            selector: (row: StatusItem) => row.status,
             sortable: true,
             minWidth: "150px",
             grow: 0,
@@ -152,40 +152,34 @@ const StatusMessages: React.FC = () => {
         },
         {
             name: "Actions",
-            minWidth: "50px", 
-            grow: 1,
+            right: true,
             cell: (row: StatusItem) => (
-                <div className="flex space-x-2">
+                <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button
                         onClick={() => handleDetail(row)}
-                        className="flex items-center text-blue-500 hover:text-blue-700 text-xs sm:text-sm px-2 py-1"
+                        className="text-blue-500 hover:text-blue-700 p-1.5"
                     >
                         <EyeIcon className="h-5 w-5" />
-                        <span>Detail</span>
                     </button>
-        
                     <button
                         onClick={() => {
                             setEditData(row);
                             setIsEditModalOpen(true);
-                            setStatusMessage(""); 
+                            setStatusMessage("");
                         }}
-                        className="flex items-center text-green-500 hover:text-green-700 text-xs sm:text-sm px-2 py-1"
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Edit</span>
+                        <PencilSquareIcon className="h-5 w-5" />
                     </button>
-        
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="flex items-center text-red-500 hover:text-red-700 text-xs sm:text-sm px-2 py-1"
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
                         <TrashIcon className="h-5 w-5" />
-                        <span>Delete</span>
                     </button>
                 </div>
             ),
-        },
+        }
     ];
 
     return (
@@ -200,7 +194,7 @@ const StatusMessages: React.FC = () => {
                         placeholder="Search..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="border px-4 py-2 rounded-md w-full pr-10"
+                        className="px-4 py-2 rounded-md w-full pr-10 border"
                     />
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500 absolute top-1/2 right-3 transform -translate-y-1/2" />
                 </div>
@@ -210,9 +204,9 @@ const StatusMessages: React.FC = () => {
                             setEditData(null);
                             setNewStatus("");
                             setIsCreateModalOpen(true);
-                            setStatusMessage(""); 
+                            setStatusMessage("");
                         }}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
@@ -257,16 +251,16 @@ const StatusMessages: React.FC = () => {
 
                 <div className="flex justify-end space-x-2">
                     <button
-                    onClick={handleModalClose}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                        onClick={handleModalClose}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-md"
                     >
-                    Cancel
+                        Cancel
                     </button>
                     <button
-                    onClick={handleCreate}
-                    className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
                     >
-                    Create
+                        Create
                     </button>
                 </div>
                 {statusMessage && <p className="mt-2 text-green-500">{statusMessage}</p>}
@@ -276,7 +270,6 @@ const StatusMessages: React.FC = () => {
             <Modal
                 isOpen={isEditModalOpen}
                 onRequestClose={() => setIsEditModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 className="bg-white rounded-md p-6 w-1/3"
             >
                 <h2 className="text-xl font-bold mb-4">Edit Status</h2>
@@ -305,40 +298,35 @@ const StatusMessages: React.FC = () => {
             <Modal
                 isOpen={isDetailModalOpen}
                 onRequestClose={() => setIsDetailModalOpen(false)}
-                contentLabel="Detail Status Message"
-                className="modal"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
             >
-                <div className="modal-content">
-                    <h2 className="text-xl font-bold text-center mb-4">Status Detail</h2>
-
-                    {loading ? (
-                        <p>Loading...</p>
-                    ) : currentItem ? (
-                        <table className="table-auto w-full border-collapse border border-gray-300">
-                            <tbody>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Status</td>
-                                    <td className="px-4 py-2 border">{currentItem.status}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 font-semibold text-gray-600 border">Message</td>
-                                    <td className="px-4 py-2 border">{currentItem.message}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No data available</p>
-                    )}
-
-                    <div className="flex justify-end mt-6">
-                        <button
-                            onClick={() => setIsDetailModalOpen(false)}
-                            className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
-                        >
-                            Close
-                        </button>
-                    </div>
+                <div className="modal-header flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-semibold text-center">Status Detail</h2>
+                    <button
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
+                    >
+                        ✖
+                    </button>
                 </div>
+
+                {loading ? (
+                    <p className="text-center text-gray-500 mt-4">Loading...</p>
+                ) : currentItem ? (
+                    <div className="grid gap-4">
+                        <div>
+                            <div className="text-sm text-gray-500">Status</div>
+                            <div className="mt-1 font-medium">{currentItem.status || "N/A"}</div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Message</div>
+                            <div className="mt-1 font-medium">{currentItem.message || "N/A"}</div>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No data available</p>
+                )}
             </Modal>
         </div>
     );
