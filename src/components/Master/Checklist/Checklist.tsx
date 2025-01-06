@@ -42,7 +42,6 @@ const Checklist: React.FC = () => {
     const [formData, setFormData] = useState({
         activityName: "",
         activityType: "",
-        // mandatory: true,
     });
 
     // Fetch data from API
@@ -135,23 +134,26 @@ const Checklist: React.FC = () => {
     // Handle delete activity
     const handleDelete = async (id: number) => {
         if (confirm("Are you sure you want to delete this item?")) {
-            try {
-                const response = await fetch(`/api/master/checklist/${id}`, {
-                    method: "DELETE",
-                });
+            alert("Deleted Disabled.");
+            // DISABLE
+            // try {
+            //     const response = await fetch(`/api/master/checklist/${id}`, {
+            //         method: "DELETE",
+            //     });
 
-                if (response.ok) {
-                    setChecklistData((prevData) =>
-                        prevData.filter((item) => item.id !== id)
-                    );
-                } else {
-                    const errorData = await response.json();
-                    alert("Failed to delete activity: " + (errorData?.message || "Unknown error"));
-                }
-            } catch (error) {
-                console.error("Error occurred while deleting activity:", error);
-                alert("Error occurred while deleting activity.");
-            }
+            //     if (response.ok) {
+            //         setChecklistData((prevData) =>
+            //             prevData.filter((item) => item.id !== id)
+            //         );
+            //         fetchData();
+            //     } else {
+            //         const errorData = await response.json();
+            //         alert("Failed to delete activity: " + (errorData?.message || "Unknown error"));
+            //     }
+            // } catch (error) {
+            //     console.error("Error occurred while deleting activity:", error);
+            //     alert("Error occurred while deleting activity.");
+            // }
         };
     };
 
