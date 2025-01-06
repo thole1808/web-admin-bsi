@@ -140,26 +140,6 @@ const NationalHolidayMessages: React.FC = () => {
         }
     };
 
-    // const handleEdit = async () => {
-    //     if (!editData) return;
-    //     if (!handleValidation()) return;
-
-    //     try {
-    //         const response = await fetch(`/api/master/national-holidays/${editData.id}`, {
-    //             method: "PUT",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify(editData),
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error("Failed to update holiday.");
-    //         }
-    //         fetchHolidays();
-    //         setIsEditModalOpen(false);
-    //     } catch (err: any) {
-    //         alert(err.message || "Error occurred while updating holiday.");
-    //     }
-    // };
-
     const validateEditData = (editData: any) => {
         const errors: any = {};
         if (!editData.name || editData.name.trim() === "") {
@@ -173,10 +153,10 @@ const NationalHolidayMessages: React.FC = () => {
                 errors.date = "Holiday Date must be in YYYY-MM-DD format.";
             }
         }
-    
+
         return errors;
     };
-    
+
     const handleEdit = async () => {
         if (!editData) return;
         const validationErrors = validateEditData(editData);
@@ -189,7 +169,7 @@ const NationalHolidayMessages: React.FC = () => {
                 name: editData.name,
                 date: editData.date,
             };
-    
+
             const response = await fetch(`/api/master/national-holidays/${editData.id}`, {
                 method: "PUT",
                 headers: {
@@ -197,7 +177,7 @@ const NationalHolidayMessages: React.FC = () => {
                 },
                 body: JSON.stringify(requestBody),
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
                 console.log("Holiday updated:", data);
@@ -240,7 +220,6 @@ const NationalHolidayMessages: React.FC = () => {
             // }
         };
     };
-
 
     const filteredHolidays = useMemo(
         () =>
@@ -465,70 +444,70 @@ const NationalHolidayMessages: React.FC = () => {
 
             {/* Edit National Holiday Modal */}
             <Modal
-            isOpen={isEditModalOpen}
-            onRequestClose={() => setIsEditModalOpen(false)}
-            contentLabel="Edit National Holiday"
-            className="modal"
-        >
-            <h2 className="text-xl font-bold mb-4">Edit National Holiday</h2>
+                isOpen={isEditModalOpen}
+                onRequestClose={() => setIsEditModalOpen(false)}
+                contentLabel="Edit National Holiday"
+                className="modal"
+            >
+                <h2 className="text-xl font-bold mb-4">Edit National Holiday</h2>
 
-            {editData && (
-                <>
-                    {/* Holiday Name Input */}
-                    <div className="mb-3">
-                        <label htmlFor="editHolidayName" className="block text-sm font-medium text-gray-700 mb-1">
-                            Holiday Name
-                        </label>
-                        <input
-                            id="editHolidayName"
-                            type="text"
-                            placeholder="Enter holiday name"
-                            value={editData.name || ""}
-                            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                            className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
-                        />
-                        {errors.name && (
-                            <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                        )}
-                    </div>
+                {editData && (
+                    <>
+                        {/* Holiday Name Input */}
+                        <div className="mb-3">
+                            <label htmlFor="editHolidayName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Holiday Name
+                            </label>
+                            <input
+                                id="editHolidayName"
+                                type="text"
+                                placeholder="Enter holiday name"
+                                value={editData.name || ""}
+                                onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                                className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
+                            />
+                            {errors.name && (
+                                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                            )}
+                        </div>
 
-                    {/* Date Input */}
-                    <div className="mb-3">
-                        <label htmlFor="editHolidayDate" className="block text-sm font-medium text-gray-700 mb-1">
-                            Date
-                        </label>
-                        <input
-                            id="editHolidayDate"
-                            type="date"
-                            value={editData.date || ""}
-                            onChange={(e) => setEditData({ ...editData, date: e.target.value })}
-                            className={`border px-4 py-2 rounded-md w-full ${errors.date ? "border-red-500" : "border-gray-300"}`}
-                        />
-                        {errors.date && (
-                            <p className="text-red-500 text-xs mt-1">{errors.date}</p>
-                        )}
-                    </div>
+                        {/* Date Input */}
+                        <div className="mb-3">
+                            <label htmlFor="editHolidayDate" className="block text-sm font-medium text-gray-700 mb-1">
+                                Date
+                            </label>
+                            <input
+                                id="editHolidayDate"
+                                type="date"
+                                value={editData.date || ""}
+                                onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                                className={`border px-4 py-2 rounded-md w-full ${errors.date ? "border-red-500" : "border-gray-300"}`}
+                            />
+                            {errors.date && (
+                                <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+                            )}
+                        </div>
 
-                    {/* Buttons */}
-                    <div className="flex justify-end space-x-2">
-                        <button
-                            type="button"
-                            onClick={() => setIsEditModalOpen(false)}
-                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleEdit}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                        >
-                            Update
-                        </button>
-                    </div>
-                </>
-            )}
-        </Modal>
+                        {/* Buttons */}
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                type="button"
+                                onClick={() => setIsEditModalOpen(false)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleEdit}
+                                className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                            >
+                                Update
+                            </button>
+                        </div>
+                    </>
+                )}
+            </Modal>
 
 
             {/* Detail Modal */}
