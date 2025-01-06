@@ -70,6 +70,11 @@ const DoughnutChartCard: React.FC = () => {
         <div className="bg-white rounded-lg shadow-md p-4">
             {loading ? (
                 <div>
+                    <div className="text-center mb-4">
+                        <h4 className="text-gray-800 font-semibold text-lg">
+                            Top 3 Layanan
+                        </h4>
+                    </div>
                     <div className="relative h-56 flex items-center justify-center">
                         <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse"></div>
                     </div>
