@@ -32,7 +32,7 @@ const StatusMessages: React.FC = () => {
     const [editData, setEditData] = useState<StatusItem | null>(null);
     const [newStatus, setNewStatus] = useState("");
     const [statusMessage, setStatusMessage] = useState("");
-    const [newMessage, setNewMessage] = useState("");\
+    const [newMessage, setNewMessage] = useState(""); 
     const { data: session, status } = useSession();
     const [currentItem, setCurrentItem] = useState<StatusItem | null>(null);
 
@@ -326,7 +326,7 @@ const StatusMessages: React.FC = () => {
                         <p className="text-red-500 text-xs mt-1">{errors.statusMessage}</p>
                     )}
                 </div>
-                
+
                 {/* Buttons */}
                 <div className="flex justify-end space-x-2">
                     <button
