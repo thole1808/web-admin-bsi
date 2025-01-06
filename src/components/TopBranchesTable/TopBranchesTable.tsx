@@ -85,7 +85,7 @@ const TopBranchesTable = () => {
                 <span className="bg-yellow-100 text-yellow-700 px-12 py-1 rounded-full">{branch.waiting || 0}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-blue-100 text-blue-700 px-12 py-1 rounded-full">{branch.inService || 0}</span>
+                <span className="bg-blue-100 text-blue-700 px-12 py-1 rounded-full">{branch.pending || 0}</span>
               </td>
             </tr>
           ))}
