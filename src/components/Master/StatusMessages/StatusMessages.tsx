@@ -32,7 +32,7 @@ const StatusMessages: React.FC = () => {
     const [editData, setEditData] = useState<StatusItem | null>(null);
     const [newStatus, setNewStatus] = useState("");
     const [statusMessage, setStatusMessage] = useState("");
-    const [newMessage, setNewMessage] = useState(""); 
+    const [newMessage, setNewMessage] = useState("");
     const { data: session, status } = useSession();
     const [currentItem, setCurrentItem] = useState<StatusItem | null>(null);
 
@@ -130,25 +130,49 @@ const StatusMessages: React.FC = () => {
         }
     };
 
+    const validateEditData = (editData: any) => {
+        const errors: any = {};
+
+        if (!editData.status || editData.status.trim() === "") {
+            errors.statusName = "Status Name is required.";
+        } else if (editData.status !== editData.status.toUpperCase()) {
+            errors.statusName = "Status Name must be in uppercase.";
+        }
+
+        if (!editData.message || editData.message.trim() === "") {
+            errors.statusMessage = "Message is required.";
+        }
+
+        return errors;
+    };
+
     const handleEdit = async () => {
         if (!editData) return;
+        const errors = validateEditData(editData);
+        if (Object.keys(errors).length > 0) {
+            setErrors(errors);
+            return;
+        }
         try {
-            const response = await fetch(`/api/status-messages/${editData.id}`, {
+            const response = await fetch(`/api/master/status-messages/${editData.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editData),
             });
+
             if (!response.ok) {
                 throw new Error("Failed to update status.");
             }
             fetchStatuses();
             setIsEditModalOpen(false);
             setStatusMessage("Status updated successfully!");
+            setErrors({}); 
         } catch (err: any) {
             alert(err.message || "Error occurred while updating status.");
             setStatusMessage("Failed to update status. Please try again.");
         }
     };
+
 
     const handleDelete = async (id: number) => {
         if (!confirm("Are you sure you want to delete this status?")) return;
@@ -212,6 +236,7 @@ const StatusMessages: React.FC = () => {
                         onClick={() => {
                             setEditData(row);
                             setIsEditModalOpen(true);
+                            setErrors({});
                             setStatusMessage("");
                         }}
                         className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
@@ -350,26 +375,68 @@ const StatusMessages: React.FC = () => {
             <Modal
                 isOpen={isEditModalOpen}
                 onRequestClose={() => setIsEditModalOpen(false)}
-                className="bg-white rounded-md p-6 w-1/3"
+                contentLabel="Edit Status"
+                className="modal"
             >
                 <h2 className="text-xl font-bold mb-4">Edit Status</h2>
+
                 {editData && (
                     <>
-                        <input
-                            type="text"
-                            value={editData.message}
-                            onChange={(e) => setEditData({ ...editData, message: e.target.value })}
-                            className="w-full px-4 py-2 border rounded-md"
-                        />
+                        {/* Input for Status Name */}
+                        <div className="mb-3">
+                            <label htmlFor="editStatusName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Status Name
+                            </label>
+                            <input
+                                id="editStatusName"
+                                type="text"
+                                placeholder="Enter status name"
+                                value={editData.status || ""}
+                                onChange={(e) => setEditData({ ...editData, status: e.target.value.toUpperCase() })}
+                                className={`border px-4 py-2 rounded-md w-full ${errors.statusName ? "border-red-500" : "border-gray-300"
+                                    }`}
+                            />
+                            {errors.statusName && (
+                                <p className="text-red-500 text-xs mt-1">{errors.statusName}</p>
+                            )}
+                        </div>
+
+                        {/* Message Input */}
+                        <div className="mb-3">
+                            <label htmlFor="editStatusMessage" className="block text-sm font-medium text-gray-700 mb-1">
+                                Message
+                            </label>
+                            <input
+                                id="editStatusMessage"
+                                type="text"
+                                placeholder="Enter message"
+                                value={editData.message || ""}
+                                onChange={(e) => setEditData({ ...editData, message: capitalizeFirstLetter(e.target.value) })}
+                                className={`border px-4 py-2 rounded-md w-full ${errors.statusMessage ? "border-red-500" : "border-gray-300"
+                                    }`}
+                            />
+                            {errors.statusMessage && (
+                                <p className="text-red-500 text-xs mt-1">{errors.statusMessage}</p>
+                            )}
+                        </div>
+
+                        {/* Buttons */}
                         <div className="flex justify-end space-x-2">
-                            <button onClick={handleModalClose} className="bg-gray-500 text-white px-4 py-2 rounded-md">
+                            <button
+                                type="button"
+                                onClick={() => setIsEditModalOpen(false)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                            >
                                 Cancel
                             </button>
-                            <button onClick={handleEdit} className="bg-blue-500 text-white px-6 py-2 rounded-md">
+                            <button
+                                type="button"
+                                onClick={handleEdit}
+                                className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                            >
                                 Update
                             </button>
                         </div>
-                        {statusMessage && <p className="mt-2 text-green-500">{statusMessage}</p>}
                     </>
                 )}
             </Modal>
