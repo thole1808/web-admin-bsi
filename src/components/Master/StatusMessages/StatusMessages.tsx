@@ -15,17 +15,24 @@ interface StatusItem {
     status: string;
 }
 
+interface Errors {
+    statusName?: string;
+    statusMessage?: string;
+}
+
 const StatusMessages: React.FC = () => {
     const [statuses, setStatuses] = useState<StatusItem[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Errors>({});
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [editData, setEditData] = useState<StatusItem | null>(null);
     const [newStatus, setNewStatus] = useState("");
     const [statusMessage, setStatusMessage] = useState("");
+    const [newMessage, setNewMessage] = useState("");\
     const { data: session, status } = useSession();
     const [currentItem, setCurrentItem] = useState<StatusItem | null>(null);
 
@@ -63,22 +70,62 @@ const StatusMessages: React.FC = () => {
         }
     };
 
+    const handleValidation = () => {
+        const newErrors: Errors = {};
+        let valid = true;
+
+        if (!newStatus?.trim()) {
+            newErrors.statusName = "Status Name is required.";
+            valid = false;
+        } else if (newStatus !== newStatus.toUpperCase()) {
+            newErrors.statusName = "Status Name must be in uppercase.";
+            valid = false;
+        }
+
+        if (!newMessage?.trim()) {
+            newErrors.statusMessage = "Status Message is required.";
+            valid = false;
+        }
+        setErrors(newErrors);
+
+        return valid;
+    };
+
+    const capitalizeFirstLetter = (str: string) => {
+        if (!str) return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     const handleCreate = async () => {
+        if (!handleValidation()) return;
         try {
-            const response = await fetch("/api/status-messages", {
+            const requestBody = {
+                statusName: newStatus,
+                statusMessage: newMessage,
+            };
+            const response = await fetch("/api/master/status-messages", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: newStatus }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
             });
-            if (!response.ok) {
-                throw new Error("Failed to create status.");
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Status created:", data);
+                setIsCreateModalOpen(false);
+                setNewStatus("");
+                setNewMessage("");
+                fetchStatuses();
+                setStatusMessage("Status created successfully!");
+            } else {
+                console.error("Failed to create status.");
+                alert("Failed to create status.");
             }
-            fetchStatuses();
-            setNewStatus("");
-            setIsCreateModalOpen(false);
-            setStatusMessage("Status created successfully!");
-        } catch (err: any) {
-            alert(err.message || "Error occurred while creating status.");
+        } catch (error: any) {
+            console.error("Error:", error);
+            alert(error.message || "Error occurred while creating status.");
             setStatusMessage("Failed to create status. Please try again.");
         }
     };
@@ -205,6 +252,7 @@ const StatusMessages: React.FC = () => {
                             setNewStatus("");
                             setIsCreateModalOpen(true);
                             setStatusMessage("");
+                            setErrors({});
                         }}
                         className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
@@ -238,32 +286,64 @@ const StatusMessages: React.FC = () => {
             <Modal
                 isOpen={isCreateModalOpen}
                 onRequestClose={() => setIsCreateModalOpen(false)}
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                className="bg-white rounded-md p-6 w-1/3"
+                contentLabel="Create Status"
+                className="modal"
             >
                 <h2 className="text-xl font-bold mb-4">Create Status</h2>
-                <input
-                    type="text"
-                    value={newStatus}
-                    onChange={(e) => setNewStatus(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md"
-                />
 
+                {/* Input for Status Name */}
+                <div className="mb-3">
+                    <label htmlFor="statusName" className="block text-sm font-medium text-gray-700 mb-1">
+                        Status Name
+                    </label>
+                    <input
+                        id="statusName"
+                        type="text"
+                        placeholder="Enter status name"
+                        value={newStatus || ""}
+                        onChange={(e) => setNewStatus(e.target.value.toUpperCase())}
+                        className={`border px-4 py-2 rounded-md w-full ${errors.statusName ? "border-red-500" : "border-gray-300"}`}
+                    />
+                    {errors.statusName && (
+                        <p className="text-red-500 text-xs mt-1">{errors.statusName}</p>
+                    )}
+                </div>
+
+                {/* Message Input */}
+                <div className="mb-3">
+                    <label htmlFor="statusMessage" className="block text-sm font-medium text-gray-700 mb-1">
+                        Message
+                    </label>
+                    <input
+                        id="statusMessage"
+                        type="text"
+                        placeholder="Enter message"
+                        value={newMessage || ""}
+                        onChange={(e) => setNewMessage(capitalizeFirstLetter(e.target.value))}
+                        className={`border px-4 py-2 rounded-md w-full ${errors.statusMessage ? "border-red-500" : "border-gray-300"}`}
+                    />
+                    {errors.statusMessage && (
+                        <p className="text-red-500 text-xs mt-1">{errors.statusMessage}</p>
+                    )}
+                </div>
+                
+                {/* Buttons */}
                 <div className="flex justify-end space-x-2">
                     <button
-                        onClick={handleModalClose}
+                        type="button"
+                        onClick={() => setIsCreateModalOpen(false)}
                         className="bg-gray-500 text-white px-4 py-2 rounded-md"
                     >
                         Cancel
                     </button>
                     <button
+                        type="button"
                         onClick={handleCreate}
                         className="bg-blue-500 text-white px-6 py-2 rounded-md"
                     >
                         Create
                     </button>
                 </div>
-                {statusMessage && <p className="mt-2 text-green-500">{statusMessage}</p>}
             </Modal>
 
             {/* Edit Status Modal */}
