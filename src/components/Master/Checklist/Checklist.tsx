@@ -22,20 +22,28 @@ interface ChecklistItem {
     updatedAt: string;
 }
 
+interface Errors {
+    activityName?: string;
+    activityType?: string;
+    [key: string]: string | undefined; 
+}
+
+
 const Checklist: React.FC = () => {
     const [search, setSearch] = useState("");
     const [checklistData, setChecklistData] = useState<ChecklistItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    // const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<Errors>({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState<ChecklistItem | null>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-
     const [formData, setFormData] = useState({
         activityName: "",
         activityType: "",
-        mandatory: "",
+        mandatory: true,
     });
 
     // Fetch data from API
@@ -48,7 +56,10 @@ const Checklist: React.FC = () => {
             }
             const result = await response.json();
             if (result.success) {
-                setChecklistData(result.data);
+                const sortedData = result.data.sort((a: ChecklistItem, b: ChecklistItem) =>
+                    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+                );
+                setChecklistData(sortedData);
             } else {
                 throw new Error(result.message || "Unknown error");
             }
@@ -61,6 +72,7 @@ const Checklist: React.FC = () => {
 
     // Handle create new activity
     const handleCreate = async () => {
+        if (!handleValidation()) return;
         try {
             const response = await fetch("/api/master/checklist", {
                 method: "POST",
@@ -68,16 +80,33 @@ const Checklist: React.FC = () => {
                 body: JSON.stringify(formData),
             });
             if (response.ok) {
-                const newItem = await response.json();
-                setChecklistData((prevData) => [...prevData, newItem.data]);
-                setFormData({ activityName: "", activityType: "", mandatory: "" });
+                const data = await response.json();
+                console.log("Activity created:", data);
                 setIsCreateModalOpen(false);
+                fetchData();
             } else {
+                console.error("Failed to create activity.");
                 alert("Failed to create activity.");
             }
-        } catch {
-            alert("Error occurred while creating activity.");
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error);
         }
+    };
+
+    // Handle Validate 
+    const handleValidation = () => {
+        const newErrors: Errors = {};
+        if (!formData.activityName?.trim()) {
+            newErrors.activityName = "Activity Name is required.";
+        }
+        if (!formData.activityType?.trim()) {
+            newErrors.activityType = "Activity Type is required.";
+        }
+        setErrors(newErrors);
+
+        // Jika ada error, hentikan eksekusi
+        return Object.keys(newErrors).length === 0;
     };
 
     // Handle edit activity
@@ -93,7 +122,7 @@ const Checklist: React.FC = () => {
                 setChecklistData((prevData) =>
                     prevData.map((item) => (item.id === id ? updatedItem.data : item))
                 );
-                setFormData({ activityName: "", activityType: "", mandatory: "" });
+                setFormData({ activityName: "", activityType: "", mandatory: true });
                 setCurrentItem(null);
                 setIsModalOpen(false);
             } else {
@@ -162,9 +191,9 @@ const Checklist: React.FC = () => {
 
     const columns: TableColumn<ChecklistItem>[] = [
         {
-            name: "ID",
-            selector: (row: ChecklistItem) => row.id,
-            sortable: true,
+            name: "No.",
+            selector: (row: ChecklistItem, index: number) => index + 1,
+            sortable: false,
             maxWidth: "1px",
             minWidth: "70px",
         },
@@ -187,6 +216,21 @@ const Checklist: React.FC = () => {
             selector: (row: ChecklistItem) => (row.mandatory ? "Yes" : "No"),
             sortable: true,
             center: true,
+        },
+        {
+            name: "Created at",
+            selector: (row: ChecklistItem) => (
+                new Intl.DateTimeFormat('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true,
+                }).format(new Date(row.createdAt))
+            ),
+            sortable: true,
+            right: true,
         },
         {
             name: "Updated at",
@@ -219,7 +263,7 @@ const Checklist: React.FC = () => {
                             setFormData({
                                 activityName: row.activityName,
                                 activityType: row.activityType,
-                                mandatory: row.mandatory.toString(),
+                                mandatory: row.mandatory,
                             });
                             setCurrentItem(row);
                             setIsModalOpen(true);
@@ -293,33 +337,93 @@ const Checklist: React.FC = () => {
                 contentLabel="Create"
                 className="modal"
             >
-                <h2 className="text-xl font-bold">Create</h2>
-                <div className="mt-4">
+                <h2 className="text-xl font-bold mb-4">Create Activity</h2>
+
+                {/* Input for Activity Name */}
+                <div className="mb-3">
+                    <label htmlFor="activityName" className="block text-sm font-medium text-gray-700 mb-1">
+                        Activity Name
+                    </label>
                     <input
+                        id="activityName"
                         type="text"
-                        placeholder="Activity Name"
-                        value={formData.activityName}
+                        placeholder="Enter activity name"
+                        value={formData.activityName || ""}
                         onChange={(e) => setFormData({ ...formData, activityName: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full mb-4"
+                        className={`border px-4 py-2 rounded-md w-full ${errors.activityName ? "border-red-500" : "border-gray-300"
+                            }`}
                     />
-                    <input
-                        type="text"
-                        placeholder="Activity Type"
+                    {errors.activityName && (
+                        <p className="text-red-500 text-xs mt-1">{errors.activityName}</p>
+                    )}
+                </div>
+
+                {/* Select Dropdown for Activity Type */}
+                <div className="mb-4">
+                    <label htmlFor="activityType" className="block text-sm font-medium text-gray-700 mb-1">
+                        Activity Type
+                    </label>
+                    <select
+                        id="activityType"
                         value={formData.activityType}
                         onChange={(e) => setFormData({ ...formData, activityType: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full mb-4"
-                    />
-                    <div className="flex justify-end space-x-2">
-                        <button onClick={handleModalClose} className="bg-gray-500 text-white px-4 py-2 rounded-md">
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleCreate}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md"
-                        >
-                            Create
-                        </button>
+                        className={`border px-4 py-2 rounded-md w-full ${errors.activityType ? "border-red-500" : "border-gray-300"
+                            }`}
+                    >
+                        <option value="" disabled>
+                            Select Activity Type
+                        </option>
+                        <option value="SOD">SOD</option>
+                        <option value="EOD">EOD</option>
+                    </select>
+                    {errors.activityType && (
+                        <p className="text-red-500 text-xs mt-1">{errors.activityType}</p>
+                    )}
+                </div>
+
+                {/* Toggle for Mandatory */}
+                {/* <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mandatory
+                    </label>
+                    <div
+                        className="relative cursor-pointer w-10 h-6 flex items-center"
+                        onClick={() => setFormData({ ...formData, mandatory: !formData.mandatory })}
+                    >
+                        <input
+                            type="checkbox"
+                            id="mandatory-toggle"
+                            checked={formData.mandatory}
+                            onChange={() => { }}
+                            className="sr-only"
+                        />
+                        <div
+                            className={`block w-10 h-6 rounded-full ${formData.mandatory ? "bg-blue-500" : "bg-gray-300"
+                                }`}
+                        ></div>
+                        <div
+                            className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${formData.mandatory ? "transform translate-x-4" : ""
+                                }`}
+                        ></div>
                     </div>
+                </div> */}
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsCreateModalOpen(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
                 </div>
             </Modal>
 
@@ -362,14 +466,13 @@ const Checklist: React.FC = () => {
                             <div className="text-sm text-gray-500 mt-3">Mandatory</div>
                             <div className="mt-2 font-medium">
                                 <select
-                                    value={formData.mandatory === "true" ? "true" : "false"}
-                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value })}
+                                    value={formData.mandatory ? "true" : "false"}
+                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value === "true" })}
                                     className="border border-gray-300 text-sm p-3 rounded-md w-full"
                                 >
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                 </select>
-
                             </div>
                         </div>
                     </div>
@@ -394,57 +497,57 @@ const Checklist: React.FC = () => {
                 onRequestClose={() => setIsDetailModalOpen(false)}
                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 className="bg-white rounded-lg p-6 w-3/4 max-w-lg shadow-lg"
-                >
+            >
                 <div className="modal-header flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-semibold">Checklist Detail</h2>
                     <button
-                    onClick={() => setIsDetailModalOpen(false)}
-                    className="text-gray-500 hover:text-gray-800 transition"
+                        onClick={() => setIsDetailModalOpen(false)}
+                        className="text-gray-500 hover:text-gray-800 transition"
                     >
-                    ✖
+                        ✖
                     </button>
                 </div>
 
                 {currentItem ? (
                     <div className="grid gap-4">
-                    <div>
-                        <div className="text-sm text-gray-500">Activity Name</div>
-                        <div className="mt-1 font-medium">{currentItem.activityName}</div>
-                    </div>
-                    <div>
-                        <div className="text-sm text-gray-500">Activity Type</div>
-                        <div className="mt-1 font-medium">{currentItem.activityType}</div>
-                    </div>
-                    <div>
-                        <div className="text-sm text-gray-500">Mandatory</div>
-                        <div className="mt-1 font-medium">{currentItem.mandatory ? "Yes" : "No"}</div>
-                    </div>
-                    <div>
-                        <div className="text-sm text-gray-500">Created At</div>
-                        <div className="mt-1 font-medium">
-                        {new Intl.DateTimeFormat("id-ID", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                        }).format(new Date(currentItem.createdAt))}
+                        <div>
+                            <div className="text-sm text-gray-500">Activity Name</div>
+                            <div className="mt-1 font-medium">{currentItem.activityName}</div>
                         </div>
-                    </div>
-                    <div>
-                        <div className="text-sm text-gray-500">Updated At</div>
-                        <div className="mt-1 mb-3 font-medium">
-                        {new Intl.DateTimeFormat("id-ID", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                        }).format(new Date(currentItem.updatedAt))}
+                        <div>
+                            <div className="text-sm text-gray-500">Activity Type</div>
+                            <div className="mt-1 font-medium">{currentItem.activityType}</div>
                         </div>
-                    </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Mandatory</div>
+                            <div className="mt-1 font-medium">{currentItem.mandatory ? "Yes" : "No"}</div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Created At</div>
+                            <div className="mt-1 font-medium">
+                                {new Intl.DateTimeFormat("id-ID", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                }).format(new Date(currentItem.createdAt))}
+                            </div>
+                        </div>
+                        <div>
+                            <div className="text-sm text-gray-500">Updated At</div>
+                            <div className="mt-1 mb-3 font-medium">
+                                {new Intl.DateTimeFormat("id-ID", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                }).format(new Date(currentItem.updatedAt))}
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <p className="text-center text-gray-500">Loading...</p>
