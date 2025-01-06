@@ -13,6 +13,8 @@ interface StatusItem {
     id: number;
     message: string;
     status: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface Errors {
@@ -59,7 +61,10 @@ const StatusMessages: React.FC = () => {
             }
             const data = await response.json();
             if (data.success && Array.isArray(data.data)) {
-                setStatuses(data.data);
+                const sortedStatuses = data.data.sort((a: StatusItem, b: StatusItem) =>
+                    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+                );
+                setStatuses(sortedStatuses);
             } else {
                 setError("Invalid data format or failed to fetch data.");
             }
@@ -166,27 +171,29 @@ const StatusMessages: React.FC = () => {
             fetchStatuses();
             setIsEditModalOpen(false);
             setStatusMessage("Status updated successfully!");
-            setErrors({}); 
+            setErrors({});
         } catch (err: any) {
             alert(err.message || "Error occurred while updating status.");
             setStatusMessage("Failed to update status. Please try again.");
         }
     };
 
-
     const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this status?")) return;
-        try {
-            const response = await fetch(`/api/status-messages/${id}`, { method: "DELETE" });
-            if (!response.ok) {
-                throw new Error("Failed to delete status.");
-            }
-            setStatuses((prev) => prev.filter((status) => status.id !== id));
-            setStatusMessage("Status deleted successfully!");
-        } catch (err: any) {
-            alert(err.message || "Error occurred while deleting status.");
-            setStatusMessage("Failed to delete status. Please try again.");
-        }
+        if (confirm("Are you sure you want to delete this status?")) {
+            alert("Deleted Disabled.");
+            // DISABLE
+            // try {
+            //     const response = await fetch(`/api/master/status-messages/${id}`, { method: "DELETE" });
+            //     if (!response.ok) {
+            //         throw new Error("Failed to delete status.");
+            //     }
+            //     setStatuses((prev) => prev.filter((status) => status.id !== id));
+            //     setStatusMessage("Status deleted successfully!");
+            // } catch (err: any) {
+            //     alert(err.message || "Error occurred while deleting status.");
+            //     setStatusMessage("Failed to delete status. Please try again.");
+            // }
+        };
     };
 
     const filteredStatuses = useMemo(
