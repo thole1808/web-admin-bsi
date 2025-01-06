@@ -59,9 +59,7 @@ export async function PUT(req: NextRequest) {
 
     try {
         const requestBody = await req.json();
-
         const { name, date } = requestBody;
-
         if (!name || !date) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
@@ -84,12 +82,58 @@ export async function PUT(req: NextRequest) {
                 { status: response.status }
             );
         }
-
         const updatedData = await response.json();
         return NextResponse.json(updatedData, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: 'Failed to update national holiday' },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function DELETE(req: NextRequest) {
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    // Periksa apakah sesi pengguna valid
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Ambil ID dari URL
+    const url = new URL(req.url);
+    const id = url.pathname.split('/').pop();
+
+    if (!id) {
+        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    try {
+        // Panggil API eksternal untuk menghapus national holiday
+        const response = await fetch(`${process.env.API_URL}/master/national-holidays/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${session.accessToken || ''}`,
+            },
+        });
+
+        // Periksa apakah respon dari API berhasil
+        if (!response.ok) {
+            const errorData = await response.json();
+            return NextResponse.json(
+                { error: errorData.message || 'Failed to delete national holiday' },
+                { status: response.status }
+            );
+        }
+
+        // Jika berhasil, kembalikan respon sukses
+        return NextResponse.json({ message: "National holiday deleted successfully" }, { status: 200 });
+
+    } catch (error) {
+        // Tangani error yang tidak terduga
+        return NextResponse.json(
+            { error: 'Failed to delete national holiday' },
             { status: 500 }
         );
     }

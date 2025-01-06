@@ -34,6 +34,7 @@ const NationalHolidayMessages: React.FC = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
     const [errors, setErrors] = useState<Errors>({});
+    const [statuses, setStatuses] = useState<NationalHolidayItem[]>([]);
 
 
     useEffect(() => {
@@ -220,20 +221,26 @@ const NationalHolidayMessages: React.FC = () => {
             setStatusMessage("Failed to update holiday. Please try again.");
         }
     };
-    
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this holiday?")) return;
-        try {
-            const response = await fetch(`/api/national-holidays/${id}`, { method: "DELETE" });
-            if (!response.ok) {
-                throw new Error("Failed to delete holiday.");
-            }
-            setHolidays((prev) => prev.filter((holiday) => holiday.id !== id));
-        } catch (err: any) {
-            alert(err.message || "Error occurred while deleting holiday.");
-        }
+        if (confirm("Are you sure you want to delete this holiday?")) {
+            alert("Deleted Disabled.");
+            // DISABLE
+            // try {
+            //     const response = await fetch(`/api/master/national-holidays/${id}`, { method: "DELETE" });
+            //     if (!response.ok) {
+            //         throw new Error("Failed to delete status.");
+            //     }
+            //     setStatuses((prev) => prev.filter((status) => status.id !== id));
+            //     fetchHolidays();
+            //     setStatusMessage("Holiday deleted successfully!");
+            // } catch (err: any) {
+            //     alert(err.message || "Error occurred while deleting holiday.");
+            //     setStatusMessage("Failed to delete holiday. Please try again.");
+            // }
+        };
     };
+
 
     const filteredHolidays = useMemo(
         () =>
