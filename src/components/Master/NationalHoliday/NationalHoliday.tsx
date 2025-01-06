@@ -15,19 +15,26 @@ interface NationalHolidayItem {
     name: string;
 }
 
+interface Errors {
+    holidayName?: string;
+    holidayDate?: string;
+}
+
 const NationalHolidayMessages: React.FC = () => {
     const [holidays, setHolidays] = useState<NationalHolidayItem[]>([]);
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); 
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [editData, setEditData] = useState<NationalHolidayItem | null>(null);
     const [newHoliday, setNewHoliday] = useState({ date: "", name: "" });
-    const [holidayDetail, setHolidayDetail] = useState<NationalHolidayItem | null>(null); 
+    const [holidayDetail, setHolidayDetail] = useState<NationalHolidayItem | null>(null);
     const { data: session, status } = useSession();
-    
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [statusMessage, setStatusMessage] = useState("");
+    const [errors, setErrors] = useState<Errors>({});
+
 
     useEffect(() => {
         fetchHolidays();
@@ -39,7 +46,7 @@ const NationalHolidayMessages: React.FC = () => {
             const response = await fetch(`/api/master/national-holidays/${row.id}`);
             const data = await response.json();
             if (data.success && data.data) {
-                setHolidayDetail(data.data); 
+                setHolidayDetail(data.data);
                 setIsDetailModalOpen(true);
             } else {
                 alert("Failed to fetch holiday details.");
@@ -60,32 +67,75 @@ const NationalHolidayMessages: React.FC = () => {
             }
             const data = await response.json();
             if (data.success && Array.isArray(data.data)) {
-                setHolidays(data.data);
+                const sortedHolidays = data.data.sort((a: NationalHolidayItem, b: NationalHolidayItem) => b.id - a.id);
+                setHolidays(sortedHolidays);
             } else {
                 setError("Invalid data format or failed to fetch data.");
             }
-        } catch {
-            setError("Error occurred while fetching national holidays.");
+        } catch (error) {
+            setError(error.message || "Error occurred while fetching national holidays.");
         } finally {
             setLoading(false);
         }
     };
 
+    const handleValidation = () => {
+        const newErrors: Errors = {};
+        let valid = true;
+
+        if (!newHoliday.name.trim()) {
+            newErrors.holidayName = "Holiday name is required.";
+            valid = false;
+        }
+
+        if (!newHoliday.date) {
+            newErrors.holidayDate = "Date is required.";
+            valid = false;
+        }
+
+        setErrors(newErrors);
+        return valid;
+    };
+
+
     const handleCreate = async () => {
+        if (!handleValidation()) return;
+
         try {
-            const response = await fetch("/api/national-holidays", {
+            const requestBody = {
+                name: newHoliday.name,
+                date: newHoliday.date,
+            };
+
+            const response = await fetch("/api/master/national-holidays", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newHoliday),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
             });
-            if (!response.ok) {
-                throw new Error("Failed to create holiday.");
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Holiday created:", data);
+                setIsCreateModalOpen(false);
+                setNewHoliday({ name: "", date: "" });
+                fetchHolidays();
+                setStatusMessage("Holiday created successfully!");
+            } else {
+                const errorData = await response.json();
+                console.error("API Error:", errorData);
+                const errorMessage = errorData?.error ||
+                    errorData?.message ||
+                    errorData?.details?.message ||
+                    "Unknown error occurred";
+                alert(`Failed to create holiday: ${errorMessage}`);
+                setStatusMessage(`Failed to create holiday: ${errorMessage}`);
             }
-            fetchHolidays();
-            setNewHoliday({ date: "", name: "" });
-            setIsCreateModalOpen(false); 
-        } catch (err: any) {
-            alert(err.message || "Error occurred while creating holiday.");
+        } catch (error: any) {
+            console.error("Error:", error);
+            alert(error.message || "Error occurred while creating holiday.");
+            setStatusMessage("Failed to create holiday. Please try again.");
         }
     };
 
@@ -166,7 +216,7 @@ const NationalHolidayMessages: React.FC = () => {
                     <button
                         onClick={() => {
                             setEditData(row);
-                            setIsEditModalOpen(true); 
+                            setIsEditModalOpen(true);
                         }}
                         className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
                     >
@@ -205,7 +255,7 @@ const NationalHolidayMessages: React.FC = () => {
                         onClick={() => {
                             setEditData(null);
                             setNewHoliday({ date: "", name: "" });
-                            setIsCreateModalOpen(true); 
+                            setIsCreateModalOpen(true);
                         }}
                         className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
@@ -237,36 +287,57 @@ const NationalHolidayMessages: React.FC = () => {
             <Modal
                 isOpen={isCreateModalOpen}
                 onRequestClose={() => setIsCreateModalOpen(false)}
-                contentLabel="Create Holiday"
-                className="bg-white rounded-md w-1/3 p-6"
+                contentLabel="Create National Holiday"
+                className="modal"
             >
                 <h2 className="text-xl font-bold mb-4">Create National Holiday</h2>
-                <div className="mb-4">
-                    <label className="block text-sm font-semibold">Holiday Name</label>
+
+                {/* Input for Holiday Name */}
+                <div className="mb-3">
+                    <label htmlFor="holidayName" className="block text-sm font-medium text-gray-700 mb-1">
+                        Holiday Name
+                    </label>
                     <input
+                        id="holidayName"
                         type="text"
-                        value={newHoliday.name}
-                        onChange={(e) => setNewHoliday({ ...newHoliday, name: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full"
+                        placeholder="Enter holiday name"
+                        value={newHoliday.name || ""}
+                        onChange={(e) => setNewHoliday({ ...newHoliday, name: e.target.value.trimStart() })}
+                        className={`border px-4 py-2 rounded-md w-full ${errors.holidayName ? "border-red-500" : "border-gray-300"}`}
                     />
+                    {errors.holidayName && (
+                        <p className="text-red-500 text-xs mt-1">{errors.holidayName}</p>
+                    )}
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-semibold">Date</label>
+
+                {/* Input for Holiday Date */}
+                <div className="mb-3">
+                    <label htmlFor="holidayDate" className="block text-sm font-medium text-gray-700 mb-1">
+                        Date
+                    </label>
                     <input
+                        id="holidayDate"
                         type="date"
-                        value={newHoliday.date}
+                        value={newHoliday.date || ""}
                         onChange={(e) => setNewHoliday({ ...newHoliday, date: e.target.value })}
-                        className="border px-4 py-2 rounded-md w-full"
+                        className={`border px-4 py-2 rounded-md w-full ${errors.holidayDate ? "border-red-500" : "border-gray-300"}`}
                     />
+                    {errors.holidayDate && (
+                        <p className="text-red-500 text-xs mt-1">{errors.holidayDate}</p>
+                    )}
                 </div>
+
+                {/* Buttons */}
                 <div className="flex justify-end space-x-2">
                     <button
+                        type="button"
                         onClick={() => setIsCreateModalOpen(false)}
-                        className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                        className="bg-gray-500 text-white px-4 py-2 rounded-md"
                     >
                         Cancel
                     </button>
                     <button
+                        type="button"
                         onClick={handleCreate}
                         className="bg-blue-500 text-white px-6 py-2 rounded-md"
                     >
@@ -274,6 +345,7 @@ const NationalHolidayMessages: React.FC = () => {
                     </button>
                 </div>
             </Modal>
+
 
             {/* Edit Modal */}
             <Modal
