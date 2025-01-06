@@ -56,21 +56,37 @@ const DoughnutChartCard: React.FC = () => {
         ],
     };
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-        position: "top" as const,
-      },
-    }
-  };
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+                position: "top" as const,
+            },
+        }
+    };
 
     return (
         <div className="bg-white rounded-lg shadow-md p-4">
             {loading ? (
-                <div className="flex justify-center items-center h-56">
-                    <p className="text-gray-500 italic">Loading...</p>
+                <div>
+                    <div className="relative h-56 flex items-center justify-center">
+                        <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse"></div>
+                    </div>
+                    <div className="mt-4 space-y-2">
+                        {[1, 2, 3].map((_, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center justify-between text-sm"
+                            >
+                                <div className="flex items-center">
+                                    <div className="w-4 h-4 rounded-full bg-gray-200 mr-2 animate-pulse"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                                </div>
+                                <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             ) : error ? (
                 <div className="flex justify-center items-center h-56">
