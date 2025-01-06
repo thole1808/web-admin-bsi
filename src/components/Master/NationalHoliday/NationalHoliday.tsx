@@ -16,8 +16,8 @@ interface NationalHolidayItem {
 }
 
 interface Errors {
-    holidayName?: string;
-    holidayDate?: string;
+    name?: string;
+    date?: string;
 }
 
 const NationalHolidayMessages: React.FC = () => {
@@ -84,12 +84,12 @@ const NationalHolidayMessages: React.FC = () => {
         let valid = true;
 
         if (!newHoliday.name.trim()) {
-            newErrors.holidayName = "Holiday name is required.";
+            newErrors.name = "Holiday name is required.";
             valid = false;
         }
 
         if (!newHoliday.date) {
-            newErrors.holidayDate = "Date is required.";
+            newErrors.date = "Date is required.";
             valid = false;
         }
 
@@ -139,23 +139,88 @@ const NationalHolidayMessages: React.FC = () => {
         }
     };
 
+    // const handleEdit = async () => {
+    //     if (!editData) return;
+    //     if (!handleValidation()) return;
+
+    //     try {
+    //         const response = await fetch(`/api/master/national-holidays/${editData.id}`, {
+    //             method: "PUT",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify(editData),
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error("Failed to update holiday.");
+    //         }
+    //         fetchHolidays();
+    //         setIsEditModalOpen(false);
+    //     } catch (err: any) {
+    //         alert(err.message || "Error occurred while updating holiday.");
+    //     }
+    // };
+
+    const validateEditData = (editData: any) => {
+        const errors: any = {};
+        if (!editData.name || editData.name.trim() === "") {
+            errors.name = "Holiday Name is required.";
+        }
+        if (!editData.date || editData.date.trim() === "") {
+            errors.date = "Holiday Date is required.";
+        } else {
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!datePattern.test(editData.date)) {
+                errors.date = "Holiday Date must be in YYYY-MM-DD format.";
+            }
+        }
+    
+        return errors;
+    };
+    
     const handleEdit = async () => {
         if (!editData) return;
+        const validationErrors = validateEditData(editData);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
         try {
-            const response = await fetch(`/api/national-holidays/${editData.id}`, {
+            const requestBody = {
+                name: editData.name,
+                date: editData.date,
+            };
+    
+            const response = await fetch(`/api/master/national-holidays/${editData.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editData),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
             });
-            if (!response.ok) {
-                throw new Error("Failed to update holiday.");
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Holiday updated:", data);
+                setIsEditModalOpen(false);
+                fetchHolidays();
+                setStatusMessage("Holiday updated successfully!");
+            } else {
+                const errorData = await response.json();
+                console.error("API Error:", errorData);
+                const errorMessage =
+                    errorData?.error ||
+                    errorData?.message ||
+                    errorData?.details?.message ||
+                    "Unknown error occurred";
+                alert(`Failed to update holiday: ${errorMessage}`);
+                setStatusMessage(`Failed to update holiday: ${errorMessage}`);
             }
-            fetchHolidays();
-            setIsEditModalOpen(false);
-        } catch (err: any) {
-            alert(err.message || "Error occurred while updating holiday.");
+        } catch (error: any) {
+            console.error("Error:", error);
+            alert(error.message || "Error occurred while updating holiday.");
+            setStatusMessage("Failed to update holiday. Please try again.");
         }
     };
+    
 
     const handleDelete = async (id: number) => {
         if (!confirm("Are you sure you want to delete this holiday?")) return;
@@ -216,6 +281,7 @@ const NationalHolidayMessages: React.FC = () => {
                     <button
                         onClick={() => {
                             setEditData(row);
+                            setErrors({});
                             setIsEditModalOpen(true);
                         }}
                         className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
@@ -256,6 +322,7 @@ const NationalHolidayMessages: React.FC = () => {
                             setEditData(null);
                             setNewHoliday({ date: "", name: "" });
                             setIsCreateModalOpen(true);
+                            setErrors({});
                         }}
                         className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
@@ -303,10 +370,10 @@ const NationalHolidayMessages: React.FC = () => {
                         placeholder="Enter holiday name"
                         value={newHoliday.name || ""}
                         onChange={(e) => setNewHoliday({ ...newHoliday, name: e.target.value.trimStart() })}
-                        className={`border px-4 py-2 rounded-md w-full ${errors.holidayName ? "border-red-500" : "border-gray-300"}`}
+                        className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
                     />
-                    {errors.holidayName && (
-                        <p className="text-red-500 text-xs mt-1">{errors.holidayName}</p>
+                    {errors.name && (
+                        <p className="text-red-500 text-xs mt-1">{errors.name}</p>
                     )}
                 </div>
 
@@ -320,10 +387,10 @@ const NationalHolidayMessages: React.FC = () => {
                         type="date"
                         value={newHoliday.date || ""}
                         onChange={(e) => setNewHoliday({ ...newHoliday, date: e.target.value })}
-                        className={`border px-4 py-2 rounded-md w-full ${errors.holidayDate ? "border-red-500" : "border-gray-300"}`}
+                        className={`border px-4 py-2 rounded-md w-full ${errors.date ? "border-red-500" : "border-gray-300"}`}
                     />
-                    {errors.holidayDate && (
-                        <p className="text-red-500 text-xs mt-1">{errors.holidayDate}</p>
+                    {errors.date && (
+                        <p className="text-red-500 text-xs mt-1">{errors.date}</p>
                     )}
                 </div>
 
@@ -348,7 +415,7 @@ const NationalHolidayMessages: React.FC = () => {
 
 
             {/* Edit Modal */}
-            <Modal
+            {/* <Modal
                 isOpen={isEditModalOpen}
                 onRequestClose={() => setIsEditModalOpen(false)}
                 contentLabel="Edit Holiday"
@@ -387,7 +454,75 @@ const NationalHolidayMessages: React.FC = () => {
                         Update
                     </button>
                 </div>
-            </Modal>
+            </Modal> */}
+
+            {/* Edit National Holiday Modal */}
+            <Modal
+            isOpen={isEditModalOpen}
+            onRequestClose={() => setIsEditModalOpen(false)}
+            contentLabel="Edit National Holiday"
+            className="modal"
+        >
+            <h2 className="text-xl font-bold mb-4">Edit National Holiday</h2>
+
+            {editData && (
+                <>
+                    {/* Holiday Name Input */}
+                    <div className="mb-3">
+                        <label htmlFor="editHolidayName" className="block text-sm font-medium text-gray-700 mb-1">
+                            Holiday Name
+                        </label>
+                        <input
+                            id="editHolidayName"
+                            type="text"
+                            placeholder="Enter holiday name"
+                            value={editData.name || ""}
+                            onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.name && (
+                            <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                        )}
+                    </div>
+
+                    {/* Date Input */}
+                    <div className="mb-3">
+                        <label htmlFor="editHolidayDate" className="block text-sm font-medium text-gray-700 mb-1">
+                            Date
+                        </label>
+                        <input
+                            id="editHolidayDate"
+                            type="date"
+                            value={editData.date || ""}
+                            onChange={(e) => setEditData({ ...editData, date: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.date ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.date && (
+                            <p className="text-red-500 text-xs mt-1">{errors.date}</p>
+                        )}
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex justify-end space-x-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsEditModalOpen(false)}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleEdit}
+                            className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                        >
+                            Update
+                        </button>
+                    </div>
+                </>
+            )}
+        </Modal>
+
 
             {/* Detail Modal */}
             <Modal

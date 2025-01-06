@@ -41,3 +41,56 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
+
+export async function PUT(req: NextRequest) {
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = new URL(req.url);
+    const id = url.pathname.split('/').pop();
+
+    if (!id) {
+        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    try {
+        const requestBody = await req.json();
+
+        const { name, date } = requestBody;
+
+        if (!name || !date) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
+        const response = await fetch(`${process.env.API_URL}/master/national-holidays/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${session.accessToken || ''}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name,
+                date
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return NextResponse.json(
+                { error: errorData.message || 'Failed to update national holiday' },
+                { status: response.status }
+            );
+        }
+
+        const updatedData = await response.json();
+        return NextResponse.json(updatedData, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Failed to update national holiday' },
+            { status: 500 }
+        );
+    }
+}
