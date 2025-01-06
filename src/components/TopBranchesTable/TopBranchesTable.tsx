@@ -1,14 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const TopBranchesTable = () => {
-  const topBranches = [
-    { branch: 'Pasar Senen', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
-    { branch: 'Margonda', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
-    { branch: 'Cempaka Mas', percentage: '89%', total: 45, served: 42, notServed: 3, waiting: 5, inService: 5 },
-  ];
+  const [topBranches, setTopBranches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTopBranches = async () => {
+      try {
+        const today = new Date();
+        const timezoneOffset = today.getTimezoneOffset() * 60000;
+        const localTime = new Date(today.getTime() - timezoneOffset);
+        const limit = 5;
+
+        const start = new Date(localTime.getFullYear(), localTime.getMonth(), 1)
+          .toISOString()
+          .split('T')[0] + 'T00:00:00';
+        const end = localTime.toISOString().split('T')[0] + 'T23:59:59';
+
+        const queryParams = new URLSearchParams({
+          start,
+          end,
+          limit: limit.toString(),
+        });
+
+        const response = await fetch(`/api/dashboard/top-branches?${queryParams.toString()}`);
+        const result = await response.json();
+
+        if (result.success) {
+          setTopBranches(result.data);
+        } else {
+          throw new Error(result.message || 'Failed to fetch top branches');
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopBranches();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500">Error: {error}</p>;
+  }
+
+  if (!topBranches || topBranches.length === 0) {
+    return <p className="text-center text-gray-500">No data available</p>;
+  }
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg shadow-md mt-8 overflow-x-auto">
+    <div className="w-full p-6 bg-white rounded-lg shadow-md overflow-x-auto">
       <h3 className="text-xl font-semibold mb-4">5 Cabang Terbaik</h3>
       <table className="min-w-full text-sm table-auto border-collapse">
         <thead>
@@ -22,23 +69,23 @@ const TopBranchesTable = () => {
           </tr>
         </thead>
         <tbody>
-          {topBranches.map((branch, index) => (
+          {topBranches.map((branch: any, index: number) => (
             <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
               <td className="px-4 py-3">{branch.branch}</td>
               <td className="px-4 py-3">
-                {branch.percentage} dari total {branch.total} antrian
+                {branch.percentage.toFixed(2)}% dari total {branch.total} antrian
               </td>
               <td className="px-4 py-3 text-center">
                 <span className="bg-green-100 text-green-700 px-12 py-1 rounded-full">{branch.served}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-red-100 text-red-700 px-12 py-1 rounded-full">{branch.notServed}</span>
+                <span className="bg-red-100 text-red-700 px-12 py-1 rounded-full">{branch.unserved}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-yellow-100 text-yellow-700 px-12 py-1 rounded-full">{branch.waiting}</span>
+                <span className="bg-yellow-100 text-yellow-700 px-12 py-1 rounded-full">{branch.waiting || 0}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-blue-100 text-blue-700 px-12 py-1 rounded-full">{branch.inService}</span>
+                <span className="bg-blue-100 text-blue-700 px-12 py-1 rounded-full">{branch.inService || 0}</span>
               </td>
             </tr>
           ))}
