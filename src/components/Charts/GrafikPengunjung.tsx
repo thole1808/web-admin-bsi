@@ -140,26 +140,37 @@ const GrafikPengunjung = () => {
     <div className="bg-white rounded-lg shadow-lg p-4">
       <div className="flex justify-between items-center mb-2">
         <h4 className="text-gray-600 text-sm font-semibold">
-          Pengunjung Cabang
+          {loading ? (
+            <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse"></div>
+          ) : (
+            "Pengunjung Cabang"
+          )}
         </h4>
-        <select
-          value={timeRange}
-          onChange={(e) => setTimeRange(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1 text-xs text-gray-700"
-        >
-          <option value="today">Today</option>
-          <option value="this week">This Week</option>
-          <option value="this month">This Month</option>
-        </select>
+        {loading ? (
+          <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
+        ) : (
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-1 text-xs text-gray-700"
+          >
+            <option value="today">Today</option>
+            <option value="this week">This Week</option>
+            <option value="this month">This Month</option>
+          </select>
+        )}
       </div>
       <div className="h-80 flex items-center justify-center">
-        {data.length === 0 ? (
+        {loading ? (
+          <div className="w-full h-full bg-gray-200 rounded animate-pulse"></div>
+        ) : data.length === 0 ? (
           <p className="text-gray-500 italic">No data available</p>
         ) : (
           <Bar data={chartData} options={chartOptions} />
         )}
       </div>
     </div>
+
   );
 };
 

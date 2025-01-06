@@ -58,8 +58,28 @@ const QueueStatsOverview: React.FC = () => {
     }, []);
 
     if (loading) {
-        return <p className="text-center text-gray-500">Loading...</p>;
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-100">
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                        key={index}
+                        className="flex items-center bg-white rounded-lg shadow-md p-4"
+                    >
+                        {/* Skeleton untuk ikon */}
+                        <div className="w-14 h-14 bg-gray-200 rounded-full animate-pulse mr-4"></div>
+                        
+                        {/* Skeleton untuk konten */}
+                        <div className="flex-1">
+                            <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                            <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
+                            <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
     }
+    
 
     if (error) {
         return <p className="text-center text-red-500">Error: {error}</p>;

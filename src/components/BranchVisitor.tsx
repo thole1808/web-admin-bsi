@@ -75,8 +75,44 @@ const BranchVisitor: React.FC = () => {
     };
 
     if (loading) {
-        return <p className="text-center text-gray-500">Loading...</p>;
+        return (
+            <div className="bg-white rounded-lg shadow-lg pb-2">
+                <h2 className="text-gray-600 text-sm font-semibold px-4 pb-2 pt-4">
+                    <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                </h2>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white rounded-sm shadow-sm text-xs">
+                        <thead>
+                            <tr className="border-b">
+                                <th className="py-2 px-4 text-left text-gray-600 font-medium">
+                                    <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                                </th>
+                                <th className="py-2 px-4 text-left text-gray-600 font-medium">
+                                    <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Array.from({ length: 5 }).map((_, index) => (
+                                <tr
+                                    key={index}
+                                    className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                                >
+                                    <td className="py-2 px-4">
+                                        <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                                    </td>
+                                    <td className="py-2 px-4">
+                                        <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse"></div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
     }
+    
 
     if (error) {
         return <p className="text-center text-red-500">Error: {error}</p>;
