@@ -70,7 +70,7 @@ const QueueStatsOverview: React.FC = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-100">
             {stats
                 .sort((a, b) => {
                     const priority = {
@@ -90,11 +90,11 @@ const QueueStatsOverview: React.FC = () => {
                             {getStatusIcon(stat.status)}
                         </div>
                         <div className="ml-4">
-                            <h4 className="text-gray-600 text-lg font-semibold">
+                            <h4 className="text-gray-600 text-sm font-semibold">
                                 {getStatusLabel(stat.status)}
                             </h4>
-                            <p className="text-gray-800 text-2xl font-bold">{stat.current}</p>
-                            <p className="text-sm text-gray-500 mt-1 flex items-center">
+                            <p className="text-gray-800 text-xl font-bold">{stat.current}</p>
+                            <p className="text-xs text-gray-500 mt-1 flex items-center">
                                 {getTrendIcon(stat.trend)} {getTrendLabel(stat.current, stat.previous)}
                             </p>
                         </div>

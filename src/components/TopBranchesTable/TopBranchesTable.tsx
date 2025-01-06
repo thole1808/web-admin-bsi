@@ -11,12 +11,10 @@ const TopBranchesTable = () => {
         const today = new Date();
         const timezoneOffset = today.getTimezoneOffset() * 60000;
         const localTime = new Date(today.getTime() - timezoneOffset);
-        const limit = 5;
 
-        const start = new Date(localTime.getFullYear(), localTime.getMonth(), 1)
-          .toISOString()
-          .split('T')[0] + 'T00:00:00';
-        const end = localTime.toISOString().split('T')[0] + 'T23:59:59';
+        const start = localTime.toISOString().split("T")[0] + "T00:00:00";
+        const end = localTime.toISOString().split("T")[0] + "T23:59:59";
+        const limit = 10;
 
         const queryParams = new URLSearchParams({
           start,
@@ -55,9 +53,9 @@ const TopBranchesTable = () => {
   }
 
   return (
-    <div className="w-full p-6 bg-white rounded-lg shadow-md overflow-x-auto">
-      <h3 className="text-xl font-semibold mb-4">5 Cabang Terbaik</h3>
-      <table className="min-w-full text-sm table-auto border-collapse">
+    <div className="w-full p-4 bg-white rounded-lg shadow overflow-x-auto">
+      <h3 className="text-sm font-semibold mb-4">5 Cabang Terbaik</h3>
+      <table className="min-w-full text-xs table-auto border-collapse">
         <thead>
           <tr className="bg-gradient-to-r from-blue-50 to-green-50 text-left">
             <th className="px-4 py-2">Nama Cabang</th>
@@ -76,16 +74,16 @@ const TopBranchesTable = () => {
                 {branch.percentage.toFixed(2)}% dari total {branch.total} antrian
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-green-100 text-green-700 px-12 py-1 rounded-full">{branch.served}</span>
+                <span className="bg-green-100 text-green-700 px-2 py-1 rounded">{branch.served}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-red-100 text-red-700 px-12 py-1 rounded-full">{branch.unserved}</span>
+                <span className="bg-red-100 text-red-700 px-2 py-1 rounded">{branch.unserved}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-yellow-100 text-yellow-700 px-12 py-1 rounded-full">{branch.waiting || 0}</span>
+                <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">{branch.waiting || 0}</span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className="bg-blue-100 text-blue-700 px-12 py-1 rounded-full">{branch.pending || 0}</span>
+                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">{branch.pending || 0}</span>
               </td>
             </tr>
           ))}

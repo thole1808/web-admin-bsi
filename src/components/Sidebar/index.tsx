@@ -5,19 +5,10 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
-import DatabaseIcon from "@/components/Icon/DatabaseIcon";
-import DashboardIcon from "@/components/Icon/DashboardIcon";
-import AntrianIcon from "@/components/Icon/AntrianIcon";
-import ReportingIcon from "@/components/Icon/ReportingIcon";  
-import BranchIcon from "@/components/Icon/BranchIcon";
-import RolesIcon from "@/components/Icon/RolesIcon";
-import UsersIcon from "@/components/Icon/UsersIcon";
-import ReservationIcon from "@/components/Icon/ReservationIcon";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { signOut } from "next-auth/react";
 import { FiLogOut } from 'react-icons/fi';
-import DarkModeSwitcher from "@/components/Header/DarkModeSwitcher";
 
 
 interface SidebarProps {
@@ -56,11 +47,6 @@ const menuGroups = [
         route: '/branches/branch',
         icon: "BranchIcon",
       },
-      // {
-      //   label: 'Reservation',
-      //   route: '/reservation',
-      //   icon: "AntrianIcon",
-      // },
       {
         label: 'Antrian',
         route: '/antrian',
@@ -86,14 +72,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         {/* SIDEBAR HEADER */}
         <div className="flex items-center justify-between gap-2 px-6 py-4">
           <Link href="/">
             <Image
-              width={176}
+              width={130}
               height={32}
               src={"/images/logo/logo-bsi.png"}
               alt="Logo"
@@ -137,24 +123,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </nav>
         </div>
 
-        {/* Sidebar Footer with Logout */}
         <div className="mt-auto p-4 flex justify-between items-center">
-          {/* Logout Button di Kanan */}
           <div>
             <button
               onClick={handleLogout}
-              className="w-full bg-[#00BFB2] text-white py-2 px-20 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none"
+              className="w-full bg-red-500 text-white py-2 px-20 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600 focus:outline-none text-sm"
             >
-              {/* Icon Logout */}
-              <FiLogOut size={20} />
+              <FiLogOut size={16} />
               <span>Logout</span>
             </button>
           </div>
-
-          {/* Dark Mode Switcher di Kiri */}
-          {/* <div>
-            <DarkModeSwitcher />
-          </div> */}
 
         </div>
       </aside>

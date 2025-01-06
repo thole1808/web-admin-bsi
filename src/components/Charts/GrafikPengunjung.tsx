@@ -110,9 +110,6 @@ const GrafikPengunjung = () => {
       legend: {
         position: "bottom" as const,
         labels: {
-          font: {
-            size: 14,
-          },
           usePointStyle: true,
           pointStyle: "circle",
         },
@@ -140,15 +137,15 @@ const GrafikPengunjung = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h4 className="text-gray-600 text-lg font-semibold">
+    <div className="bg-white rounded-lg shadow-lg p-4">
+      <div className="flex justify-between items-center mb-2">
+        <h4 className="text-gray-600 text-sm font-semibold">
           Pengunjung Cabang
         </h4>
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700"
+          className="border border-gray-300 rounded-md px-3 py-1 text-xs text-gray-700"
         >
           <option value="today">Today</option>
           <option value="this week">This Week</option>

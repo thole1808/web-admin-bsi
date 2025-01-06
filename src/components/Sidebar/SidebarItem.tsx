@@ -4,13 +4,13 @@ import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
 import { FaHome, FaUsers, FaDatabase, FaCalendarAlt, FaChartBar, FaRegBuilding } from 'react-icons/fa';
 
 const IconMap: { [key: string]: JSX.Element } = {
-  DashboardIcon: <FaHome className="w-5 h-5" />,
-  RolesIcon: <FaUsers className="w-5 h-5" />,
-  DatabaseIcon: <FaDatabase className="w-5 h-5" />,
-  BranchIcon: <FaRegBuilding className="w-5 h-5" />,
-  AntrianIcon: <FaCalendarAlt className="w-5 h-5" />,
-  CabangIcon: <FaRegBuilding className="w-5 h-5" />,
-  ReportingIcon: <FaChartBar className="w-5 h-5" />,
+  DashboardIcon: <FaHome className="w-4 h-4s" />,
+  RolesIcon: <FaUsers className="w-4 h-4s" />,
+  DatabaseIcon: <FaDatabase className="w-4 h-4s" />,
+  BranchIcon: <FaRegBuilding className="w-4 h-4s" />,
+  AntrianIcon: <FaCalendarAlt className="w-4 h-4s" />,
+  CabangIcon: <FaRegBuilding className="w-4 h-4s" />,
+  ReportingIcon: <FaChartBar className="w-4 h-4s" />,
 };
 
 const SidebarItem = ({ item }: any) => {
@@ -46,7 +46,7 @@ const SidebarItem = ({ item }: any) => {
   };
 
   return (
-    <li className="relative mb-1">
+    <li className="relative mb-1 text-sm">
       {/* Indikator aktif */}
       <div
         className={`absolute left-1 top-2 bottom-2 w-1 transition-all duration-300 ease-in-out ${
