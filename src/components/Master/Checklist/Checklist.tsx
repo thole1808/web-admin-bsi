@@ -134,20 +134,25 @@ const Checklist: React.FC = () => {
 
     // Handle delete activity
     const handleDelete = async (id: number) => {
-        try {
-            const response = await fetch(`/api/master/checklist/${id}`, {
-                method: "DELETE",
-            });
-            if (response.ok) {
-                setChecklistData((prevData) =>
-                    prevData.filter((item) => item.id !== id)
-                );
-            } else {
-                alert("Failed to delete activity.");
+        if (confirm("Are you sure you want to delete this item?")) {
+            try {
+                const response = await fetch(`/api/master/checklist/${id}`, {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    setChecklistData((prevData) =>
+                        prevData.filter((item) => item.id !== id)
+                    );
+                } else {
+                    const errorData = await response.json();
+                    alert("Failed to delete activity: " + (errorData?.message || "Unknown error"));
+                }
+            } catch (error) {
+                console.error("Error occurred while deleting activity:", error);
+                alert("Error occurred while deleting activity.");
             }
-        } catch {
-            alert("Error occurred while deleting activity.");
-        }
+        };
     };
 
     const handleDetail = (row: ChecklistItem) => {
@@ -180,7 +185,6 @@ const Checklist: React.FC = () => {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         fetchData();
@@ -277,7 +281,6 @@ const Checklist: React.FC = () => {
                     >
                         <PencilSquareIcon className="h-5 w-5" />
                     </button>
-
                     <button
                         onClick={() => handleDelete(row.id)}
                         className="text-red-500 hover:text-red-700 p-1.5"

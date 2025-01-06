@@ -94,3 +94,42 @@ export async function PUT(req: NextRequest) {
         );
     }
 }
+
+export async function DELETE(req: NextRequest) {
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = new URL(req.url);
+    const id = url.pathname.split('/').pop();
+
+    if (!id) {
+        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    try {
+        const response = await fetch(`${process.env.API_URL}/master/checklists/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${session.accessToken || ''}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            return NextResponse.json(
+                { error: errorData.message || 'Failed to delete checklist' },
+                { status: response.status }
+            );
+        }
+
+        return NextResponse.json({ message: "Deleted successfully" }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { error: 'Failed to delete checklist' },
+            { status: 500 }
+        );
+    }
+}
