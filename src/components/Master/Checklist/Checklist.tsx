@@ -25,7 +25,7 @@ interface ChecklistItem {
 interface Errors {
     activityName?: string;
     activityType?: string;
-    [key: string]: string | undefined; 
+    [key: string]: string | undefined;
 }
 
 
@@ -42,7 +42,7 @@ const Checklist: React.FC = () => {
     const [formData, setFormData] = useState({
         activityName: "",
         activityType: "",
-        mandatory: true,
+        // mandatory: true,
     });
 
     // Fetch data from API
@@ -108,18 +108,20 @@ const Checklist: React.FC = () => {
 
     // Handle edit activity
     const handleEdit = async (id: number) => {
+        if (!handleValidation()) return;
         try {
             const response = await fetch(`/api/master/checklist/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
+
             if (response.ok) {
                 const updatedItem = await response.json();
                 setChecklistData((prevData) =>
                     prevData.map((item) => (item.id === id ? updatedItem.data : item))
                 );
-                setFormData({ activityName: "", activityType: "", mandatory: true });
+                setFormData({ activityName: "", activityType: "" });
                 setCurrentItem(null);
                 setIsModalOpen(false);
             } else {
@@ -150,11 +152,13 @@ const Checklist: React.FC = () => {
 
     const handleDetail = (row: ChecklistItem) => {
         fetchChecklistDetail(row.id);
+        setErrors({});
     };
 
     const handleModalClose = () => {
         setIsModalOpen(false);
         setIsCreateModalOpen(false);
+        setErrors({});
     };
 
     const fetchChecklistDetail = async (id: number) => {
@@ -258,17 +262,22 @@ const Checklist: React.FC = () => {
                     <button
                         onClick={() => {
                             setFormData({
-                                activityName: row.activityName,
-                                activityType: row.activityType,
-                                mandatory: row.mandatory,
+                                activityName: "",
+                                activityType: "",
                             });
                             setCurrentItem(row);
+                            setErrors({});
                             setIsModalOpen(true);
+                            setFormData({
+                                activityName: row.activityName,
+                                activityType: row.activityType,
+                            });
                         }}
                         className="text-orange-500 hover:text-orange-700 p-1.5"
                     >
                         <PencilSquareIcon className="h-5 w-5" />
                     </button>
+
                     <button
                         onClick={() => handleDelete(row.id)}
                         className="text-red-500 hover:text-red-700 p-1.5"
@@ -298,11 +307,19 @@ const Checklist: React.FC = () => {
                 </div>
                 <div>
                     <button
-                        onClick={() => setIsCreateModalOpen(true)}
+                        onClick={() => {
+                            setFormData({
+                                activityName: "",
+                                activityType: "",
+                            });
+                            setErrors({});
+                            setIsCreateModalOpen(true);
+                        }}
                         className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
+
                 </div>
             </div>
 
@@ -427,13 +444,14 @@ const Checklist: React.FC = () => {
             {/* Edit Modal */}
             <Modal
                 isOpen={isModalOpen}
-                onRequestClose={() => setIsModalOpen(false)}
+                onRequestClose={handleModalClose}
                 contentLabel="Edit"
                 className="modal"
             >
                 <h2 className="text-xl font-bold">Edit</h2>
                 <div className="mt-4">
                     <div className="grid">
+                        {/* Activity Name */}
                         <div>
                             <div className="text-sm text-gray-500">Activity</div>
                             <div className="mt-1 font-medium">
@@ -442,39 +460,38 @@ const Checklist: React.FC = () => {
                                     placeholder="Activity Name"
                                     value={formData.activityName}
                                     onChange={(e) => setFormData({ ...formData, activityName: e.target.value })}
-                                    className="border border-gray-300 text-sm p-2 rounded-md w-full"
+                                    className={`border border-gray-300 text-sm p-2 rounded-md w-full ${errors.activityName ? "border-red-500" : ""}`}
                                 />
+                                {errors.activityName && (
+                                    <div className="text-xs text-red-500 mt-1">{errors.activityName}</div>
+                                )}
                             </div>
                         </div>
+
+                        {/* Activity Type */}
                         <div>
                             <div className="text-sm text-gray-500">Type</div>
                             <div className="mt-1 font-medium">
                                 <select
                                     value={formData.activityType}
                                     onChange={(e) => setFormData({ ...formData, activityType: e.target.value })}
-                                    className="border border-gray-300 text-sm p-3 rounded-md w-full"
+                                    className={`border border-gray-300 text-sm p-3 rounded-md w-full ${errors.activityType ? "border-red-500" : ""}`}
                                 >
                                     <option value="SOD">SOD</option>
                                     <option value="EOD">EOD</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-sm text-gray-500 mt-3">Mandatory</div>
-                            <div className="mt-2 font-medium">
-                                <select
-                                    value={formData.mandatory ? "true" : "false"}
-                                    onChange={(e) => setFormData({ ...formData, mandatory: e.target.value === "true" })}
-                                    className="border border-gray-300 text-sm p-3 rounded-md w-full"
-                                >
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                </select>
+                                {errors.activityType && (
+                                    <div className="text-xs text-red-500 mt-1">{errors.activityType}</div>
+                                )}
                             </div>
                         </div>
                     </div>
+
                     <div className="flex justify-end space-x-2 mt-8">
-                        <button onClick={handleModalClose} className="bg-gray-500 text-white text-sm px-2 py-1 rounded-md">
+                        <button
+                            onClick={handleModalClose}
+                            className="bg-gray-500 text-white text-sm px-2 py-1 rounded-md"
+                        >
                             Cancel
                         </button>
                         <button
@@ -486,7 +503,6 @@ const Checklist: React.FC = () => {
                     </div>
                 </div>
             </Modal>
-
 
             {/* Detail Modal */}
             <Modal
