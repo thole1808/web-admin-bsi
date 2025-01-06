@@ -34,7 +34,6 @@ const Checklist: React.FC = () => {
     const [checklistData, setChecklistData] = useState<ChecklistItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    // const [errors, setErrors] = useState({});
     const [errors, setErrors] = useState<Errors>({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -104,8 +103,6 @@ const Checklist: React.FC = () => {
             newErrors.activityType = "Activity Type is required.";
         }
         setErrors(newErrors);
-
-        // Jika ada error, hentikan eksekusi
         return Object.keys(newErrors).length === 0;
     };
 
