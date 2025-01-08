@@ -7,7 +7,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
 export const metadata: Metadata = {
     title:
-        "Web Admin BSI - Template",
+        "QMS Console - Template",
     description: "Web Admin BSI",
 };
 const FormElementsPage = () => {

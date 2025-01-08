@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
-import { FaHome, FaUsers, FaDatabase, FaCalendarAlt, FaChartBar, FaRegBuilding } from 'react-icons/fa';
+import { FaHome, FaUsers, FaDatabase, FaCalendarCheck, FaChartBar, FaRegBuilding, } from 'react-icons/fa';
+import Link from 'next/link'
 
 const IconMap: { [key: string]: JSX.Element } = {
-  DashboardIcon: <FaHome className="w-4 h-4s" />,
-  RolesIcon: <FaUsers className="w-4 h-4s" />,
-  DatabaseIcon: <FaDatabase className="w-4 h-4s" />,
-  BranchIcon: <FaRegBuilding className="w-4 h-4s" />,
-  AntrianIcon: <FaCalendarAlt className="w-4 h-4s" />,
-  CabangIcon: <FaRegBuilding className="w-4 h-4s" />,
-  ReportingIcon: <FaChartBar className="w-4 h-4s" />,
+  DashboardIcon: <FaHome className="w-4.5 h-4.5" />,
+  RolesIcon: <FaUsers className="w-4.5 h-4.5" />,
+  DatabaseIcon: <FaDatabase className="w-4.5 h-4.5" />,
+  BranchIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
+  AntrianIcon: <FaCalendarCheck className="w-4.5 h-4.5" />,
+  CabangIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
+  ReportingIcon: <FaChartBar className="w-4.5 h-4.5" />,
 };
 
 const SidebarItem = ({ item }: any) => {
-  const [isOpen, setIsOpen] = useState(false); // Status apakah sub-menu terbuka
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Fungsi untuk mengecek apakah item aktif
   const isActive = (item: any) => {
     if (item.route === pathname) return true;
     if (item.children) {
@@ -28,20 +28,18 @@ const SidebarItem = ({ item }: any) => {
 
   const isItemActive = isActive(item);
 
-  // Pastikan sub-menu terbuka jika ada sub-item aktif
   React.useEffect(() => {
     if (isItemActive) {
       setIsOpen(true);
     }
   }, [isItemActive]);
 
-  // Fungsi untuk menangani klik pada item utama
   const handleItemClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (item.children) {
-      setIsOpen(!isOpen); // Toggle sub-menu
+      setIsOpen(!isOpen);
     } else if (item.route) {
-      window.location.href = item.route; // Redirect ke halaman
+      window.location.href = item.route;
     }
   };
 
@@ -55,7 +53,8 @@ const SidebarItem = ({ item }: any) => {
       />
 
       {/* Item utama */}
-      <div
+      <Link
+        href={item.route || "#"}
         onClick={handleItemClick}
         className={`${
           isItemActive
@@ -85,7 +84,7 @@ const SidebarItem = ({ item }: any) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         )}
-      </div>
+      </Link>
 
       {/* Sub-menu */}
       {item.children && isOpen && (

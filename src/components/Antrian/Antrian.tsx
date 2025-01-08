@@ -1,371 +1,271 @@
-"use client"; // Add this directive at the top
+"use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-import Image from 'next/image';
+import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 
-
-
-interface DropdownItem {
-  id: number;
-  name: string;
-  avatar: string;
-}
-
-// Define the Antrian interface
-interface Antrian {
-  namaNasabah: string;
-  jenisLayanan: string;
-  noAntrian: string;
-  waktuKedatangan: string;
-  waktuTunggu: string;
-  sla: string;
-  statusLayanan: string;
-  namaPetugas: string;
-}
-
-// Load the DataTable component dynamically
-const DataTable = dynamic(() => import("react-data-table-component"), {
-  ssr: false,
-});
-
-const AntrianTable: React.FC = () => {
-  const [search, setSearch] = useState("");
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof Antrian;
-    direction: "ascending" | "descending" | null;
-  }>({
-    key: "namaNasabah",
-    direction: "ascending",
-  });
-
-  const [visibleColumns, setVisibleColumns] = useState({
-    namaNasabah: true,
-    jenisLayanan: true,
-    noAntrian: true,
-    waktuKedatangan: true,
-    waktuTunggu: true,
-    sla: true,
-    statusLayanan: true,
-    namaPetugas: true,
-  });
-
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [selectedItem, setSelectedItem] = useState<DropdownItem | null>(null);
-
-  // Sample dropdown data
-  const dropdownData: DropdownItem[] = [
-    { id: 1, name: 'User', avatar: 'https://example.com/avatar-user.jpg' },
-    { id: 2, name: 'Guest', avatar: 'https://example.com/avatar-guest.jpg' },
-    { id: 3, name: 'Moderator', avatar: 'https://example.com/avatar-moderator.jpg' },
-  ];
-
-
-  const columnLabels: { [key in keyof Antrian]: string } = {
-    namaNasabah: "Nama Nasabah",
-    jenisLayanan: "Jenis Layanan",
-    noAntrian: "No. Antrian",
-    waktuKedatangan: "Waktu Kedatangan",
-    waktuTunggu: "Waktu Tunggu",
-    sla: "SLA",
-    statusLayanan: "Status Layanan",
-    namaPetugas: "Nama Petugas",
-  };
-
-  const topAntrianes: Antrian[] = useMemo(() => [
-    {
-      namaNasabah: 'Andi',
-      jenisLayanan: 'Setor Tunai',
-      noAntrian: '001',
-      waktuKedatangan: '25 Okt 2024 | 10:20',
-      waktuTunggu: '10 menit',
-      sla: '10 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Rudi Hartono',
-    },
-    {
-      namaNasabah: 'Budi',
-      jenisLayanan: 'Tarik Tunai',
-      noAntrian: '002',
-      waktuKedatangan: '25 Okt 2024 | 10:25',
-      waktuTunggu: '5 menit',
-      sla: '5 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Siti Aisyah',
-    },
-    {
-      namaNasabah: 'Cindy',
-      jenisLayanan: 'Buka Rekening',
-      noAntrian: '003',
-      waktuKedatangan: '25 Okt 2024 | 10:30',
-      waktuTunggu: '8 menit',
-      sla: '8 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Joko Susilo',
-    },
-    {
-      namaNasabah: 'Diana',
-      jenisLayanan: 'Konsultasi',
-      noAntrian: '004',
-      waktuKedatangan: '25 Okt 2024 | 10:35',
-      waktuTunggu: '3 menit',
-      sla: '3 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Wati Rahmawati',
-    },
-    {
-      namaNasabah: 'Eko',
-      jenisLayanan: 'Transfer',
-      noAntrian: '005',
-      waktuKedatangan: '25 Okt 2024 | 10:40',
-      waktuTunggu: '15 menit',
-      sla: '15 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Agus Setiawan',
-    },
-    {
-      namaNasabah: 'Fina',
-      jenisLayanan: 'Kredit',
-      noAntrian: '006',
-      waktuKedatangan: '25 Okt 2024 | 10:45',
-      waktuTunggu: '20 menit',
-      sla: '20 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Tina Lestari',
-    },
-    {
-      namaNasabah: 'Guntur',
-      jenisLayanan: 'Deposit',
-      noAntrian: '007',
-      waktuKedatangan: '25 Okt 2024 | 10:50',
-      waktuTunggu: '12 menit',
-      sla: '12 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Rina Pratiwi',
-    },
-    {
-      namaNasabah: 'Hana',
-      jenisLayanan: 'Ganti Kartu',
-      noAntrian: '008',
-      waktuKedatangan: '25 Okt 2024 | 10:55',
-      waktuTunggu: '7 menit',
-      sla: '7 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Budi Santoso',
-    },
-    {
-      namaNasabah: 'Iwan',
-      jenisLayanan: 'Pencairan Deposito',
-      noAntrian: '009',
-      waktuKedatangan: '25 Okt 2024 | 11:00',
-      waktuTunggu: '6 menit',
-      sla: '6 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Lina Marlina',
-    },
-    {
-      namaNasabah: 'Joko',
-      jenisLayanan: 'Pinjaman',
-      noAntrian: '010',
-      waktuKedatangan: '25 Okt 2024 | 11:05',
-      waktuTunggu: '4 menit',
-      sla: '4 menit',
-      statusLayanan: 'Sedang Dilayani',
-      namaPetugas: 'Sandy Prabowo',
-    },
-  ], []);
-
-  const toggleColumnVisibility = (columnKey: keyof Antrian) => {
-    setVisibleColumns((prev) => ({
-      ...prev,
-      [columnKey]: !prev[columnKey],
-    }));
-  };
+const Antrian: React.FC = () => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalRows, setTotalRows] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    };
+    fetchQueues();
+  }, [perPage, currentPage, sortField, sortDirection]);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const fetchQueues = async () => {
+    try {
+      const today = new Date();
+      const timezoneOffset = today.getTimezoneOffset() * 60000;
+      const localTime = new Date(today.getTime() - timezoneOffset);
+
+      const start = localTime.toISOString().split("T")[0] + "T00:00:00";
+      const end = localTime.toISOString().split("T")[0] + "T23:59:59";
+      const size = perPage.toString();
+      const page = (currentPage - 1).toString();
+      const sortBy = sortField ? sortField : "id";
+      const direction = sortDirection.toString();
+
+      const queryParams = new URLSearchParams({
+        start,
+        end,
+        size,
+        page,
+        sortBy,
+        direction
+      });
+
+      const response = await fetch(
+        `/api/antrian?${queryParams.toString()}`
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        setData(result.data.content);
+        setTotalRows(result.data.totalElements);
+      } else {
+        throw new Error(result.message || "Failed to fetch queues");
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  function convertArrayOfObjectsToCSV(array: any[]) {
+    let result: string;
+
+    const columnDelimiter = ',';
+    const lineDelimiter = '\n';
+    const keys = Object.keys(data[0]);
+
+    result = '';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    array.forEach((item: { [x: string]: any; }) => {
+      let ctr = 0;
+      keys.forEach(key => {
+        if (ctr > 0) result += columnDelimiter;
+
+        result += item[key];
+
+        ctr++;
+      });
+      result += lineDelimiter;
+    });
+
+    return result;
+  }
+
+  function downloadCSV(array: any) {
+    const link = document.createElement('a');
+    let csv = convertArrayOfObjectsToCSV(array);
+    if (csv == null) return;
+
+    const filename = 'export.csv';
+
+    if (!csv.match(/^data:text\/csv/i)) {
+      csv = `data:text/csv;charset=utf-8,${csv}`;
+    }
+
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('download', filename);
+    link.click();
+  }
+
+  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-xs p-2 font-medium bg-gray-100 hover:bg-gray-200 rounded-lg border text-gray-700 mr-2" onClick={() => onExport()}>Download</button>;
+
+  const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
+    return (
+      <div className="p-4 bg-gray-50 text-xs">
+        <div className="text-gray-500">Detail</div>
+        <div className="grid grid-cols-2">
+          <div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Reservasi</span>
+              <span className="col-span-2">: {formatDateTime(data.createdAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Dipanggil</span>
+              <span className="col-span-2">: {formatDateTime(data.calledAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Layanan Dimulai</span>
+              <span className="col-span-2">: {formatDateTime(data.startedAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Dijeda</span>
+              <span className="col-span-2">: {formatDateTime(data.pausedAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Dilanjutkan</span>
+              <span className="col-span-2">: {formatDateTime(data.continuedAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Dibatalkan</span>
+              <span className="col-span-2">: {formatDateTime(data.canceledAt)}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Pukul Ditransfer</span>
+              <span className="col-span-2">: {formatDateTime(data.transferredAt)}</span>
+            </div>
+          </div>
+          <div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Durasi Tunggu</span>
+              <span className="col-span-2">: {data.waitingDuration || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Durasi Pelayanan</span>
+              <span className="col-span-2">: {data.serviceDuration || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Durasi Jeda</span>
+              <span className="col-span-2">: {data.pauseDuration || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm">
+              <span>Total Durasi</span>
+              <span className="col-span-2">: {data.overallDuration || 0} menit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  };
+
+  const handlePerRowsChange = async (newPerPage: number, page: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(page);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSort = async (column: any, sortDirection: "asc" | "desc") => {
+    setSortField(column.selector);
+    setSortDirection(sortDirection);
+  };
+
+  function formatDateTime(date: string) {
+    if (!date) return '-';
+
+    return new Date(date).toLocaleString('id-ID');
+  }
 
   const columns = [
     {
-      name: "No",
-      cell: (row: Antrian, index: number) => index + 1,
-      width: "50px",
-      center: true,
-    },
-    {
-      name: "Nama Nasabah",
-      selector: (row: Antrian) => row.namaNasabah,
+      name: 'Cabang',
+      selector: (row: { branchName: string; }) => row.branchName,
+      grow: 2,
       sortable: true,
-      cell: (row: Antrian) => (
-        <div className="flex items-center">
-          <input type="checkbox" className="mr-2" />
-          <span>{row.namaNasabah}</span>
+      sortField: 'branchName',
+      cell: (row: { branchName: string; branchCode: string; }) => (
+        <div className="">
+          <div>{row.branchName}</div>
+          <div className="text-xs text-gray-500 mt-1">{row.branchCode}</div>
         </div>
       ),
-      omit: !visibleColumns.namaNasabah,
     },
     {
-      name: "Jenis Layanan",
-      selector: (row: Antrian) => row.jenisLayanan,
+      name: 'Kode Reservasi',
+      selector: (row: { reservationCode: string; }) => row.reservationCode,
+      grow: 2,
       sortable: true,
-      omit: !visibleColumns.jenisLayanan,
-    },
-    {
-      name: "No. Antrian",
-      selector: (row: Antrian) => row.noAntrian,
-      sortable: true,
-      omit: !visibleColumns.noAntrian,
-    },
-    {
-      name: "Waktu Kedatangan",
-      selector: (row: Antrian) => row.waktuKedatangan,
-      sortable: true,
-      omit: !visibleColumns.waktuKedatangan,
-    },
-    {
-      name: "Waktu Tunggu",
-      selector: (row: Antrian) => row.waktuTunggu,
-      sortable: true,
-      omit: !visibleColumns.waktuTunggu,
-    },
-    {
-      name: "SLA",
-      selector: (row: Antrian) => row.sla,
-      sortable: true,
-      omit: !visibleColumns.sla,
-      cell: (row: Antrian) => (
-        <span style={{ color: row.sla === "5 menit" ? "red" : "black" }}>
-          {row.sla}
-        </span>
+      sortField: 'reservationCode',
+      cell: (row: { reservationCode: string; type: string; }) => (
+        <div className="">
+          <div>{row.reservationCode}</div>
+          <div className="text-xs text-gray-500 mt-1">{row.type}</div>
+        </div>
       ),
     },
     {
-      name: "Status Layanan",
-      selector: (row: Antrian) => row.statusLayanan,
+      name: 'Tanggal',
+      selector: (row: { createdAt: string; }) => formatDateTime(row.createdAt),
+      grow: 2,
       sortable: true,
-      omit: !visibleColumns.statusLayanan,
+      sortField: 'createdAt',
     },
     {
-      name: "Nama Petugas",
-      selector: (row: Antrian) => row.namaPetugas,
+      name: 'Jenis Layanan',
+      selector: (row: { serviceTypeName: string; }) => row.serviceTypeName,
+      grow: 2,
       sortable: true,
-      omit: !visibleColumns.namaPetugas,
+      sortField: 'serviceTypeName',
+      cell: (row: { serviceTypeName: string; slaMinDuration: number; slaMaxDuration: number }) => (
+        <div className="">
+          <div>{row.serviceTypeName}</div>
+          <div className="text-xs text-gray-500 mt-1">SLA: {row.slaMinDuration + 'm - ' + row.slaMaxDuration + 'm'}</div>
+        </div>
+      ),
+    },
+    {
+      name: 'No. Antrian',
+      selector: (row: { displayNo: string; }) => row.displayNo,
+      sortable: true,
+      sortField: 'displayNo',
+    },
+    {
+      name: 'Petugas',
+      selector: (row: { counterName: string; }) => row.counterName,
+      sortable: true,
+      sortField: 'counterName',
+    },
+    {
+      name: 'Status',
+      selector: (row: { status: string; }) => row.status,
+      sortable: true,
+      sortField: 'status',
     },
   ];
 
-  const filteredAntrianes = useMemo(() => {
-    return topAntrianes.filter((antrian) =>
-      antrian.namaNasabah.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.jenisLayanan.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.noAntrian.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.waktuKedatangan.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.waktuTunggu.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.sla.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.statusLayanan.toLowerCase().includes(search.toLowerCase()) ||
-      antrian.namaPetugas.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search, topAntrianes]);
-
-  // Handle item click
-  const handleItemClick = (item: DropdownItem) => {
-    setSelectedItem(item);
-    setDropdownOpen(false);
-  };
-
   return (
-    <div>
-      <div className="flex mb-10 justify-between items-center  py-5 w-full">
-        {/* Search Input */}
-        <div className="relative w-1/2">
-          <input
-            type="text"
-            placeholder="Cari disini"
-            className="w-full px-4 py-2 border rounded-xl pr-10"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 50 50"
-            width="24px"
-            height="24px"
-            className="absolute right-3 top-3 text-gray-500"
-          >
-            <path
-              d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"
-            />
-          </svg>
-        </div>
-
-        {/* User Dropdown */}
-        <div className="relative inline-block text-left w-1/5" ref={dropdownRef}>
-          <button
-            className="flex justify-between items-center bg-white px-6 py-1 w-full rounded-lg shadow-lg focus:outline-none"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          >
-            {/* User Avatar */}
-            <div className="flex items-center">
-              <Image
-                src="/images/logo/48.png"
-                alt="User Avatar"
-                width={31}  // Specify your desired width
-                height={31} // Specify your desired height
-                priority // Optional: Add this if the image is critical for page load
-              />
-              {/* User Name */}
-              <span className="font-medium text-lg px-3 font-bold">
-                {selectedItem?.name || 'Admin'}
-              </span>
-            </div>
-            {/* Dropdown Icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6 text-gray-600"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {/* Dropdown Menu */}
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-full bg-white rounded-lg shadow-lg py-2 z-10">
-              {dropdownData.map((item) => (
-                <a
-                  key={item.id}
-                  href="#"
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  onClick={() => handleItemClick(item)} // Pass the item to the handler
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-
+    <div className="py-1 border rounded-lg bg-white">
       <DataTable
+        title="Antrian"
         columns={columns}
-        data={filteredAntrianes}
+        data={data}
+        progressPending={loading}
+        expandableRows
+        expandableRowsComponent={ExpandedComponent}
+        actions={<Export onExport={() => downloadCSV(data)} />}
         pagination
-        responsive
+        paginationServer
+        paginationTotalRows={totalRows}
+        onChangeRowsPerPage={handlePerRowsChange}
+        onChangePage={handlePageChange}
+        onSort={handleSort}
       />
     </div>
   );
 };
 
-export default AntrianTable;
+export default Antrian;

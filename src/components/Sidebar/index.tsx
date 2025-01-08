@@ -26,6 +26,11 @@ const menuGroups = [
         icon: 'DashboardIcon',
       },
       {
+        label: 'Antrian',
+        route: '/antrian',
+        icon: "AntrianIcon",
+      },
+      {
         label: 'Roles',
         route: '/roles',
         icon: 'RolesIcon',
@@ -46,11 +51,6 @@ const menuGroups = [
         label: 'Branches',
         route: '/branches/branch',
         icon: "BranchIcon",
-      },
-      {
-        label: 'Antrian',
-        route: '/antrian',
-        icon: "AntrianIcon",
       },
       {
         label: 'Reporting',

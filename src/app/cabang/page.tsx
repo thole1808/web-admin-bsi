@@ -8,7 +8,7 @@ import Cabang from "@/components/Cabang/Cabang";
 
 export const metadata: Metadata = {
     title:
-        "Web Admin BSI - Template",
+        "QMS Console - Template",
     description: "Web Admin BSI",
 };
 
