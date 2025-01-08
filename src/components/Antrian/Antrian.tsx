@@ -35,7 +35,7 @@ const Antrian: React.FC = () => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearch(search); 
+      setDebouncedSearch(search);
     }, 500);
 
     return () => {
@@ -268,6 +268,24 @@ const Antrian: React.FC = () => {
     }
   }
 
+  function slaCriteria(row: any) {
+    const slaMinDuration = row.slaMinDuration;
+    const slaMaxDuration = row.slaMaxDuration;
+    const serviceDuration = row.serviceDuration;
+
+    if (!serviceDuration) {
+      return '-';
+    }
+
+    if (serviceDuration >= slaMinDuration && serviceDuration <= slaMaxDuration) {
+      return 'SLA Terpenuhi';
+    } else if (serviceDuration > slaMaxDuration) {
+      return 'Melebihi SLA';
+    } else if (serviceDuration < slaMinDuration) {
+      return 'Kurang dari SLA';
+    }
+  }
+
   const columns = [
     {
       name: 'Cabang',
@@ -332,6 +350,45 @@ const Antrian: React.FC = () => {
       selector: (row: { status: string; }) => mappingStatus(row?.status) || '',
       sortable: true,
       sortField: 'status',
+    },
+    {
+      name: 'Performa SLA',
+      selector: (row: { status: string; }) => slaCriteria(row) || '',
+      grow: 2,
+      sortable: true,
+      sortField: 'status',
+      conditionalCellStyles: [
+        {
+          when: (row: { serviceDuration: number; slaMinDuration: number; }) => row.serviceDuration > row.slaMinDuration,
+          style: {
+            backgroundColor: 'rgba(63, 195, 128, 0.9)',
+            color: 'white',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          },
+        },
+        {
+          when: (row: { serviceDuration: number; slaMinDuration: number; slaMaxDuration: number; }) => row.serviceDuration >= row.slaMinDuration && row.serviceDuration <= row.slaMaxDuration,
+          style: {
+            backgroundColor: 'rgba(248, 148, 6, 0.9)',
+            color: 'white',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          },
+        },
+        {
+          when: (row: { serviceDuration: number; slaMaxDuration: number; }) => row.serviceDuration > row.slaMaxDuration,
+          style: {
+            backgroundColor: 'rgba(242, 38, 19, 0.9)',
+            color: 'white',
+            '&:hover': {
+              cursor: 'not-allowed',
+            },
+          },
+        },
+      ],
     },
   ];
 
