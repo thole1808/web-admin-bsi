@@ -12,19 +12,34 @@ const Antrian: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const today = new Date().toISOString().split("T")[0];
+
+  const [fromDate, setFromDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
+
+  const [toDate, setToDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  });
+
+  const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFromDate(event.target.value);
+  };
+
+  const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setToDate(event.target.value);
+  };
 
   useEffect(() => {
     fetchQueues();
-  }, [perPage, currentPage, sortField, sortDirection]);
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection]);
 
   const fetchQueues = async () => {
     try {
-      const today = new Date();
-      const timezoneOffset = today.getTimezoneOffset() * 60000;
-      const localTime = new Date(today.getTime() - timezoneOffset);
-
-      const start = localTime.toISOString().split("T")[0] + "T00:00:00";
-      const end = localTime.toISOString().split("T")[0] + "T23:59:59";
+      const start = fromDate;
+      const end = toDate;
       const size = perPage.toString();
       const page = (currentPage - 1).toString();
       const sortBy = sortField ? sortField : "id";
@@ -248,22 +263,34 @@ const Antrian: React.FC = () => {
   ];
 
   return (
-    <div className="py-1 border rounded-lg bg-white">
-      <DataTable
-        title="Antrian"
-        columns={columns}
-        data={data}
-        progressPending={loading}
-        expandableRows
-        expandableRowsComponent={ExpandedComponent}
-        actions={<Export onExport={() => downloadCSV(data)} />}
-        pagination
-        paginationServer
-        paginationTotalRows={totalRows}
-        onChangeRowsPerPage={handlePerRowsChange}
-        onChangePage={handlePageChange}
-        onSort={handleSort}
-      />
+    <div className="grid gap-y-4">
+      <div className="border rounded-lg bg-white grid grid-cols-3 p-4 gap-3">
+        <div className="grid">
+          <label className="text-sm">Dari Tanggal</label>
+          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
+        </div>
+        <div className="grid">
+          <label className="text-sm">Ke Tanggal</label>
+          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleToDateChange} max={today} />
+        </div>
+      </div>
+      <div className="py-1 border rounded-lg bg-white">
+        <DataTable
+          title="Daftar Antrian"
+          columns={columns}
+          data={data}
+          progressPending={loading}
+          expandableRows
+          expandableRowsComponent={ExpandedComponent}
+          actions={<Export onExport={() => downloadCSV(data)} />}
+          pagination
+          paginationServer
+          paginationTotalRows={totalRows}
+          onChangeRowsPerPage={handlePerRowsChange}
+          onChangePage={handlePageChange}
+          onSort={handleSort}
+        />
+      </div>
     </div>
   );
 };

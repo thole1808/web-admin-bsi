@@ -64,8 +64,8 @@ export async function GET(req: NextRequest) {
     if (status) params.append('status', status);
     if (type) params.append('type', type);
     if (priority) params.append('priority', priority);
-    if (start) params.append('startOfDay', start);
-    if (end) params.append('endOfDay', end);
+    if (start) params.append('startOfDay', start + 'T00:00:00');
+    if (end) params.append('endOfDay', end + 'T23:59:59');
     if (sortBy) params.append('sortBy', sortBy);
     if (direction) params.append('direction', direction);
     if (size) params.append('size', size);
