@@ -198,7 +198,7 @@ const Antrian: React.FC = () => {
   const columns = [
     {
       name: 'Cabang',
-      selector: (row: { branchName: string; }) => row.branchName,
+      selector: (row: { branchName: any; }) => row.branchName || '',
       grow: 2,
       sortable: true,
       sortField: 'branchName',
@@ -211,7 +211,7 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'Kode Reservasi',
-      selector: (row: { reservationCode: string; }) => row.reservationCode,
+      selector: (row: { reservationCode: string; }) => row?.reservationCode || '',
       grow: 2,
       sortable: true,
       sortField: 'reservationCode',
@@ -224,14 +224,14 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'Tanggal',
-      selector: (row: { createdAt: string; }) => formatDateTime(row.createdAt),
+      selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
       grow: 2,
       sortable: true,
       sortField: 'createdAt',
     },
     {
       name: 'Jenis Layanan',
-      selector: (row: { serviceTypeName: string; }) => row.serviceTypeName,
+      selector: (row: { serviceTypeName: string; }) => row?.serviceTypeName || '',
       grow: 2,
       sortable: true,
       sortField: 'serviceTypeName',
@@ -244,19 +244,19 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'No. Antrian',
-      selector: (row: { displayNo: string; }) => row.displayNo,
+      selector: (row: { displayNo: string; }) => row?.displayNo || '',
       sortable: true,
       sortField: 'displayNo',
     },
     {
       name: 'Petugas',
-      selector: (row: { counterName: string; }) => row.counterName,
+      selector: (row: { counterName: string; }) => row?.counterName || '',
       sortable: true,
       sortField: 'counterName',
     },
     {
       name: 'Status',
-      selector: (row: { status: string; }) => row.status,
+      selector: (row: { status: string; }) => row?.status || '',
       sortable: true,
       sortField: 'status',
     },
@@ -289,6 +289,7 @@ const Antrian: React.FC = () => {
           onChangeRowsPerPage={handlePerRowsChange}
           onChangePage={handlePageChange}
           onSort={handleSort}
+          sortServer
         />
       </div>
     </div>
