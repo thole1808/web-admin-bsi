@@ -56,6 +56,7 @@ export async function GET(req: NextRequest) {
     const page = req.nextUrl.searchParams.get('page');
     const start = req.nextUrl.searchParams.get('start');
     const end = req.nextUrl.searchParams.get('end');
+    const search = req.nextUrl.searchParams.get('search');
 
     const params = new URLSearchParams();
 
@@ -70,6 +71,9 @@ export async function GET(req: NextRequest) {
     if (direction) params.append('direction', direction);
     if (size) params.append('size', size);
     if (page) params.append('page', page);
+    if (search) params.append('search', search);
+
+    params.append('withInactive', 'true');
 
     const url = `${API_URL}/queues/paginate?${params.toString()}`;
 

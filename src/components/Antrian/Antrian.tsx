@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
+import { FaRotateLeft } from "react-icons/fa6";
 
 const Antrian: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
@@ -13,7 +14,10 @@ const Antrian: React.FC = () => {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const today = new Date().toISOString().split("T")[0];
+  const [typeField, setTypeField] = useState("");
   const [statusField, setStatusField] = useState("");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
@@ -25,6 +29,20 @@ const Antrian: React.FC = () => {
     return today.toISOString().split("T")[0];
   });
 
+  const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setSearch(event.target.value);
+  };
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search); 
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
   const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFromDate(event.target.value);
   };
@@ -32,6 +50,10 @@ const Antrian: React.FC = () => {
   const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setToDate(event.target.value);
   };
+
+  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setTypeField(event.target.value);
+  }
 
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -42,14 +64,12 @@ const Antrian: React.FC = () => {
       setStatusField('STARTED,PAUSED,CONTINUED');
     } else if (value === 'done') {
       setStatusField('STOPPED,CANCELED,TRANSFERRED');
-    } else {
-      setStatusField(value);
     }
   }
 
   useEffect(() => {
     fetchQueues();
-  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField]);
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField]);
 
   const fetchQueues = async () => {
     try {
@@ -59,7 +79,11 @@ const Antrian: React.FC = () => {
       const page = (currentPage - 1).toString();
       const sortBy = sortField ? sortField : "id";
       const direction = sortDirection.toString();
-      const status = statusField.toString()
+      const status = statusField.toString();
+      const search = debouncedSearch;
+      const type = typeField;
+
+      console.log(debouncedSearch);
 
       const queryParams = new URLSearchParams({
         start,
@@ -68,7 +92,9 @@ const Antrian: React.FC = () => {
         page,
         sortBy,
         direction,
-        status
+        type,
+        status,
+        search
       });
 
       const response = await fetch(
@@ -206,10 +232,40 @@ const Antrian: React.FC = () => {
     setSortDirection(sortDirection);
   };
 
+  const handleResetFilter = () => {
+    setFromDate(today);
+    setToDate(today);
+    setStatusField("");
+    setTypeField("");
+  }
+
   function formatDateTime(date: string) {
     if (!date) return '-';
 
     return new Date(date).toLocaleString('id-ID');
+  }
+
+  function mappingStatus(status: string) {
+    if (!status) return '-';
+
+    switch (status) {
+      case 'WAITING':
+        return 'Menunggu';
+      case 'STARTED':
+        return 'Dilayani';
+      case 'PAUSED':
+        return 'Dijeda';
+      case 'CONTINUED':
+        return 'Dilanjutkan';
+      case 'STOPPED':
+        return 'Selesai';
+      case 'CANCELED':
+        return 'Dibatalkan';
+      case 'TRANSFERRED':
+        return 'Ditransfer';
+      default:
+        return '-';
+    }
   }
 
   const columns = [
@@ -227,6 +283,13 @@ const Antrian: React.FC = () => {
       ),
     },
     {
+      name: 'Tanggal',
+      selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
+      grow: 2,
+      sortable: true,
+      sortField: 'createdAt',
+    },
+    {
       name: 'Kode Reservasi',
       selector: (row: { reservationCode: string; }) => row?.reservationCode || '',
       grow: 2,
@@ -238,13 +301,6 @@ const Antrian: React.FC = () => {
           <div className="text-xs text-gray-500 mt-1">{row.type}</div>
         </div>
       ),
-    },
-    {
-      name: 'Tanggal',
-      selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
-      grow: 2,
-      sortable: true,
-      sortField: 'createdAt',
     },
     {
       name: 'Jenis Layanan',
@@ -273,7 +329,7 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'Status',
-      selector: (row: { status: string; }) => row?.status || '',
+      selector: (row: { status: string; }) => mappingStatus(row?.status) || '',
       sortable: true,
       sortField: 'status',
     },
@@ -282,6 +338,24 @@ const Antrian: React.FC = () => {
   return (
     <div className="grid gap-y-4">
       <div className="border rounded-lg bg-white grid grid-cols-7 p-4 gap-3">
+        <div className="grid col-span-4">
+          <label className="text-xs mb-1">Pencarian</label>
+          <input className="border w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
+        </div>
+        <div className="grid col-span-2">
+          <label className="text-xs mb-1">Jenis Reservasi</label>
+          <select className="border w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
+            <option value="" selected={typeField === ''}>Semua</option>
+            <option value="ONLINE" selected={typeField === 'ONLINE'}>Online</option>
+            <option value="ONSITE" selected={typeField === 'ONSITE'}>Onsite</option>
+          </select>
+        </div>
+        <div className="grid text-xs items-end justify-end">
+          <button className="flex items-center gap-1 py-2 px-4 border rounded hover:bg-gray-50" onClick={handleResetFilter}>
+            <FaRotateLeft className="w-3 h-3" />
+            Reset
+          </button>
+        </div>
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Dari Tanggal</label>
           <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
@@ -293,10 +367,10 @@ const Antrian: React.FC = () => {
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Status</label>
           <select className="border w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
-            <option value="">Semua</option>
-            <option value="waiting">Menunggu</option>
-            <option value="serving">Dilayani</option>
-            <option value="done">Selesai</option>
+            <option value="" selected={statusField === ''}>Semua</option>
+            <option value="waiting" selected={statusField === 'waiting'}>Menunggu</option>
+            <option value="serving" selected={statusField === 'serving'}>Dilayani</option>
+            <option value="done" selected={statusField === 'done'}>Selesai</option>
           </select>
         </div>
       </div>
