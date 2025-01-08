@@ -13,6 +13,7 @@ const Antrian: React.FC = () => {
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const today = new Date().toISOString().split("T")[0];
+  const [statusField, setStatusField] = useState("");
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
@@ -32,9 +33,23 @@ const Antrian: React.FC = () => {
     setToDate(event.target.value);
   };
 
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+
+    if (value === 'waiting') {
+      setStatusField('WAITING');
+    } else if (value === 'serving') {
+      setStatusField('STARTED,PAUSED,CONTINUED');
+    } else if (value === 'done') {
+      setStatusField('STOPPED,CANCELED,TRANSFERRED');
+    } else {
+      setStatusField(value);
+    }
+  }
+
   useEffect(() => {
     fetchQueues();
-  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection]);
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField]);
 
   const fetchQueues = async () => {
     try {
@@ -44,6 +59,7 @@ const Antrian: React.FC = () => {
       const page = (currentPage - 1).toString();
       const sortBy = sortField ? sortField : "id";
       const direction = sortDirection.toString();
+      const status = statusField.toString()
 
       const queryParams = new URLSearchParams({
         start,
@@ -51,7 +67,8 @@ const Antrian: React.FC = () => {
         size,
         page,
         sortBy,
-        direction
+        direction,
+        status
       });
 
       const response = await fetch(
@@ -264,14 +281,23 @@ const Antrian: React.FC = () => {
 
   return (
     <div className="grid gap-y-4">
-      <div className="border rounded-lg bg-white grid grid-cols-3 p-4 gap-3">
-        <div className="grid">
-          <label className="text-sm">Dari Tanggal</label>
+      <div className="border rounded-lg bg-white grid grid-cols-7 p-4 gap-3">
+        <div className="grid col-span-2">
+          <label className="text-xs mb-1">Dari Tanggal</label>
           <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
         </div>
-        <div className="grid">
-          <label className="text-sm">Ke Tanggal</label>
+        <div className="grid col-span-2">
+          <label className="text-xs mb-1">Ke Tanggal</label>
           <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
+        </div>
+        <div className="grid col-span-2">
+          <label className="text-xs mb-1">Status</label>
+          <select className="border w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
+            <option value="">Semua</option>
+            <option value="waiting">Menunggu</option>
+            <option value="serving">Dilayani</option>
+            <option value="done">Selesai</option>
+          </select>
         </div>
       </div>
       <div className="py-1 border rounded-lg bg-white">
