@@ -271,7 +271,7 @@ const Antrian: React.FC = () => {
         </div>
         <div className="grid">
           <label className="text-sm">Ke Tanggal</label>
-          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleToDateChange} max={today} />
+          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
         </div>
       </div>
       <div className="py-1 border rounded-lg bg-white">
