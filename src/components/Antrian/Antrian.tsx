@@ -245,27 +245,44 @@ const Antrian: React.FC = () => {
     return new Date(date).toLocaleString('id-ID');
   }
 
-  function mappingStatus(status: string) {
-    if (!status) return '-';
+  function statusWithStyle(status: string) {
+    if (!status) return '';
+
+    let style = 'p-1 rounded text-xs font-medium ';
+    let message = '';
 
     switch (status) {
       case 'WAITING':
-        return 'Menunggu';
+        style += 'bg-yellow-100 text-yellow-700';
+        message = 'Menunggu';
+        break;
       case 'STARTED':
-        return 'Dilayani';
+        style += 'bg-blue-100 text-blue-700';
+        message = 'Dilayani';
+        break;
       case 'PAUSED':
-        return 'Dijeda';
+        style += 'bg-yellow-100 text-yellow-700';
+        message = 'Dijeda';
+        break;
       case 'CONTINUED':
-        return 'Dilanjutkan';
+        style += 'bg-blue-100 text-blue-700';
+        message = 'Dilanjutkan';
+        break;
       case 'STOPPED':
-        return 'Selesai';
+        style += 'bg-green-100 text-green-700';
+        message = 'Selesai';
+        break;
       case 'CANCELED':
-        return 'Dibatalkan';
+        style += 'bg-red-100 text-red-700';
+        message = 'Dibatalkan';
+        break;
       case 'TRANSFERRED':
-        return 'Ditransfer';
-      default:
-        return '-';
+        style += 'bg-purple-100 text-purple-700';
+        message = 'Ditransfer';
+        break;
     }
+
+    return (<div className={style}>{message}</div>);
   }
 
   function slaCriteria(row: any) {
@@ -347,9 +364,11 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'Status',
-      selector: (row: { status: string; }) => mappingStatus(row?.status) || '',
+      selector: (row: { status: string; }) => row?.status || '',
+      grow: 2,
       sortable: true,
       sortField: 'status',
+      cell: (row: { status: string; }) => statusWithStyle(row.status),
     },
     {
       name: 'Performa SLA',
