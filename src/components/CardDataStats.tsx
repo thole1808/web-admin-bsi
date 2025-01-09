@@ -18,12 +18,10 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
 
   return (
     <div className="flex items-center rounded-lg border border-gray-200 bg-white px-6 py-4 shadow-md">
-      {/* Left Section (Icon) */}
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
         {children}
       </div>
 
-      {/* Middle Section (Text) */}
       <div className="ml-4 flex flex-col">
         <span className="text-sm text-gray-500">{title}</span>
         <h4 className="my-1 text-1xl font-semibold text-gray-900">{total}</h4>
@@ -63,7 +61,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
           )}
           <span>{rate}%</span>
           <span className="text-gray-500 ml-1">
-            {rateNumber >= 10 ? "Down From Yesterday " : "Up From Yesterday"}
+            {rateNumber >= 10 ? "Down" : "Up"}
           </span>
         </div>
       </div>

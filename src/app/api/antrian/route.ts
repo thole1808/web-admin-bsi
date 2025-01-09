@@ -77,8 +77,6 @@ export async function GET(req: NextRequest) {
 
     const url = `${API_URL}/queues/paginate?${params.toString()}`;
 
-    console.log(url);
-
     return url;
   }
 }

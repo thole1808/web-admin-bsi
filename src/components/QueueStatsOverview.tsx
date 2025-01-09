@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FaUser, FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
-import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
+import { FaArrowTrendDown, FaArrowTrendUp, FaLandMineOn } from 'react-icons/fa6';
 
 interface Stat {
-    status: 'ALL' | 'COMPLETED' | 'MISSED';
+    status: 'ALL' | 'COMPLETED' | 'EXPIRE';
     current: number;
     previous: number;
     trend: 'UP' | 'DOWN' | 'STABLE';
@@ -59,15 +59,15 @@ const QueueStatsOverview: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-100">
-                {Array.from({ length: 3 }).map((_, index) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-100">
+                {Array.from({ length: 4 }).map((_, index) => (
                     <div
                         key={index}
                         className="flex items-center bg-white rounded-lg shadow-md p-4"
                     >
                         {/* Skeleton untuk ikon */}
                         <div className="w-14 h-14 bg-gray-200 rounded-full animate-pulse mr-4"></div>
-                        
+
                         {/* Skeleton untuk konten */}
                         <div className="flex-1">
                             <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse mb-2"></div>
@@ -79,7 +79,7 @@ const QueueStatsOverview: React.FC = () => {
             </div>
         );
     }
-    
+
 
     if (error) {
         return <p className="text-center text-red-500">Error: {error}</p>;
@@ -90,14 +90,15 @@ const QueueStatsOverview: React.FC = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-100">
             {stats
                 .sort((a, b) => {
                     const priority = {
                         ALL: 1,
-                        COMPLETED: 2,
-                        MISSED: 3,
-                    };  
+                        ACTIVE: 2,
+                        COMPLETED: 3,
+                        EXPIRE: 4,
+                    };
 
                     return priority[a.status] - priority[b.status];
                 })
@@ -110,11 +111,11 @@ const QueueStatsOverview: React.FC = () => {
                             {getStatusIcon(stat.status)}
                         </div>
                         <div className="ml-4">
-                            <h4 className="text-gray-600 text-sm font-semibold">
+                            <h4 className="text-gray-600 text-xs font-semibold">
                                 {getStatusLabel(stat.status)}
                             </h4>
                             <p className="text-gray-800 text-xl font-bold">{stat.current}</p>
-                            <p className="text-xs text-gray-500 mt-1 flex items-center">
+                            <p className="text-xs text-gray-500 flex items-center">
                                 {getTrendIcon(stat.trend)} {getTrendLabel(stat.current, stat.previous)}
                             </p>
                         </div>
@@ -126,12 +127,14 @@ const QueueStatsOverview: React.FC = () => {
 
 const getStatusLabel = (status: string) => {
     switch (status) {
-        case 'MISSED':
+        case 'EXPIRE':
             return 'Tidak Terlayani';
         case 'COMPLETED':
             return 'Terlayani';
         case 'ALL':
             return 'Total Pengunjung';
+        case 'ACTIVE':
+            return 'Aktif';
         default:
             return status;
     }
@@ -139,12 +142,14 @@ const getStatusLabel = (status: string) => {
 
 const getStatusIcon = (status: string) => {
     switch (status) {
-        case 'MISSED':
-            return <FaThumbsDown className="text-red-400 text-2xl" />;
+        case 'EXPIRE':
+            return <FaThumbsDown className="text-red-500 text-xl" />;
         case 'COMPLETED':
-            return <FaThumbsUp className="text-green-400 text-2xl" />;
+            return <FaThumbsUp className="text-green-500 text-xl" />;
+        case 'ACTIVE':
+            return <FaLandMineOn className="text-orange-500 text-xl" />;
         case 'ALL':
-            return <FaUser className="text-blue-400 text-2xl" />;
+            return <FaUser className="text-blue-500 text-xl" />;
         default:
             return null;
     }
@@ -165,13 +170,13 @@ const getTrendIcon = (trend: 'UP' | 'DOWN' | 'STABLE') => {
 
 const getTrendLabel = (current: number, previous: number) => {
     if (previous === 0) {
-        return current > 0 ? '100% Up from yesterday' : 'No change';
+        return current > 0 ? '100% Up' : 'No change';
     }
 
     const percentage = ((current - previous) / previous) * 100;
     const trendText = percentage > 0 ? `Up` : `Down`;
 
-    return `${Math.abs(percentage).toFixed(1)}% ${trendText} from yesterday`;
+    return `${Math.abs(percentage).toFixed(1)}% ${trendText}`;
 };
 
 

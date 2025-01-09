@@ -158,11 +158,11 @@ const Antrian: React.FC = () => {
     link.click();
   }
 
-  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-xs p-2 font-medium bg-gray-100 hover:bg-gray-200 rounded-lg border text-gray-700 mr-2" onClick={() => onExport()}>Download</button>;
+  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>;
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
-      <div className="p-4 bg-gray-50 text-xs">
+      <div className="p-6 bg-gray-50 text-xs">
         <div className="text-gray-500">Detail</div>
         <div className="grid grid-cols-2">
           <div>
@@ -416,33 +416,33 @@ const Antrian: React.FC = () => {
       <div className="border rounded-lg bg-white grid grid-cols-7 p-4 gap-3">
         <div className="grid col-span-4">
           <label className="text-xs mb-1">Pencarian</label>
-          <input className="border w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
+          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
         </div>
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Jenis Reservasi</label>
-          <select className="border w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
+          <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
             <option value="" selected={typeField === ''}>Semua</option>
             <option value="ONLINE" selected={typeField === 'ONLINE'}>Online</option>
             <option value="ONSITE" selected={typeField === 'ONSITE'}>Onsite</option>
           </select>
         </div>
         <div className="grid text-xs items-end justify-end">
-          <button className="flex items-center gap-1 py-2 px-4 border rounded hover:bg-gray-50" onClick={handleResetFilter}>
+          <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
             <FaRotateLeft className="w-3 h-3" />
             Reset
           </button>
         </div>
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Dari Tanggal</label>
-          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
+          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
         </div>
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Ke Tanggal</label>
-          <input className="border w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
+          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
         </div>
         <div className="grid col-span-2">
           <label className="text-xs mb-1">Status</label>
-          <select className="border w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
+          <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
             <option value="" selected={statusField === ''}>Semua</option>
             <option value="waiting" selected={statusField === 'waiting'}>Menunggu</option>
             <option value="serving" selected={statusField === 'serving'}>Dilayani</option>
