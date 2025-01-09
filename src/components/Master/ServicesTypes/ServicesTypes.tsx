@@ -132,17 +132,30 @@ const ServicesTypes: React.FC = () => {
             return;
         }
         try {
+            // const requestBody = {
+            //     code: newService.code,
+            //     rsvCode: newService.rsvCode,
+            //     productCode: newService.productCode,
+            //     name: newService.name,
+            //     prefix: newService.prefix,
+            //     slaMinDuration: newService.slaMinDuration,
+            //     slaMaxDuration: newService.slaMaxDuration,
+            //     parentId: newService.parentId,
+            //     formFields: newService.formFields,
+            // };
+
             const requestBody = {
                 code: newService.code,
                 rsvCode: newService.rsvCode,
                 productCode: newService.productCode,
                 name: newService.name,
                 prefix: newService.prefix,
-                slaMinDuration: newService.slaMinDuration,
-                slaMaxDuration: newService.slaMaxDuration,
-                parentId: newService.parentId,
+                slaMinDuration: Number(newService.slaMinDuration), // Convert to number
+                slaMaxDuration: Number(newService.slaMaxDuration), // Convert to number
+                parentId: Number(newService.parentId), // Convert to number
                 formFields: newService.formFields,
             };
+
 
             const response = await fetch("/api/master/services-types", {
                 method: "POST",
@@ -469,6 +482,22 @@ const ServicesTypes: React.FC = () => {
                     </div>
 
                     {/* Parent ID Input */}
+                    {/* <div>
+                        <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
+                            Parent ID
+                        </label>
+                        <input
+                            id="parentId"
+                            type="number"
+                            placeholder="Enter parent ID"
+                            value={newService.parentId || ""}
+                            onChange={(e) => setNewService({ ...newService, parentId: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.parentId ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.parentId && <p className="text-red-500 text-xs mt-1">{errors.parentId}</p>}
+                    </div> */}
+
+                    {/* Parent ID Input */}
                     <div>
                         <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
                             Parent ID
@@ -480,6 +509,7 @@ const ServicesTypes: React.FC = () => {
                             value={newService.parentId || ""}
                             onChange={(e) => setNewService({ ...newService, parentId: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.parentId ? "border-red-500" : "border-gray-300"}`}
+                            min="1" // Add min value if applicable
                         />
                         {errors.parentId && <p className="text-red-500 text-xs mt-1">{errors.parentId}</p>}
                     </div>
@@ -496,6 +526,7 @@ const ServicesTypes: React.FC = () => {
                             value={newService.slaMinDuration || ""}
                             onChange={(e) => setNewService({ ...newService, slaMinDuration: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.slaMinDuration ? "border-red-500" : "border-gray-300"}`}
+                            min="0" // Add min value if applicable
                         />
                         {errors.slaMinDuration && (
                             <p className="text-red-500 text-xs mt-1">{errors.slaMinDuration}</p>
@@ -514,6 +545,7 @@ const ServicesTypes: React.FC = () => {
                             value={newService.slaMaxDuration || ""}
                             onChange={(e) => setNewService({ ...newService, slaMaxDuration: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.slaMaxDuration ? "border-red-500" : "border-gray-300"}`}
+                            min="0" // Add min value if applicable
                         />
                         {errors.slaMaxDuration && (
                             <p className="text-red-500 text-xs mt-1">{errors.slaMaxDuration}</p>
