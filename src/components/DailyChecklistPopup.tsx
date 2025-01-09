@@ -57,7 +57,7 @@ const DailyChecklistPopup: React.FC = () => {
             if (result.success) {
                 console.log('Data successfully submitted:', result);
             } else {
-                console.error('Failed to submit data:', result.message);
+                console.error('Failed to submit data:', result);
             }
         } catch (err) {
             console.error('Error submitting form:', err);

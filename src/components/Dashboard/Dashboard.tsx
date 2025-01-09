@@ -1,18 +1,18 @@
 
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
 import GrafikPengunjung from "../Charts/GrafikPengunjung";
 import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
 import QueueStatsOverview from "../QueueStatsOverview";
 import BranchVisitor from "../BranchVisitor";
 import TopServiceType from "../TopServiceType";
 import DailyChecklistPopup from '../DailyChecklistPopup';
+import OperationalStatus from '../OperationalStatus';
 
 
 const Dashboard: React.FC = () => {
   return (
     <>
-      <DailyChecklistPopup />
+      {/* <DailyChecklistPopup /> */}
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="col-span-1 md:col-span-3 space-y-6">
@@ -27,6 +27,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         <div className="col-span-1">
+          <OperationalStatus />
           <BranchVisitor />
         </div>
         <div className="col-span-1 md:col-span-4 space-y-6">

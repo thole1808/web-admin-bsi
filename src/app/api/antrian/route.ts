@@ -73,8 +73,6 @@ export async function GET(req: NextRequest) {
     if (page) params.append('page', page);
     if (search) params.append('search', search);
 
-    params.append('withInactive', 'true');
-
     const url = `${API_URL}/queues/paginate?${params.toString()}`;
 
     return url;
