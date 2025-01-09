@@ -14,7 +14,28 @@ const DataTable = dynamic(() => import("react-data-table-component"), {
 interface ServiceTypeItem {
     id: number;
     name: string;
+    code: string;
+    rsvCode: string;
+    productCode: string;
+    prefix: string;
+    slaMinDuration: string;
+    slaMaxDuration: string;
+    parentId: number;
+    formFields: string | null;
 }
+
+interface Errors {
+    name?: string;
+    code?: string; // Untuk Service Code
+    rsvCode?: string; // Untuk RSV Code
+    formFields?: string; // Untuk Form Fields
+    prefix?: string; // Untuk Prefix
+    productCode?: string; // Untuk Product Code
+    parentId?: string; // Untuk Parent ID
+    slaMinDuration?: string; // Untuk SLA Min Duration
+    slaMaxDuration?: string; // Untuk SLA Max Duration
+}
+
 
 const ServicesTypes: React.FC = () => {
     const [search, setSearch] = useState("");
@@ -24,7 +45,32 @@ const ServicesTypes: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [editData, setEditData] = useState<ServiceTypeItem | null>(null);
-    const [newService, setNewService] = useState<{ name: string }>({ name: "" });
+    const [errors, setErrors] = useState<Errors>({});
+    const [statusMessage, setStatusMessage] = useState("");
+
+    const [newService, setNewService] = useState<{
+        code: string;
+        rsvCode: string;
+        productCode: string;
+        name: string;
+        prefix: string;
+        slaMinDuration: string;
+        slaMaxDuration: string;
+        parentId: string;
+        formFields: string | null;
+    }>({
+        code: "",
+        rsvCode: "",
+        productCode: "",
+        name: "",
+        prefix: "",
+        slaMinDuration: "",
+        slaMaxDuration: "",
+        parentId: "",
+        formFields: null,
+    });
+
+
     type TextAlign = "left" | "center" | "right";
     const { data: session, status } = useSession();
     const [currentItem, setCurrentItem] = useState<ServiceTypeItem | null>(null);
@@ -78,6 +124,106 @@ const ServicesTypes: React.FC = () => {
             setLoading(false);
         }
     };
+
+
+    const handleCreate = async () => {
+        if (!handleValidation()) {
+            console.log("Validation failed");
+            return;
+        }
+        try {
+            const requestBody = {
+                code: newService.code,
+                rsvCode: newService.rsvCode,
+                productCode: newService.productCode,
+                name: newService.name,
+                prefix: newService.prefix,
+                slaMinDuration: newService.slaMinDuration,
+                slaMaxDuration: newService.slaMaxDuration,
+                parentId: newService.parentId,
+                formFields: newService.formFields,
+            };
+
+            const response = await fetch("/api/master/services-types", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Service type created:", data);
+
+                setIsCreateModalOpen(false);
+                setNewService({
+                    code: "",
+                    rsvCode: "",
+                    productCode: "",
+                    name: "",
+                    prefix: "",
+                    slaMinDuration: "",
+                    slaMaxDuration: "",
+                    parentId: "",
+                    formFields: null,
+                });
+                fetchData();
+                setStatusMessage("Service type created successfully!");
+            } else {
+                console.error("Failed to create service type.");
+                setStatusMessage("Failed to create service type.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            setStatusMessage("Error occurred while creating service type. Please try again.");
+        }
+    };
+
+
+    const handleValidation = () => {
+        const newErrors: Errors = {};
+
+        let valid = true;
+
+        // Validate Service Name
+        if (!newService.name?.trim()) {
+            newErrors.name = "Service Type Name is required.";
+            valid = false;
+        } else if (newService.name !== newService.name.toUpperCase()) {
+            newErrors.name = "Service Type Name must be in uppercase.";
+            valid = false;
+        }
+
+        // Validate Service Code
+        if (!newService.code?.trim()) {
+            newErrors.code = "Service Code is required.";
+            valid = false;
+        }
+
+        // Validate RSV Code
+        if (!newService.rsvCode?.trim()) {
+            newErrors.rsvCode = "RSV Code is required.";
+            valid = false;
+        }
+
+        // Validate SLA Min Duration
+        if (!newService.slaMinDuration) {
+            newErrors.slaMinDuration = "SLA Min Duration is required.";
+            valid = false;
+        }
+
+        // Validate SLA Max Duration
+        if (!newService.slaMaxDuration) {
+            newErrors.slaMaxDuration = "SLA Max Duration is required.";
+            valid = false;
+        }
+
+        setErrors(newErrors);
+
+        return valid;
+    };
+
 
 
     useEffect(() => {
@@ -225,60 +371,190 @@ const ServicesTypes: React.FC = () => {
                 </div>
             )}
 
-            {/* Created */}
+            {/* Create */}
             <Modal
                 isOpen={isCreateModalOpen}
                 onRequestClose={() => setIsCreateModalOpen(false)}
                 contentLabel="Create Service Type"
-                className="modal"
+                className="modal-service-types"
             >
-                <div>
-                    <h2 className="text-xl font-bold mb-4">Create Service Type</h2>
-                    <input
-                        type="text"
-                        value={newService.name}
-                        onChange={(e) =>
-                            setNewService({ ...newService, name: e.target.value })
-                        }
-                        placeholder="Enter service type name"
-                        className="w-full px-4 py-2 border rounded-md mb-4"
-                    />
-                    <div className="flex justify-end space-x-2">
-                        <button
-                            onClick={() => setIsCreateModalOpen(false)}
-                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={async () => {
-                                try {
-                                    const response = await fetch("/api/master/service-types", {
-                                        method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                        },
-                                        body: JSON.stringify(newService),
-                                    });
-                                    if (response.ok) {
-                                        fetchData();
-                                        setIsCreateModalOpen(false);
-                                        setNewService({ name: "" });
-                                    } else {
-                                        alert("Failed to create service type.");
-                                    }
-                                } catch {
-                                    alert("Error occurred while creating service type.");
-                                }
-                            }}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                        >
-                            Create
-                        </button>
+                <h2 className="text-xl font-bold mb-4">Create Service Type</h2>
+
+                {/* Input Container */}
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Service Name Input */}
+                    <div>
+                        <label htmlFor="serviceName" className="block text-sm font-medium text-gray-700 mb-1">
+                            Service Type Name
+                        </label>
+                        <input
+                            id="serviceName"
+                            type="text"
+                            placeholder="Enter service type name"
+                            value={newService.name || ""}
+                            onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.name && (
+                            <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                        )}
                     </div>
+
+                    {/* Service Code Input */}
+                    <div>
+                        <label htmlFor="serviceCode" className="block text-sm font-medium text-gray-700 mb-1">
+                            Service Code
+                        </label>
+                        <input
+                            id="serviceCode"
+                            type="text"
+                            placeholder="Enter service code"
+                            value={newService.code || ""}
+                            onChange={(e) => setNewService({ ...newService, code: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.code ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.code && (
+                            <p className="text-red-500 text-xs mt-1">{errors.code}</p>
+                        )}
+                    </div>
+
+                    {/* RSV Code Input */}
+                    <div>
+                        <label htmlFor="rsvCode" className="block text-sm font-medium text-gray-700 mb-1">
+                            RSV Code
+                        </label>
+                        <input
+                            id="rsvCode"
+                            type="text"
+                            placeholder="Enter RSV code"
+                            value={newService.rsvCode || ""}
+                            onChange={(e) => setNewService({ ...newService, rsvCode: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.rsvCode ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.rsvCode && (
+                            <p className="text-red-500 text-xs mt-1">{errors.rsvCode}</p>
+                        )}
+                    </div>
+
+                    {/* Prefix Input */}
+                    <div>
+                        <label htmlFor="prefix" className="block text-sm font-medium text-gray-700 mb-1">
+                            Prefix
+                        </label>
+                        <input
+                            id="prefix"
+                            type="text"
+                            placeholder="Enter prefix"
+                            value={newService.prefix || ""}
+                            onChange={(e) => setNewService({ ...newService, prefix: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.prefix ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.prefix && <p className="text-red-500 text-xs mt-1">{errors.prefix}</p>}
+                    </div>
+
+                    {/* Product Code Input */}
+                    <div>
+                        <label htmlFor="productCode" className="block text-sm font-medium text-gray-700 mb-1">
+                            Product Code
+                        </label>
+                        <input
+                            id="productCode"
+                            type="text"
+                            placeholder="Enter product code"
+                            value={newService.productCode || ""}
+                            onChange={(e) => setNewService({ ...newService, productCode: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.productCode ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.productCode && <p className="text-red-500 text-xs mt-1">{errors.productCode}</p>}
+                    </div>
+
+                    {/* Parent ID Input */}
+                    <div>
+                        <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
+                            Parent ID
+                        </label>
+                        <input
+                            id="parentId"
+                            type="number"
+                            placeholder="Enter parent ID"
+                            value={newService.parentId || ""}
+                            onChange={(e) => setNewService({ ...newService, parentId: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.parentId ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.parentId && <p className="text-red-500 text-xs mt-1">{errors.parentId}</p>}
+                    </div>
+
+                    {/* SLA Min Duration Input */}
+                    <div>
+                        <label htmlFor="slaMinDuration" className="block text-sm font-medium text-gray-700 mb-1">
+                            SLA Min Duration
+                        </label>
+                        <input
+                            id="slaMinDuration"
+                            type="number"
+                            placeholder="Enter SLA Min Duration"
+                            value={newService.slaMinDuration || ""}
+                            onChange={(e) => setNewService({ ...newService, slaMinDuration: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.slaMinDuration ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.slaMinDuration && (
+                            <p className="text-red-500 text-xs mt-1">{errors.slaMinDuration}</p>
+                        )}
+                    </div>
+
+                    {/* SLA Max Duration Input */}
+                    <div>
+                        <label htmlFor="slaMaxDuration" className="block text-sm font-medium text-gray-700 mb-1">
+                            SLA Max Duration
+                        </label>
+                        <input
+                            id="slaMaxDuration"
+                            type="number"
+                            placeholder="Enter SLA Max Duration"
+                            value={newService.slaMaxDuration || ""}
+                            onChange={(e) => setNewService({ ...newService, slaMaxDuration: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.slaMaxDuration ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.slaMaxDuration && (
+                            <p className="text-red-500 text-xs mt-1">{errors.slaMaxDuration}</p>
+                        )}
+                    </div>
+
+                    {/* Form Fields Input */}
+                    <div>
+                        <label htmlFor="formFields" className="block text-sm font-medium text-gray-700 mb-1">
+                            Form Fields
+                        </label>
+                        <textarea
+                            id="formFields"
+                            placeholder="Enter form fields as JSON"
+                            value={newService.formFields || ""}
+                            onChange={(e) => setNewService({ ...newService, formFields: e.target.value })}
+                            className={`border px-4 py-2 rounded-md w-full ${errors.formFields ? "border-red-500" : "border-gray-300"}`}
+                        />
+                        {errors.formFields && <p className="text-red-500 text-xs mt-1">{errors.formFields}</p>}
+                    </div>
+
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-2 mt-4">
+                    <button
+                        type="button"
+                        onClick={() => setIsCreateModalOpen(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded-md"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleCreate}
+                        className="bg-blue-500 text-white px-6 py-2 rounded-md"
+                    >
+                        Create
+                    </button>
                 </div>
             </Modal>
-
 
             {/* Edit Modal */}
             <Modal
