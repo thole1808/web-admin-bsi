@@ -45,11 +45,12 @@ const DoughnutChartCard: React.FC = () => {
         fetchData();
     }, []);
 
+    // Default data handling
     const chartData = {
-        labels: data.map((item: any) => item.serviceType),
+        labels: data.length ? data.map((item: any) => item.serviceType) : ["No data available"],
         datasets: [
             {
-                data: data.map((item: any) => item.total),
+                data: data.length ? data.map((item: any) => item.total) : [100],
                 backgroundColor: ["#FBBF24", "#60A5FA", "#34D399"],
                 borderWidth: 0,
             },
@@ -91,6 +92,11 @@ const DoughnutChartCard: React.FC = () => {
             ) : error ? (
                 <div className="flex justify-center items-center h-56">
                     <p className="text-red-500">{error}</p>
+                </div>
+            ) : data.length === 0 ? (
+                // Display "No data available" if there is no data
+                <div className="flex justify-center items-center h-56">
+                    <p className="text-gray-500">No data available</p>
                 </div>
             ) : (
                 <div>

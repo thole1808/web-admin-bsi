@@ -21,19 +21,23 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Extract the data from the request body
-        const { activityDate, activityType, checklists, branchId } = await req.json();
+        const { checklists, method } = await req.json();
 
-        // Validate required data
-        if (!activityDate || !activityType || !checklists || !branchId) {
+        const branchId = 2;
+        const activityDate = new Date().toISOString().split("T")[0];
+        const activityType = req.nextUrl.searchParams.get('activityType');
+
+        if (!activityType || !checklists) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         const url = `${API_URL}/daily-checklists`;
 
-        // Make the request to the external API
+        console.log('Sending request to:', url);
+        console.log('Request body:', JSON.stringify({ method, activityDate, activityType, checklists, branchId }));
+
         const response = await fetch(url, {
-            method: 'POST',
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${session.accessToken}`,
@@ -51,7 +55,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: errorMessage || 'Failed to fetch API' }, { status: response.status });
         }
 
-        // Return the fetched data from the external API
         const data = await response.json();
         return NextResponse.json(data, { status: 200 });
     } catch (error) {

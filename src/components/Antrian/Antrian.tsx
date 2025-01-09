@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import styled, { keyframes } from 'styled-components';
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 
@@ -163,54 +164,77 @@ const Antrian: React.FC = () => {
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
       <div className="p-6 bg-gray-50 text-xs">
-        <div className="text-gray-500">Detail</div>
         <div className="grid grid-cols-2">
           <div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Loket</span>
+              <span className="col-span-2">:&nbsp;{data.counterName || ''} #{data.counterNum}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Nama Petugas</span>
+              <span className="col-span-2">:&nbsp;{data.userName || ''}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Reservasi</span>
-              <span className="col-span-2">: {formatDateTime(data.createdAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Dipanggil</span>
-              <span className="col-span-2">: {formatDateTime(data.calledAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.calledAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Layanan Dimulai</span>
-              <span className="col-span-2">: {formatDateTime(data.startedAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.startedAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Dijeda</span>
-              <span className="col-span-2">: {formatDateTime(data.pausedAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.pausedAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Dilanjutkan</span>
-              <span className="col-span-2">: {formatDateTime(data.continuedAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.continuedAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Dibatalkan</span>
-              <span className="col-span-2">: {formatDateTime(data.canceledAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.canceledAt)}</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Pukul Ditransfer</span>
-              <span className="col-span-2">: {formatDateTime(data.transferredAt)}</span>
+              <span className="col-span-2">:&nbsp;{formatDateTime(data.transferredAt)}</span>
             </div>
           </div>
           <div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Prioritas</span>
+              <span className="col-span-2">:&nbsp;{data.priority ? 'Ya' : 'Tidak'}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Durasi SLA Min.</span>
+              <span className="col-span-2">:&nbsp;{data.slaMinDuration || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Durasi SLA Maks.</span>
+              <span className="col-span-2">:&nbsp;{data.slaMaxDuration || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Durasi Tunggu</span>
-              <span className="col-span-2">: {data.waitingDuration || 0} menit</span>
+              <span className="col-span-2">:&nbsp;{(data.waitingDuration / 60).toFixed(0) || 0} menit</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Durasi Pelayanan</span>
-              <span className="col-span-2">: {data.serviceDuration || 0} menit</span>
+              <span className="col-span-2">:&nbsp;{(data.serviceDuration / 60).toFixed(0) || 0} menit</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Durasi Jeda</span>
-              <span className="col-span-2">: {data.pauseDuration || 0} menit</span>
+              <span className="col-span-2">:&nbsp;{(data.pauseDuration / 60).toFixed(0) || 0} menit</span>
             </div>
-            <div className="grid grid-cols-3 max-w-sm">
+            <div className="grid grid-cols-3 max-w-sm mb-1">
               <span>Total Durasi</span>
-              <span className="col-span-2">: {data.overallDuration || 0} menit</span>
+              <span className="col-span-2">:&nbsp;{(data.overallDuration / 60).toFixed(0) || 0} menit</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span>Keterangan</span>
+              <span className="col-span-2">:&nbsp;{data.statusMessage || ''}</span>
             </div>
           </div>
         </div>
@@ -288,11 +312,13 @@ const Antrian: React.FC = () => {
   function slaCriteria(row: any) {
     const slaMinDuration = row.slaMinDuration;
     const slaMaxDuration = row.slaMaxDuration;
-    const serviceDuration = row.serviceDuration;
+    let serviceDuration = row.serviceDuration;
 
     if (!serviceDuration) {
       return '-';
     }
+
+    serviceDuration = serviceDuration / 60;
 
     if (serviceDuration >= slaMinDuration && serviceDuration <= slaMaxDuration) {
       return 'SLA Terpenuhi';
@@ -343,12 +369,6 @@ const Antrian: React.FC = () => {
       grow: 2,
       sortable: true,
       sortField: 'serviceTypeName',
-      cell: (row: { serviceTypeName: string; slaMinDuration: number; slaMaxDuration: number }) => (
-        <div className="">
-          <div>{row.serviceTypeName}</div>
-          <div className="text-xs text-gray-500 mt-1">SLA: {row.slaMinDuration + 'm - ' + row.slaMaxDuration + 'm'}</div>
-        </div>
-      ),
     },
     {
       name: 'No. Antrian',
@@ -358,9 +378,9 @@ const Antrian: React.FC = () => {
     },
     {
       name: 'Petugas',
-      selector: (row: { counterName: string; }) => row?.counterName || '',
+      selector: (row: { userName: string; }) => row?.userName || '',
       sortable: true,
-      sortField: 'counterName',
+      sortField: 'userName',
     },
     {
       name: 'Status',
@@ -378,9 +398,19 @@ const Antrian: React.FC = () => {
       sortField: 'status',
       conditionalCellStyles: [
         {
-          when: (row: { serviceDuration: number; slaMinDuration: number; }) => row.serviceDuration > row.slaMinDuration,
+          when: (row: { serviceDuration: number; slaMinDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 < row.slaMinDuration,
           style: {
-            backgroundColor: 'rgba(63, 195, 128, 0.9)',
+            backgroundColor: '#f6d45a',
+            color: 'black',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          },
+        },
+        {
+          when: (row: { serviceDuration: number; slaMinDuration: number; slaMaxDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 >= row.slaMinDuration && row.serviceDuration / 60 <= row.slaMaxDuration,
+          style: {
+            backgroundColor: '#3daea4',
             color: 'white',
             '&:hover': {
               cursor: 'pointer',
@@ -388,19 +418,9 @@ const Antrian: React.FC = () => {
           },
         },
         {
-          when: (row: { serviceDuration: number; slaMinDuration: number; slaMaxDuration: number; }) => row.serviceDuration >= row.slaMinDuration && row.serviceDuration <= row.slaMaxDuration,
+          when: (row: { serviceDuration: number; slaMaxDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 > row.slaMaxDuration,
           style: {
-            backgroundColor: 'rgba(248, 148, 6, 0.9)',
-            color: 'white',
-            '&:hover': {
-              cursor: 'pointer',
-            },
-          },
-        },
-        {
-          when: (row: { serviceDuration: number; slaMaxDuration: number; }) => row.serviceDuration > row.slaMaxDuration,
-          style: {
-            backgroundColor: 'rgba(242, 38, 19, 0.9)',
+            backgroundColor: '#ed553b',
             color: 'white',
             '&:hover': {
               cursor: 'not-allowed',
@@ -411,51 +431,86 @@ const Antrian: React.FC = () => {
     },
   ];
 
+  const isCompleted = (status: string) => {
+    return status === 'STOPPED';
+  }
+
+  const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
+  const Spinner = styled.div`
+	margin: 16px;
+	animation: ${rotate360} 1s linear infinite;
+	transform: translateZ(0);
+	border-top: 2px solid grey;
+	border-right: 2px solid grey;
+	border-bottom: 2px solid grey;
+	border-left: 4px solid black;
+	background: transparent;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+`;
+
+  const CustomLoader = () => (
+    <div style={{ padding: '24px' }}>
+      <Spinner />
+      <div>Fancy Loader...</div>
+    </div>
+  );
+
   return (
     <div className="grid gap-y-4">
-      <div className="border rounded-lg bg-white grid grid-cols-7 p-4 gap-3">
-        <div className="grid col-span-4">
-          <label className="text-xs mb-1">Pencarian</label>
-          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
-        </div>
-        <div className="grid col-span-2">
-          <label className="text-xs mb-1">Jenis Reservasi</label>
-          <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
-            <option value="" selected={typeField === ''}>Semua</option>
-            <option value="ONLINE" selected={typeField === 'ONLINE'}>Online</option>
-            <option value="ONSITE" selected={typeField === 'ONSITE'}>Onsite</option>
-          </select>
-        </div>
-        <div className="grid text-xs items-end justify-end">
-          <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
-            <FaRotateLeft className="w-3 h-3" />
-            Reset
-          </button>
-        </div>
-        <div className="grid col-span-2">
-          <label className="text-xs mb-1">Dari Tanggal</label>
-          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
-        </div>
-        <div className="grid col-span-2">
-          <label className="text-xs mb-1">Ke Tanggal</label>
-          <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
-        </div>
-        <div className="grid col-span-2">
-          <label className="text-xs mb-1">Status</label>
-          <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
-            <option value="" selected={statusField === ''}>Semua</option>
-            <option value="waiting" selected={statusField === 'waiting'}>Menunggu</option>
-            <option value="serving" selected={statusField === 'serving'}>Dilayani</option>
-            <option value="done" selected={statusField === 'done'}>Selesai</option>
-          </select>
-        </div>
-      </div>
       <div className="py-1 border rounded-lg bg-white">
+        <div className="grid grid-cols-7 p-4 gap-3">
+          <div className="grid col-span-4">
+            <label className="text-xs mb-1">Pencarian</label>
+            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
+          </div>
+          <div className="grid col-span-2">
+            <label className="text-xs mb-1">Jenis Reservasi</label>
+            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
+              <option value="" selected={typeField === ''}>Semua</option>
+              <option value="ONLINE" selected={typeField === 'ONLINE'}>Online</option>
+              <option value="ONSITE" selected={typeField === 'ONSITE'}>Onsite</option>
+            </select>
+          </div>
+          <div className="grid text-xs items-end justify-end">
+            <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
+              <FaRotateLeft className="w-3 h-3" />
+              Reset
+            </button>
+          </div>
+          <div className="grid col-span-2">
+            <label className="text-xs mb-1">Dari Tanggal</label>
+            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
+          </div>
+          <div className="grid col-span-2">
+            <label className="text-xs mb-1">Ke Tanggal</label>
+            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
+          </div>
+          <div className="grid col-span-2">
+            <label className="text-xs mb-1">Status</label>
+            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
+              <option value="" selected={statusField === ''}>Semua</option>
+              <option value="waiting" selected={statusField === 'waiting'}>Menunggu</option>
+              <option value="serving" selected={statusField === 'serving'}>Dilayani</option>
+              <option value="done" selected={statusField === 'done'}>Selesai</option>
+            </select>
+          </div>
+        </div>
+
         <DataTable
-          title="Daftar Antrian"
           columns={columns}
           data={data}
           progressPending={loading}
+          progressComponent={<CustomLoader />}
           expandableRows
           expandableRowsComponent={ExpandedComponent}
           actions={<Export onExport={() => downloadCSV(data)} />}

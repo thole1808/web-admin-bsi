@@ -22,7 +22,12 @@ export async function GET(req: NextRequest) {
     }
 
     console.log('session', session);
-    const activityDate = req.nextUrl.searchParams.get('activityDate');
+
+    // TODO: mark this line as a helper function
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset() * 60000;
+    const localTime = new Date(today.getTime() - timezoneOffset);
+    const activityDate = localTime.toISOString().split("T")[0];
     const branchId = '2';
 
     const url = `${API_URL}/daily-checklists?branchId=${branchId}&activityDate=${activityDate}&size=50`;

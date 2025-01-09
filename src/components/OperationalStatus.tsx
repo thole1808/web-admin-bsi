@@ -5,6 +5,8 @@ interface Data {
     dateTime: string;
     status: string;
     message: string;
+    timeOpen?: string;
+    timeClosed?: string;
 }
 
 const OperationalStatus: React.FC = () => {
@@ -12,23 +14,21 @@ const OperationalStatus: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Function to map the status to the appropriate Tailwind CSS classes
     const getStatusCardColor = (status: string) => {
         switch (status) {
             case 'NATIONAL_HOLIDAY':
-                return 'bg-yellow-500 text-white'; // National Holiday
+                return 'bg-yellow-500 text-white';
             case 'OPEN':
-                return 'bg-green-500 text-white'; // Open
+                return 'bg-green-500 text-white';
             case 'CLOSED':
-                return 'bg-red-500 text-white'; // Closed
+                return 'bg-red-500 text-white';
             case 'HOLIDAY':
-                return 'bg-blue-500 text-white'; // Holiday
+                return 'bg-blue-500 text-white';
             default:
-                return 'bg-gray-500 text-white'; // Default color
+                return 'bg-gray-500 text-white';
         }
     };
 
-    // Function to map the status to the appropriate Font Awesome icon
     const getStatusIcon = (status: string) => {
         switch (status) {
             case 'NATIONAL_HOLIDAY':
@@ -44,7 +44,6 @@ const OperationalStatus: React.FC = () => {
         }
     };
 
-    // Function to map the status text to Indonesian
     const getStatusText = (status: string) => {
         switch (status) {
             case 'NATIONAL_HOLIDAY':
@@ -56,7 +55,7 @@ const OperationalStatus: React.FC = () => {
             case 'HOLIDAY':
                 return 'Libur';
             default:
-                return 'Tutup'; // Default status in case of unknown status
+                return 'Tutup';
         }
     };
 
@@ -101,7 +100,7 @@ const OperationalStatus: React.FC = () => {
         <div className={`flex gap-2 items-start ${getStatusCardColor(data.status)} mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
             <div className="flex-1">
                 <div className="text-xl font-bold">{getStatusText(data.status) || 'Tutup'}</div>
-                <div className="text-sm">{data.message || '-'}</div>
+                <div className="text-sm">{data.status === 'OPEN' ? `Pukul ${data.timeOpen} hingga ${data.timeClosed}` : '-'}</div>
             </div>
             <div className='-mr-6 -mt-6'>
                 {getStatusIcon(data.status)}

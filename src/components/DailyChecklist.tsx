@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { FaCheckCircle, FaRegTimesCircle } from 'react-icons/fa';
+import Modal from './DailyChecklistModal';  // Import the Modal component
 
-// Popup Component
 const DailyChecklist: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [sodChecklists, setSodChecklists] = useState<any[]>([]);
     const [eodChecklists, setEodChecklists] = useState<any[]>([]);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [selectedChecklist, setSelectedChecklist] = useState<any | null>(null);
+
+    // TODO: mark this line as a helper function
+    const today = new Date();
+    const timezoneOffset = today.getTimezoneOffset() * 60000;
+    const localTime = new Date(today.getTime() - timezoneOffset);
+    const activityDate = localTime.toISOString().split("T")[0];
 
     useEffect(() => {
         fetchDailyChecklist();
@@ -16,8 +24,6 @@ const DailyChecklist: React.FC = () => {
     const fetchDailyChecklist = async () => {
         try {
             setLoading(true);
-
-            const activityDate = new Date().toISOString().split("T")[0];
 
             const queryParams = new URLSearchParams({
                 activityDate,
@@ -44,20 +50,15 @@ const DailyChecklist: React.FC = () => {
         }
     };
 
-    // Skeleton for loading state with dynamic background based on the status
-    const getSkeletonColor = (status: string) => {
-        switch (status) {
-            case 'NATIONAL_HOLIDAY':
-                return 'bg-yellow-200'; // Light yellow skeleton
-            case 'OPEN':
-                return 'bg-green-200'; // Light green skeleton
-            case 'CLOSED':
-                return 'bg-red-200'; // Light red skeleton
-            case 'HOLIDAY':
-                return 'bg-blue-200'; // Light blue skeleton
-            default:
-                return 'bg-gray-200'; // Default gray skeleton
-        }
+    const handleChecklistClick = (checklistData: any) => {
+        setSelectedChecklist(checklistData);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedChecklist(null);
+        fetchDailyChecklist();
     };
 
     if (loading) {
@@ -89,13 +90,19 @@ const DailyChecklist: React.FC = () => {
 
     return (
         <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
-            <div className="text-sm font-bold mb-2">Checklist Harian</div>
+            <div className="flex justify-between items-center mb-3">
+                <div className="text-sm font-bold">
+                    Checklist Harian
+                </div>
+                <div className="text-xs">{activityDate}</div>
+            </div>
             <ul className='-mx-4 divide-y'>
                 {/* SOD Checklist */}
                 <li
                     className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${
-                        sodChecklists.length > 0 ? 'bg-green-100' : 'bg-white'
-                    } hover:bg-gray-100`}
+                        sodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                    }`}
+                    onClick={() => handleChecklistClick({ activityType: 'SOD', content: sodChecklists })}
                 >
                     <div className='font-medium flex items-center'>
                         {sodChecklists.length > 0 ? (
@@ -106,29 +113,35 @@ const DailyChecklist: React.FC = () => {
                         SOD
                     </div>
                     <div className='text-xs font-gray-500'>
-                        {sodChecklists.length} Checked
+                        {sodChecklists.filter((item:any) => item.checked).length} Checked
                     </div>
                 </li>
 
-                {/* EOD Checklist */}
                 <li
                     className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${
-                        eodChecklists.length > 0 ? 'bg-blue-100' : 'bg-white'
-                    } hover:bg-gray-100`}
+                        eodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                    }`}
+                    onClick={() => handleChecklistClick({ activityType: 'EOD', content: eodChecklists })}
                 >
                     <div className='font-medium flex items-center'>
                         {eodChecklists.length > 0 ? (
-                            <FaCheckCircle className='text-blue-500 mr-2' />
+                            <FaCheckCircle className='text-green-500 mr-2' />
                         ) : (
                             <FaRegTimesCircle className='text-gray-500 mr-2' />
                         )}
                         EOD
                     </div>
                     <div className='text-xs font-gray-500'>
-                        {eodChecklists.length} Checked
+                        {eodChecklists.filter((item:any) => item.checked).length} Checked
                     </div>
                 </li>
             </ul>
+
+            <Modal
+                isOpen={modalOpen}
+                data={selectedChecklist}
+                onClose={handleCloseModal}
+            />
         </div>
     );
 };
