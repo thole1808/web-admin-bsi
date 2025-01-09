@@ -119,11 +119,11 @@ const BranchVisitor: React.FC = () => {
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-lg pb-2">
-            <h2 className="text-gray-600 text-sm font-semibold px-4 pb-2 pt-4">
+        <div className="bg-white rounded-lg shadow-lg p-4">
+            <h2 className="text-sm font-semibold">
                 Pengunjung hari ini
             </h2>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-4 mt-2">
                 <table className="min-w-full bg-white rounded-sm shadow-sm text-xs">
                     <thead>
                         <tr className="border-b">

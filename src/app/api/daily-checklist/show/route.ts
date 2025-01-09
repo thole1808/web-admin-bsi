@@ -24,9 +24,8 @@ export async function GET(req: NextRequest) {
     console.log('session', session);
     const activityDate = req.nextUrl.searchParams.get('activityDate');
     const branchId = '2';
-    const activityType = 'SOD';
 
-    const url = `${API_URL}/daily-checklists/${branchId}/${activityDate}/${activityType}`;
+    const url = `${API_URL}/daily-checklists?branchId=${branchId}&activityDate=${activityDate}&size=50`;
 
     // Fetch data from external API
     const response = await fetch(url, {

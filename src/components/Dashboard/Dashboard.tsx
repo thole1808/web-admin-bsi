@@ -7,6 +7,7 @@ import BranchVisitor from "../BranchVisitor";
 import TopServiceType from "../TopServiceType";
 import DailyChecklistPopup from '../DailyChecklistPopup';
 import OperationalStatus from '../OperationalStatus';
+import DailyChecklist from "../DailyChecklist";
 
 
 const Dashboard: React.FC = () => {
@@ -17,7 +18,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="col-span-1 md:col-span-3 space-y-6">
           <QueueStatsOverview />
-          <div className='grid grid-cols-3 gap-3'>
+          <div className='grid grid-cols-3 gap-3 bg-white rounded-lg'>
             <div className='col-span-2'>
               <GrafikPengunjung />
             </div>
@@ -28,6 +29,7 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="col-span-1">
           <OperationalStatus />
+          <DailyChecklist />
           <BranchVisitor />
         </div>
         <div className="col-span-1 md:col-span-4 space-y-6">

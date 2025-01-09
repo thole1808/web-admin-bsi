@@ -67,16 +67,11 @@ const DoughnutChartCard: React.FC = () => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="p-4">
             {loading ? (
                 <div>
-                    <div className="text-center mb-4">
-                        <h4 className="text-gray-800 font-semibold text-lg">
-                            Top 3 Layanan
-                        </h4>
-                    </div>
                     <div className="relative h-56 flex items-center justify-center">
-                        <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse"></div>
+                        <div className="w-40 h-40 rounded-full bg-gray-200 animate-pulse"></div>
                     </div>
                     <div className="mt-4 space-y-2">
                         {[1, 2, 3].map((_, index) => (
@@ -120,7 +115,9 @@ const DoughnutChartCard: React.FC = () => {
                                             backgroundColor: ["#FBBF24", "#60A5FA", "#34D399"][index],
                                         }}
                                     ></div>
-                                    <span className="text-gray-600">{item.serviceType}</span>
+                                    <span className="text-gray-600">
+                                    {item.serviceType.length > 30 ? `${item.serviceType.slice(0, 25)}...` : item.serviceType}
+                                    </span>
                                 </div>
                                 <span className="text-gray-800 font-semibold">
                                     {item.percentage.toFixed(2)}%

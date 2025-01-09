@@ -51,6 +51,7 @@ const DailyChecklistPopup: React.FC = () => {
                 },
                 body: JSON.stringify(requestData),
             });
+            
 
             const result = await response.json();
 
