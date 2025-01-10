@@ -250,11 +250,11 @@ const ServicesTypes: React.FC = () => {
             valid = false;
         }
 
-        // Validate Form Fields
-        if (!newService.formFields) {
-            newErrors.formFields = "Form Fields is required.";
-            valid = false;
-        }
+        // // Validate Form Fields
+        // if (!newService.formFields) {
+        //     newErrors.formFields = "Form Fields is required.";
+        //     valid = false;
+        // }
 
         setErrors(newErrors);
 
