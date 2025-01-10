@@ -214,6 +214,24 @@ const ServicesTypes: React.FC = () => {
             valid = false;
         }
 
+        // Validate Prefix
+        if (!newService.prefix?.trim()) {
+            newErrors.prefix = "Prefix is required.";
+            valid = false;
+        }
+
+        // Validate Product Code
+        if (!newService.productCode?.trim()) {
+            newErrors.productCode = "Product Code is required.";
+            valid = false;
+        }
+
+        // Validate Parent ID
+        if (!newService.parentId?.trim()) {
+            newErrors.parentId = "Parent ID Code is required.";
+            valid = false;
+        }
+
         // Validate RSV Code
         if (!newService.rsvCode?.trim()) {
             newErrors.rsvCode = "RSV Code is required.";
@@ -229,6 +247,12 @@ const ServicesTypes: React.FC = () => {
         // Validate SLA Max Duration
         if (!newService.slaMaxDuration) {
             newErrors.slaMaxDuration = "SLA Max Duration is required.";
+            valid = false;
+        }
+
+        // Validate Form Fields
+        if (!newService.formFields) {
+            newErrors.formFields = "Form Fields is required.";
             valid = false;
         }
 
