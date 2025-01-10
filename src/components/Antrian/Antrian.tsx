@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import styled, { keyframes } from 'styled-components';
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
+import CustomLoader from "../Tables/CustomLoader";
 
 const Antrian: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
@@ -69,53 +70,52 @@ const Antrian: React.FC = () => {
   }
 
   useEffect(() => {
+    const fetchQueues = async () => {
+      try {
+        const start = fromDate;
+        const end = toDate;
+        const size = perPage.toString();
+        const page = (currentPage - 1).toString();
+        const sortBy = sortField ? sortField : "id";
+        const direction = sortDirection.toString();
+        const status = statusField.toString();
+        const search = debouncedSearch;
+        const type = typeField;
+  
+        const queryParams = new URLSearchParams({
+          start,
+          end,
+          size,
+          page,
+          sortBy,
+          direction,
+          type,
+          status,
+          search
+        });
+  
+        const response = await fetch(
+          `/api/antrian?${queryParams.toString()}`
+        );
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          setData(result.data.content);
+          setTotalRows(result.data.totalElements);
+        } else {
+          throw new Error(result.message || "Failed to fetch queues");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchQueues();
   }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField]);
 
-  const fetchQueues = async () => {
-    try {
-      const start = fromDate;
-      const end = toDate;
-      const size = perPage.toString();
-      const page = (currentPage - 1).toString();
-      const sortBy = sortField ? sortField : "id";
-      const direction = sortDirection.toString();
-      const status = statusField.toString();
-      const search = debouncedSearch;
-      const type = typeField;
-
-      console.log(debouncedSearch);
-
-      const queryParams = new URLSearchParams({
-        start,
-        end,
-        size,
-        page,
-        sortBy,
-        direction,
-        type,
-        status,
-        search
-      });
-
-      const response = await fetch(
-        `/api/antrian?${queryParams.toString()}`
-      );
-
-      const result = await response.json();
-
-      if (result.success) {
-        setData(result.data.content);
-        setTotalRows(result.data.totalElements);
-      } else {
-        throw new Error(result.message || "Failed to fetch queues");
-      }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   function convertArrayOfObjectsToCSV(array: any[]) {
     let result: string;
@@ -435,50 +435,26 @@ const Antrian: React.FC = () => {
     return status === 'STOPPED';
   }
 
-  const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`;
-  const Spinner = styled.div`
-	margin: 16px;
-	animation: ${rotate360} 1s linear infinite;
-	transform: translateZ(0);
-	border-top: 2px solid grey;
-	border-right: 2px solid grey;
-	border-bottom: 2px solid grey;
-	border-left: 4px solid black;
-	background: transparent;
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-`;
-
-  const CustomLoader = () => (
-    <div style={{ padding: '24px' }}>
-      <Spinner />
-      <div>Fancy Loader...</div>
-    </div>
-  );
-
   return (
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
-        <div className="grid grid-cols-7 p-4 gap-3">
+        <div className="p-4 border-b flex justify-between items-center">
+          <h2 className="text-lg font-semibold ml-2">Antrian</h2>
+          <div>
+            <Export onExport={() => downloadCSV(data)} />
+          </div>
+        </div>
+        <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
             <label className="text-xs mb-1">Pencarian</label>
             <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
           </div>
           <div className="grid col-span-2">
             <label className="text-xs mb-1">Jenis Reservasi</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleTypeChange}>
-              <option value="" selected={typeField === ''}>Semua</option>
-              <option value="ONLINE" selected={typeField === 'ONLINE'}>Online</option>
-              <option value="ONSITE" selected={typeField === 'ONSITE'}>Onsite</option>
+            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={typeField} onChange={handleTypeChange}>
+              <option value="">Semua</option>
+              <option value="ONLINE">Online</option>
+              <option value="ONSITE">Onsite</option>
             </select>
           </div>
           <div className="grid text-xs items-end justify-end">
@@ -497,11 +473,11 @@ const Antrian: React.FC = () => {
           </div>
           <div className="grid col-span-2">
             <label className="text-xs mb-1">Status</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" onChange={handleStatusChange}>
-              <option value="" selected={statusField === ''}>Semua</option>
-              <option value="waiting" selected={statusField === 'waiting'}>Menunggu</option>
-              <option value="serving" selected={statusField === 'serving'}>Dilayani</option>
-              <option value="done" selected={statusField === 'done'}>Selesai</option>
+            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={statusField} onChange={handleStatusChange}>
+              <option value="">Semua</option>
+              <option value="waiting">Menunggu</option>
+              <option value="serving">Dilayani</option>
+              <option value="done">Selesai</option>
             </select>
           </div>
         </div>
@@ -513,7 +489,6 @@ const Antrian: React.FC = () => {
           progressComponent={<CustomLoader />}
           expandableRows
           expandableRowsComponent={ExpandedComponent}
-          actions={<Export onExport={() => downloadCSV(data)} />}
           pagination
           paginationServer
           paginationTotalRows={totalRows}

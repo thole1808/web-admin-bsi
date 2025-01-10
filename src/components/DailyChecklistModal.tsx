@@ -7,60 +7,60 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
-    if (!isOpen) return null;
-
     const [loading, setLoading] = useState<boolean>(false);
     const [formData, setFormData] = useState<{ [key: string]: boolean }>({});
     const [activities, setActivities] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchChecklists();
-    }, [data]);
+        if (!isOpen) return;
 
-    const fetchChecklists = async () => {
-        try {
-            setLoading(true);
-
-            const response = await fetch(
-                `/api/master/checklist`
-            );
-
-            const result = await response.json();
-
-            console.log(result);
-
-            if (result.success) {
-                const sortedActivities = result.data
-                    .filter((item: any) => item.activityType === data.activityType)
-                    .sort((a: any, b: any) => a.activityNum - b.activityNum);
-
-                setActivities(sortedActivities);
-                initializeFormData(result.data);
-            } else {
-                throw new Error(result.message || "Failed to fetch master of checklists");
-            }
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const initializeFormData = (checklists: any[]) => {
-        const newFormData: { [key: string]: boolean } = {};
-        if (data.content && Array.isArray(data.content)) {
-            data.content.forEach((contentItem: any) => {
-                checklists.forEach((checklist: any) => {
-                    if (checklist.activityName === contentItem.activityName && contentItem.checked === true) {
-                        newFormData[checklist.id] = true;
-                    }
+        const initializeFormData = (checklists: any[]) => {
+            const newFormData: { [key: string]: boolean } = {};
+            if (data.content && Array.isArray(data.content)) {
+                data.content.forEach((contentItem: any) => {
+                    checklists.forEach((checklist: any) => {
+                        if (checklist.activityName === contentItem.activityName && contentItem.checked === true) {
+                            newFormData[checklist.id] = true;
+                        }
+                    });
                 });
-            });
-        }
+            }
+    
+            setFormData(newFormData);
+        };
 
-        setFormData(newFormData);
-    };
+        const fetchChecklists = async () => {
+            try {
+                setLoading(true);
+    
+                const response = await fetch(
+                    `/api/master/checklist`
+                );
+    
+                const result = await response.json();
+    
+                console.log(result);
+    
+                if (result.success) {
+                    const sortedActivities = result.data
+                        .filter((item: any) => item.activityType === data.activityType)
+                        .sort((a: any, b: any) => a.activityNum - b.activityNum);
+    
+                    setActivities(sortedActivities);
+                    initializeFormData(result.data);
+                } else {
+                    throw new Error(result.message || "Failed to fetch master of checklists");
+                }
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchChecklists();
+    }, [data, isOpen]);
 
     const handleCheckboxChange = (id: string) => {
         setFormData((prevData) => ({

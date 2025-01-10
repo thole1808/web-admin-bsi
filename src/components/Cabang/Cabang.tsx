@@ -75,7 +75,7 @@ const CabangTable: React.FC = () => {
         return data[data.length - 1] >= data[0] ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)'; // Green if rising, Red if falling
     };
 
-    const chartOptions = {
+    const chartOptions = useMemo(() => ({
         responsive: true,
         plugins: {
             legend: {
@@ -93,7 +93,7 @@ const CabangTable: React.FC = () => {
                 display: false,  // Hide y-axis
             },
         },
-    };
+    }), []);
 
     const dataCabang: Cabang[] = useMemo(() => [
         {
@@ -1015,7 +1015,7 @@ const CabangTable: React.FC = () => {
                 </div>
             ),
         },
-    ], []);
+    ], [dropdownOpen, chartOptions]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

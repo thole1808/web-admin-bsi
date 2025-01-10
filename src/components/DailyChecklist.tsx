@@ -18,37 +18,37 @@ const DailyChecklist: React.FC = () => {
     const activityDate = localTime.toISOString().split("T")[0];
 
     useEffect(() => {
-        fetchDailyChecklist();
-    }, []);
+        const fetchDailyChecklist = async () => {
+            try {
+                setLoading(true);
 
-    const fetchDailyChecklist = async () => {
-        try {
-            setLoading(true);
+                const queryParams = new URLSearchParams({
+                    activityDate,
+                });
 
-            const queryParams = new URLSearchParams({
-                activityDate,
-            });
+                const response = await fetch(
+                    `/api/daily-checklist/show?${queryParams.toString()}`
+                );
 
-            const response = await fetch(
-                `/api/daily-checklist/show?${queryParams.toString()}`
-            );
+                const result = await response.json();
 
-            const result = await response.json();
+                console.log(result);
 
-            console.log(result);
-
-            if (result.success) {
-                setSodChecklists(result.data.content.filter((item: any) => item.activityType === 'SOD'));
-                setEodChecklists(result.data.content.filter((item: any) => item.activityType === 'EOD'));
-            } else {
-                throw new Error(result.message || "Failed to fetch branch visitors");
+                if (result.success) {
+                    setSodChecklists(result.data.content.filter((item: any) => item.activityType === 'SOD'));
+                    setEodChecklists(result.data.content.filter((item: any) => item.activityType === 'EOD'));
+                } else {
+                    throw new Error(result.message || "Failed to fetch branch visitors");
+                }
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
+
+        fetchDailyChecklist();
+    }, [modalOpen, activityDate]);
 
     const handleChecklistClick = (checklistData: any) => {
         setSelectedChecklist(checklistData);
@@ -58,7 +58,6 @@ const DailyChecklist: React.FC = () => {
     const handleCloseModal = () => {
         setModalOpen(false);
         setSelectedChecklist(null);
-        fetchDailyChecklist();
     };
 
     if (loading) {
@@ -99,9 +98,8 @@ const DailyChecklist: React.FC = () => {
             <ul className='-mx-4 divide-y'>
                 {/* SOD Checklist */}
                 <li
-                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${
-                        sodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
-                    }`}
+                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${sodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                        }`}
                     onClick={() => handleChecklistClick({ activityType: 'SOD', content: sodChecklists })}
                 >
                     <div className='font-medium flex items-center'>
@@ -113,14 +111,13 @@ const DailyChecklist: React.FC = () => {
                         SOD
                     </div>
                     <div className='text-xs font-gray-500'>
-                        {sodChecklists.filter((item:any) => item.checked).length} Checked
+                        {sodChecklists.filter((item: any) => item.checked).length} Checked
                     </div>
                 </li>
 
                 <li
-                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${
-                        eodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
-                    }`}
+                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${eodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                        }`}
                     onClick={() => handleChecklistClick({ activityType: 'EOD', content: eodChecklists })}
                 >
                     <div className='font-medium flex items-center'>
@@ -132,7 +129,7 @@ const DailyChecklist: React.FC = () => {
                         EOD
                     </div>
                     <div className='text-xs font-gray-500'>
-                        {eodChecklists.filter((item:any) => item.checked).length} Checked
+                        {eodChecklists.filter((item: any) => item.checked).length} Checked
                     </div>
                 </li>
             </ul>

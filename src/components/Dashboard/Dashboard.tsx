@@ -5,7 +5,6 @@ import TopBranchesTable from "../TopBranchesTable/TopBranchesTable";
 import QueueStatsOverview from "../QueueStatsOverview";
 import BranchVisitor from "../BranchVisitor";
 import TopServiceType from "../TopServiceType";
-import DailyChecklistPopup from '../DailyChecklistPopup';
 import OperationalStatus from '../OperationalStatus';
 import DailyChecklist from "../DailyChecklist";
 

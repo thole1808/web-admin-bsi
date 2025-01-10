@@ -22,18 +22,14 @@ const SidebarDropdown: React.FC<SidebarDropdownProps> = ({ item }) => {
 
         return (
           <li key={index}>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className={`flex items-center gap-x-2 cursor-pointer px-4 py-3 font-medium rounded-md duration-300 ${
-                isActive
-                  ? "bg-teal-500 text-white hover:bg-teal-600"
-                  : "text-[#00BFB2] hover:bg-gray-200 dark:hover:bg-gray-700"
-              }`}
-            >
-              {/* Use Next.js Link component for navigation */}
-              <Link href={child.route} passHref>
+            <Link href={child.route} passHref>
+              <div
+                className={`flex items-center gap-x-2 cursor-pointer px-4 py-3 font-medium rounded-md duration-300 ${
+                  isActive
+                    ? "bg-teal-500 text-white hover:bg-teal-600"
+                    : "text-[#00BFB2] hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+              >
                 <div className="flex items-center gap-x-2">
                   {child.icon && (
                     <span
@@ -46,8 +42,8 @@ const SidebarDropdown: React.FC<SidebarDropdownProps> = ({ item }) => {
                   )}
                   <span className="flex-1">{child.label}</span>
                 </div>
-              </Link>
-            </div>
+              </div>
+            </Link>
           </li>
         );
       })}

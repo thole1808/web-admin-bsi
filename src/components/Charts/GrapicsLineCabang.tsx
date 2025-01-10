@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const GrapicsLineCabang = () => {
     const [percentage, setPercentage] = useState(0.0);
     
-    const data = [
+    const data = useMemo(() => [
         { name: 'Jan', value: 0 },
         { name: 'Feb', value: 50 },
         { name: 'Mar', value: 100 },
         { name: 'Apr', value: 75 },
         { name: 'May', value: 125 },
-    ];
+    ], []);
 
     useEffect(() => {
         // Hitung persen perubahan dari data pertama ke terakhir
