@@ -1,22 +1,25 @@
-"use client"; // Pastikan hanya di sini
+"use client";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Dashboard from "@/components/Dashboard/Dashboard";
+import { useEffect } from "react";
 import Auth from "@/components/Login/Auth";
 
 export default function Home() {
   const { data: session, status } = useSession(); 
   const router = useRouter(); 
 
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+
   if (session) {
-    router.push("/dashboard");
-    return null; // Tidak merender apa pun sampai pengalihan selesai
+    return null;
   }
 
   return (
     <Auth />
   );
 }
-
-

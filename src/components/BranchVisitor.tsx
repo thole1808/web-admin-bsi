@@ -24,8 +24,6 @@ const BranchVisitor: React.FC = () => {
                 const end = localTime.toISOString().split("T")[0] + "T23:59:59";
                 const limit = 10;
 
-                console.log("start", start);
-
                 const queryParams = new URLSearchParams({
                     start,
                     end,

@@ -32,8 +32,6 @@ const DailyChecklist: React.FC = () => {
 
                 const result = await response.json();
 
-                console.log(result);
-
                 if (result.success) {
                     setSodChecklists(result.data.content.filter((item: any) => item.activityType === 'SOD'));
                     setEodChecklists(result.data.content.filter((item: any) => item.activityType === 'EOD'));

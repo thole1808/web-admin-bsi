@@ -19,16 +19,16 @@ const Spinner = styled.div<{ $grow?: number }>`
   border-bottom: 2px solid grey;
   border-left: 4px solid black;
   background: transparent;
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   flex-grow: ${({ $grow }) => ($grow ? $grow : 0)};
 `;
 
 const CustomLoader: React.FC = () => (
-  <div style={{ padding: '24px' }}>
+  <div style={{ padding: '16px' }}>
     <Spinner $grow={1} />
-    <div>Now loading...</div>
+    Loading...
   </div>
 );
 

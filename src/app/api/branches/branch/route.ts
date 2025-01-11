@@ -1,42 +1,75 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { getToken } from 'next-auth/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
+const API_URL = process.env.API_URL;
 
 export async function GET(req: NextRequest) {
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     try {
-        const { searchParams } = new URL(req.url);
-        const page = searchParams.get("page") || "1"; 
-        const size = searchParams.get("size") || "10"; 
-        const sortBy = searchParams.get("sortBy") || "code"; 
-        const direction = searchParams.get("direction") || "ASC"; 
-        // const type = searchParams.get("type") || ""; 
+        // Validate API_URL
+        if (!API_URL) {
+            console.error('API_URL is not defined in environment variables');
+            return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        }
 
-        // const apiUrl = `${process.env.API_URL}/branches/paginate?type=${type}&page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`;
-        const apiUrl = `${process.env.API_URL}/branches/paginate?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`;
+        // Get the token
+        const session = await getToken({
+            req,
+            secret: process.env.NEXTAUTH_SECRET,
+        });
 
-        const response = await fetch(apiUrl, {
-            method: "GET",
+        if (!session || !session.accessToken) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        // Fetch data from external API
+        const response = await fetch(buildUrl(), {
+            method: 'GET',
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${session.accessToken || ""}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.accessToken}`,
             },
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            return NextResponse.json({ error: errorData.error || "Failed to fetch branch API" }, { status: response.status });
+            const errorMessage = await response.text();
+            return NextResponse.json({ error: errorMessage || 'Failed to fetch API' }, { status: response.status });
         }
 
+        // Return the fetched data
         const data = await response.json();
+        console.log(data);
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
-        console.error("Error fetching branch messages:", error);
-        return NextResponse.json({ error: "Failed to fetch branch API" }, { status: 500 });
+        console.error('Error processing request:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+
+    function buildUrl() {
+        const name = req.nextUrl.searchParams.get('name');
+        const search = req.nextUrl.searchParams.get('search');
+        const active = req.nextUrl.searchParams.get('active');
+        const type = req.nextUrl.searchParams.get('type');
+        const sortBy = req.nextUrl.searchParams.get('sortBy');
+        const direction = req.nextUrl.searchParams.get('direction');
+        const size = req.nextUrl.searchParams.get('size');
+        const page = req.nextUrl.searchParams.get('page');
+
+        const params = new URLSearchParams();
+
+        if (name) params.append('name', name);
+        if (search) params.append('search', search);
+        if (active) params.append('isActive', active);
+        if (type) params.append('type', type);
+        if (sortBy) params.append('sortBy', sortBy);
+        if (direction) params.append('direction', direction);
+        if (size) params.append('size', size);
+        if (page) params.append('page', page);
+        if (search) params.append('search', search);
+
+        const url = `${API_URL}/branches/paginate?${params.toString()}`;
+
+        console.log('CONSUME GET ' + url);
+
+        return url;
     }
 }

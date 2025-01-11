@@ -5,277 +5,333 @@ import DataTable from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 import ActionGroup from "@/components/Tables/ActionGroup";
 import CustomLoader from "@/components/Tables/CustomLoader";
-
+import EditPengguna from "./EditPengguna";
+import CreateButton from "@/components/Button/CreateButton";
+import TambahPengguna from "./TambahPengguna";
+import HapusPengguna from "./HapusPengguna";
 
 const DaftarPengguna: React.FC = () => {
-  const [data, setData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [typeField, setTypeField] = useState("");
-  const [statusField, setStatusField] = useState("");
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [data, setData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [totalRows, setTotalRows] = useState(0);
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortField, setSortField] = useState<string | null>(null);
+    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    const [roleField, setRoleField] = useState("");
+    const [statusField, setStatusField] = useState("");
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [roles, setRoles] = useState<any[]>([]);
+    const [isCreate, setIsCreate] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
-  const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setSearch(event.target.value);
-  };
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const response = await fetch(
+                    `/api/akses/peran`
+                );
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
+                const result = await response.json();
 
-    return () => {
-      clearTimeout(handler);
+                if (result.success) {
+                    setRoles(result.data);
+                } else {
+                    throw new Error(result.message || "Failed to fetch roles");
+                }
+            } catch (err: any) {
+                console.log(err.message);
+            }
+        };
+
+        fetchRoles();
+    }, []);
+
+    const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setSearch(event.target.value);
     };
-  }, [search]);
 
-  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setTypeField(event.target.value);
-  };
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 500);
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [search]);
 
-    if (value === 'waiting') {
-      setStatusField('WAITING');
-    } else if (value === 'serving') {
-      setStatusField('STARTED,PAUSED,CONTINUED');
-    } else if (value === 'done') {
-      setStatusField('STOPPED,CANCELED,TRANSFERRED');
-    }
-  };
+    const handleRoleChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setRoleField(event.target.value);
+    };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const size = perPage.toString();
-        const page = (currentPage - 1).toString();
-        const sortBy = sortField ? sortField : "id";
-        const direction = sortDirection.toString();
-        const status = statusField.toString();
-        const search = debouncedSearch;
-        const type = typeField;
-  
-        const queryParams = new URLSearchParams({
-          size,
-          page,
-          sortBy,
-          direction,
-          type,
-          status,
-          search
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const size = perPage.toString();
+                const page = (currentPage - 1).toString();
+                const sortBy = sortField ? sortField : "id";
+                const direction = sortDirection.toString();
+                const status = statusField.toString();
+                const search = debouncedSearch;
+                const roleName = roleField;
+
+                const queryParams = new URLSearchParams({
+                    size,
+                    page,
+                    sortBy,
+                    direction,
+                    roleName,
+                    status,
+                    search
+                });
+
+                const response = await fetch(
+                    `/api/akses/pengguna?${queryParams.toString()}`
+                );
+
+                const result = await response.json();
+
+                if (result.success) {
+                    setData(result.data.content);
+                    setTotalRows(result.data.totalElements);
+                } else {
+                    throw new Error(result.message || "Failed to fetch users");
+                }
+            } catch (err: any) {
+                console.log(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (isEdit || isCreate) return;
+
+        fetchData();
+    }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, roleField, isEdit, isCreate]);
+
+    const convertArrayOfObjectsToCSV = (array: any[]) => {
+        let result: string;
+
+        const columnDelimiter = ',';
+        const lineDelimiter = '\n';
+        const keys = Object.keys(data[0]);
+
+        result = '';
+        result += keys.join(columnDelimiter);
+        result += lineDelimiter;
+
+        array.forEach((item: { [x: string]: any; }) => {
+            let ctr = 0;
+            keys.forEach(key => {
+                if (ctr > 0) result += columnDelimiter;
+
+                result += item[key];
+
+                ctr++;
+            });
+            result += lineDelimiter;
         });
-  
-        const response = await fetch(
-          `/api/akses/pengguna?${queryParams.toString()}`
-        );
-  
-        const result = await response.json();
-  
-        if (result.success) {
-          setData(result.data.content);
-          setTotalRows(result.data.totalElements);
-        } else {
-          throw new Error(result.message || "Failed to fetch users");
-        }
-      } catch (err: any) {
-        console.log(err.message);
-      } finally {
-        setLoading(false);
-      }
+
+        return result;
     };
 
-    fetchData();
-  }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField]);
+    const downloadCSV = (array: any) => {
+        const link = document.createElement('a');
+        let csv = convertArrayOfObjectsToCSV(array);
+        if (csv == null) return;
 
-  const convertArrayOfObjectsToCSV = (array: any[]) => {
-    let result: string;
+        const filename = 'export.csv';
 
-    const columnDelimiter = ',';
-    const lineDelimiter = '\n';
-    const keys = Object.keys(data[0]);
+        if (!csv.match(/^data:text\/csv/i)) {
+            csv = `data:text/csv;charset=utf-8,${csv}`;
+        }
 
-    result = '';
-    result += keys.join(columnDelimiter);
-    result += lineDelimiter;
+        link.setAttribute('href', encodeURI(csv));
+        link.setAttribute('download', filename);
+        link.click();
+    };
 
-    array.forEach((item: { [x: string]: any; }) => {
-      let ctr = 0;
-      keys.forEach(key => {
-        if (ctr > 0) result += columnDelimiter;
+    const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
+        <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
+    );
 
-        result += item[key];
+    const handlePerRowsChange = async (newPerPage: number, page: number) => {
+        setPerPage(newPerPage);
+        setCurrentPage(page);
+    };
 
-        ctr++;
-      });
-      result += lineDelimiter;
-    });
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
-    return result;
-  };
+    const handleSort = async (column: any, sortDirection: "asc" | "desc") => {
+        setSortField(column.selector);
+        setSortDirection(sortDirection);
+    };
 
-  const downloadCSV = (array: any) => {
-    const link = document.createElement('a');
-    let csv = convertArrayOfObjectsToCSV(array);
-    if (csv == null) return;
+    const handleResetFilter = () => {
+        setStatusField("");
+        setRoleField("");
+    };
 
-    const filename = 'export.csv';
+    function formatDateTime(date: string) {
+        if (!date) return '-';
 
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = `data:text/csv;charset=utf-8,${csv}`;
+        return new Date(date).toLocaleString('id-ID');
     }
 
-    link.setAttribute('href', encodeURI(csv));
-    link.setAttribute('download', filename);
-    link.click();
-  };
+    const columns = [
+        {
+            name: 'ID Pengguna',
+            selector: (row: { officialId: any; }) => row?.officialId || '-',
+            sortable: true,
+            sortField: 'officialId',
+        },
+        {
+            name: 'Nama Pengguna',
+            selector: (row: { name: any; }) => row?.name || '',
+            grow: 2,
+            sortable: true,
+            sortField: 'name',
+        },
+        {
+            name: 'Email',
+            selector: (row: { email: any; }) => row?.email || '',
+            grow: 2,
+            sortable: true,
+            sortField: 'email',
+        },
+        {
+            name: 'Peran',
+            selector: (row: { role: any; }) => row?.role.name || '',
+        },
+        {
+            name: 'Login Terakhir',
+            selector: (row: { lastLoginAt: string; }) => formatDateTime(row?.lastLoginAt) || '',
+            grow: 2,
+            right: true,
+            sortable: true,
+            sortField: 'lastLoginAt',
+        },
+        {
+            name: '',
+            right: true,
+            maxWidth: '5px',
+            cell: (row: any) => (
+                <ActionGroup
+                    options={[
+                        { label: 'Lihat Detail', icon: 'view', action: () => console.log('Lihat Detail', row) },
+                        { label: 'Ubah', icon: 'edit', action: () => openEdit(row) },
+                        { label: 'Hapus', icon: 'trash', action: () => handleDelete(row) },
+                    ]}
+                />
+            ),
+        },
+    ];
 
-  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
-    <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
-  );
+    const openCreate = () => {
+        setIsCreate(true);
+    }
 
-  const handlePerRowsChange = async (newPerPage: number, page: number) => {
-    setPerPage(newPerPage);
-    setCurrentPage(page);
-  };
+    const closeCreate = () => {
+        setIsCreate(false);
+    }
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    const openEdit = (user: any) => {
+        setSelectedUser(user);
+        setIsEdit(true);
+    };
 
-  const handleSort = async (column: any, sortDirection: "asc" | "desc") => {
-    setSortField(column.selector);
-    setSortDirection(sortDirection);
-  };
+    const closeEdit = () => {
+        setIsEdit(false);
+        setSelectedUser(null);
+    }
 
-  const handleResetFilter = () => {
-    setStatusField("");
-    setTypeField("");
-  };
+    const handleDelete = (user: any) => {
+        setSelectedUser(user);
+        setIsDelete(true);
+    };
 
-  function formatDateTime(date: string) {
-    if (!date) return '-';
+    const closeDelete = () => {
+        setIsDelete(false);
+        setSelectedUser(null);
+    }
 
-    return new Date(date).toLocaleString('id-ID');
-  }
+    return (
+        <div className="grid gap-y-4">
+            <div className="py-1 border rounded-lg bg-white">
+                <div className="p-4 border-b flex justify-between items-center">
+                    <h2 className="text-lg font-semibold ml-2">Pengguna</h2>
+                    <div className="flex gap-2">
+                        <CreateButton onClick={openCreate} />
+                        <Export onExport={() => downloadCSV(data)} />
+                    </div>
+                </div>
+                <div className="grid grid-cols-7 py-4 px-6 gap-3">
+                    <div className="grid col-span-4">
+                        <label className="text-xs mb-1">Pencarian</label>
+                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email pengguna..." />
+                    </div>
+                    <div className="grid col-span-2">
+                        <label className="text-xs mb-1">Peran</label>
+                        <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={roleField} onChange={handleRoleChanged}>
+                            <option value="">Semua</option>
+                            {roles?.map((role: any) => (
+                                <option key={role.id} value={role.name}>{role.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="grid text-xs items-end justify-end">
+                        <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
+                            <FaRotateLeft className="w-3 h-3" />
+                            Reset
+                        </button>
+                    </div>
+                </div>
 
-  const columns = [
-    {
-      name: 'ID Pengguna',
-      selector: (row: { officialId: any; }) => row.officialId || '-',
-      sortable: true,
-      sortField: 'officialId',
-    },
-    {
-      name: 'Nama Pengguna',
-      selector: (row: { name: any; }) => row.name || '',
-      sortable: true,
-      sortField: 'name',
-    },
-    {
-      name: 'Email',
-      selector: (row: { email: any; }) => row.email || '',
-      sortable: true,
-      sortField: 'email',
-    },
-    {
-      name: 'Peran',
-      selector: (row: { role: any; }) => row.role.name || '',
-    },
-    {
-      name: 'Login Terakhir',
-      selector: (row: { lastLoginAt: string; }) => formatDateTime(row?.lastLoginAt) || '',
-      grow: 2,
-      sortable: true,
-      sortField: 'lastLoginAt',
-    },
-    {
-      name: '',
-      cell: (row: any) => <ActionGroup options={actions(row)} />,
-    },
-  ];
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    progressPending={loading}
+                    progressComponent={<CustomLoader />}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalRows}
+                    onChangeRowsPerPage={handlePerRowsChange}
+                    onChangePage={handlePageChange}
+                    onSort={handleSort}
+                    sortServer
+                />
+            </div>
 
-  const actions = (row: any) => [
-    {
-      label: 'Lihat Detail',
-      action: () => {
-        console.log('Lihat Detail', row);
-      },
-    },
-    {
-      label: 'Ubah',
-      action: () => {
-        console.log('Ubah', row);
-      },
-    },
-    {
-      label: 'Hapus',
-      action: () => {
-        console.log('Hapus', row);
-      },
-    },
-  ];
+            {isCreate && (
+                <TambahPengguna
+                    isOpen={isCreate}
+                    onClose={() => closeCreate()}
+                />
+            )}
 
-  return (
-    <div className="grid gap-y-4">
-      <div className="py-1 border rounded-lg bg-white">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Pengguna</h2>
-          <div>
-            <Export onExport={() => downloadCSV(data)} />
-          </div>
+            {isDelete && (
+                <HapusPengguna
+                    isOpen={isDelete}
+                    onClose={() => closeDelete()}
+                    data={selectedUser}
+                />
+            )}
+
+            {selectedUser && (
+                <EditPengguna
+                    isOpen={isEdit}
+                    onClose={() => closeEdit()}
+                    data={selectedUser}
+                />
+            )}
         </div>
-        <div className="grid grid-cols-7 py-4 px-6 gap-3">
-          <div className="grid col-span-4">
-            <label className="text-xs mb-1">Pencarian</label>
-            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
-          </div>
-          <div className="grid col-span-2">
-            <label className="text-xs mb-1">Jenis Reservasi</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={typeField} onChange={handleTypeChange}>
-              <option value="">Semua</option>
-              <option value="ONLINE">Online</option>
-              <option value="ONSITE">Onsite</option>
-            </select>
-          </div>
-          <div className="grid text-xs items-end justify-end">
-            <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
-              <FaRotateLeft className="w-3 h-3" />
-              Reset
-            </button>
-          </div>
-          <div className="grid col-span-2">
-            <label className="text-xs mb-1">Status</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={statusField} onChange={handleStatusChange}>
-              <option value="">Semua</option>
-              <option value="waiting">Menunggu</option>
-              <option value="serving">Dilayani</option>
-              <option value="done">Selesai</option>
-            </select>
-          </div>
-        </div>
-
-        <DataTable
-          columns={columns}
-          data={data}
-          progressPending={loading}
-          progressComponent={<CustomLoader />}
-          pagination
-          paginationServer
-          paginationTotalRows={totalRows}
-          onChangeRowsPerPage={handlePerRowsChange}
-          onChangePage={handlePageChange}
-          onSort={handleSort}
-          sortServer
-        />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default DaftarPengguna;
