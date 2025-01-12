@@ -321,7 +321,7 @@ const DaftarPengguna: React.FC = () => {
                         <label className="text-xs mb-1">Peran</label>
                         <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={roleField} onChange={handleRoleChanged}>
                             <option value="">Semua</option>
-                            {roles?.map((role: any) => (
+                            {roles.length && roles.map((role: any) => (
                                 <option key={role.id} value={role.name}>{role.name}</option>
                             ))}
                         </select>

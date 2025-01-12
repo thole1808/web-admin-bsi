@@ -99,8 +99,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <Image
               src="/images/logo/logo-bsi.png"
               alt="Logo"
-              width={120}
-              height={120}
+              width={100}
+              height={100}
             />
           </Link>
 
