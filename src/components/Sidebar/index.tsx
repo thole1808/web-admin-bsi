@@ -30,9 +30,9 @@ const menuGroups = [
         icon: "AntrianIcon",
       },
       {
-        label: 'Roles',
-        route: '/roles',
-        icon: 'RolesIcon',
+        label: 'Cabang',
+        route: '/branches/branch',
+        icon: "BranchIcon",
       },
       {
         label: 'Master',
@@ -69,12 +69,7 @@ const menuGroups = [
       //     },
       //     { label: 'Signage', route: '/content/signage' },
       //   ],
-      // },    
-      {
-        label: 'Branches',
-        route: '/branches/branch',
-        icon: "BranchIcon",
-      },
+      // },
       {
         label: 'Reporting',
         route: '/reporting',
@@ -89,7 +84,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
 
   const handleLogout = () => {
-    signOut(); 
+    signOut();
   };
 
   return (
@@ -102,11 +97,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <div className="flex items-center justify-between gap-2 px-6 py-4">
           <Link href="/">
             <Image
-              width={130}
-              height={32}
-              src={"/images/logo/logo-bsi.pngsdsd"}
+              src="/images/logo/logo-bsi.png"
               alt="Logo"
-              priority
+              width={120}
+              height={120}
             />
           </Link>
 

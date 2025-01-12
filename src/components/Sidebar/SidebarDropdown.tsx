@@ -27,7 +27,7 @@ const SidebarDropdown: React.FC<SidebarDropdownProps> = ({ item }) => {
                 className={`flex items-center gap-x-2 cursor-pointer px-4 py-3 font-medium rounded-md duration-300 ${
                   isActive
                     ? "bg-teal-500 text-white hover:bg-teal-600"
-                    : "text-[#00BFB2] hover:bg-gray-200 dark:hover:bg-gray-700"
+                    : "text-[#00BFB2] hover:bg-teal-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <div className="flex items-center gap-x-2">

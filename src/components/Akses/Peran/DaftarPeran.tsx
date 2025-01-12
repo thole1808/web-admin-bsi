@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 import ActionGroup from "@/components/Tables/ActionGroup";
 import CustomLoader from "@/components/Tables/CustomLoader";
-import EditPengguna from "./EditPengguna";
 import CreateButton from "@/components/Button/CreateButton";
-import TambahPengguna from "./TambahPengguna";
-import HapusPengguna from "./HapusPengguna";
+import TambahPeran from "./TambahPeran";
+import HapusPeran from "./HapusPeran";
+import EditPeran from "./EditPeran";
+import ModalView from "@/components/Tables/ModalView";
 
-const DaftarPengguna: React.FC = () => {
+const DaftarPeran: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [totalRows, setTotalRows] = useState(0);
@@ -18,37 +19,14 @@ const DaftarPengguna: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [sortField, setSortField] = useState<string | null>(null);
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-    const [roleField, setRoleField] = useState("");
-    const [statusField, setStatusField] = useState("");
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [roles, setRoles] = useState<any[]>([]);
     const [isCreate, setIsCreate] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any | null>(null);
-
-    useEffect(() => {
-        const fetchRoles = async () => {
-            try {
-                const response = await fetch(
-                    `/api/akses/peran`
-                );
-
-                const result = await response.json();
-
-                if (result.success) {
-                    setRoles(result.data);
-                } else {
-                    throw new Error(result.message || "Failed to fetch roles");
-                }
-            } catch (err: any) {
-                console.log(err.message);
-            }
-        };
-
-        fetchRoles();
-    }, []);
+    const [permissions, setPermissions] = useState<any[]>([]);
+    const [isViewPermission, setIsViewPermission] = useState(false);
 
     const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearch(event.target.value);
@@ -64,10 +42,6 @@ const DaftarPengguna: React.FC = () => {
         };
     }, [search]);
 
-    const handleRoleChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setRoleField(event.target.value);
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -75,22 +49,18 @@ const DaftarPengguna: React.FC = () => {
                 const page = (currentPage - 1).toString();
                 const sortBy = sortField ? sortField : "id";
                 const direction = sortDirection.toString();
-                const status = statusField.toString();
                 const search = debouncedSearch;
-                const roleName = roleField;
 
                 const queryParams = new URLSearchParams({
                     size,
                     page,
                     sortBy,
                     direction,
-                    roleName,
-                    status,
                     search
                 });
 
                 const response = await fetch(
-                    `/api/akses/pengguna?${queryParams.toString()}`
+                    `/api/akses/peran?${queryParams.toString()}`
                 );
 
                 const result = await response.json();
@@ -111,7 +81,7 @@ const DaftarPengguna: React.FC = () => {
         if (isEdit || isCreate || isDelete) return;
 
         fetchData();
-    }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, roleField, isEdit, isCreate, isDelete]);
+    }, [debouncedSearch, isEdit, isCreate, isDelete, perPage, currentPage, sortField, sortDirection]);
 
     const convertArrayOfObjectsToCSV = (array: any[]) => {
         let result: string;
@@ -158,7 +128,7 @@ const DaftarPengguna: React.FC = () => {
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
         <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
     );
-
+    
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
         setPerPage(newPerPage);
         setCurrentPage(page);
@@ -174,8 +144,6 @@ const DaftarPengguna: React.FC = () => {
     };
 
     const handleResetFilter = () => {
-        setStatusField("");
-        setRoleField("");
         setSearch("");
     };
 
@@ -187,41 +155,39 @@ const DaftarPengguna: React.FC = () => {
 
     const columns = [
         {
-            name: 'ID Pengguna',
-            selector: (row: { officialId: any; }) => row?.officialId || '-',
+            name: 'Kode',
+            selector: (row: { code: any; }) => row?.code || '-',
             sortable: true,
-            sortField: 'officialId',
+            sortField: 'code',
         },
         {
-            name: 'Nama Pengguna',
+            name: 'Nama Peran',
             selector: (row: { name: any; }) => row?.name || '',
-            grow: 2,
+            grow: 3,
             sortable: true,
             sortField: 'name',
         },
         {
-            name: 'Email',
-            selector: (row: { email: any; }) => row?.email || '',
-            grow: 2,
+            name: 'Hak Akses',
+            selector: (row: { permissions: any; }) => (row?.permissions?.length || '0') + ' item' || '',
+            cell: (row: { permissions: any; }) => (
+                <button onClick={() => viewPermissions(row?.permissions)} className={`${row?.permissions?.length > 0 ? 'text-blue-500' : ''} flex items-center gap-1`}>
+                    <span>{row?.permissions?.length || '0'}</span>
+                    <span className="text-xs">item</span>
+                </button>
+            ),
+        },
+        {
+            name: 'Update Terakhir',
+            selector: (row: { updatedAt: string; }) => formatDateTime(row?.updatedAt) || '',
             sortable: true,
-            sortField: 'email',
-        },
-        {
-            name: 'Peran',
-            selector: (row: { role: any; }) => row?.role.name || '',
-        },
-        {
-            name: 'Login Terakhir',
-            selector: (row: { lastLoginAt: string; }) => formatDateTime(row?.lastLoginAt) || '',
+            sortField: 'updatedAt',
             grow: 2,
             right: true,
-            sortable: true,
-            sortField: 'lastLoginAt',
         },
         {
             name: '',
             right: true,
-            maxWidth: '5px',
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -232,6 +198,11 @@ const DaftarPengguna: React.FC = () => {
             ),
         },
     ];
+
+    const viewPermissions = (permissions: any) => {
+        setPermissions(permissions);
+        setIsViewPermission(true);
+    }
 
     const openCreate = () => {
         setIsCreate(true);
@@ -261,52 +232,11 @@ const DaftarPengguna: React.FC = () => {
         setSelectedUser(null);
     }
 
-    const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
-        return (
-          <div className="p-6 bg-gray-50 text-xs">
-            <div className="grid grid-cols-2">
-              <div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Username</span>
-                  <span className="col-span-2">:&nbsp;{data.username || '-'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Phone</span>
-                  <span className="col-span-2">:&nbsp;{data.phone || '-'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Loket</span>
-                  <span className="col-span-2">:&nbsp;{data.counter?.name || '-'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Cabang</span>
-                  <span className="col-span-2">:&nbsp;{data.branch?.name || '-'}</span>
-                </div>
-              </div>
-              <div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Aktif</span>
-                  <span className="col-span-2">:&nbsp;{data.active ? 'Ya' : 'Tidak'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Dibuat Tanggal</span>
-                  <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Diperbarui Tanggal</span>
-                  <span className="col-span-2">:&nbsp;{formatDateTime(data.updatedAt)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      };
-
     return (
         <div className="grid gap-y-4">
             <div className="py-1 border rounded-lg bg-white">
                 <div className="p-4 border-b flex justify-between items-center">
-                    <h2 className="text-lg font-semibold ml-2">Pengguna</h2>
+                    <h2 className="text-lg font-semibold ml-2">Peran</h2>
                     <div className="flex gap-2">
                         <CreateButton onClick={openCreate} />
                         <Export onExport={() => downloadCSV(data)} />
@@ -315,16 +245,7 @@ const DaftarPengguna: React.FC = () => {
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
                         <label className="text-xs mb-1">Pencarian</label>
-                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email pengguna..." />
-                    </div>
-                    <div className="grid col-span-2">
-                        <label className="text-xs mb-1">Peran</label>
-                        <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={roleField} onChange={handleRoleChanged}>
-                            <option value="">Semua</option>
-                            {roles?.map((role: any) => (
-                                <option key={role.id} value={role.name}>{role.name}</option>
-                            ))}
-                        </select>
+                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email peran..." />
                     </div>
                     <div className="grid text-xs items-end justify-end">
                         <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
@@ -339,8 +260,6 @@ const DaftarPengguna: React.FC = () => {
                     data={data}
                     progressPending={loading}
                     progressComponent={<CustomLoader />}
-                    expandableRows
-                    expandableRowsComponent={ExpandedComponent}
                     pagination
                     paginationServer
                     paginationTotalRows={totalRows}
@@ -352,14 +271,14 @@ const DaftarPengguna: React.FC = () => {
             </div>
 
             {isCreate && (
-                <TambahPengguna
+                <TambahPeran
                     isOpen={isCreate}
                     onClose={() => closeCreate()}
                 />
             )}
 
             {isDelete && (
-                <HapusPengguna
+                <HapusPeran
                     isOpen={isDelete}
                     onClose={() => closeDelete()}
                     data={selectedUser}
@@ -367,14 +286,36 @@ const DaftarPengguna: React.FC = () => {
             )}
 
             {selectedUser && (
-                <EditPengguna
+                <EditPeran
                     isOpen={isEdit}
                     onClose={() => closeEdit()}
                     data={selectedUser}
                 />
             )}
+
+            {isViewPermission && (
+                <ModalView
+                    width="lg"
+                    title="View Permissions"
+                    isOpen={isViewPermission}
+                    onClose={() => { setIsViewPermission(false); setPermissions([]); }}
+                >
+                    {permissions.length === 0 ? (
+                        <div className="text-center text-gray-500">No permissions found</div>
+                    ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                        {permissions.map((permission: any) => (
+                            <div key={permission.id} className="border border-gray-300 hover:bg-teal-400 hover:text-white rounded p-2 text-sm">
+                                <div className="font-medium">{permission.name}</div>
+                                <div className="text-xs">{permission.description}</div>
+                            </div>
+                        ))}
+                    </div>
+                    )}
+                </ModalView>
+            )}
         </div>
     );
 };
 
-export default DaftarPengguna;
+export default DaftarPeran;
