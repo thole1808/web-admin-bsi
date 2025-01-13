@@ -41,7 +41,7 @@ const menuGroups = [
         children: [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Checklist', route: '/master/checklist' },
-          { label: 'Services Types', route: '/master/services-types' },
+          { label: 'Menu Layanan', route: '/master/layanan' },
           { label: 'Status Messages', route: '/master/status-messages' },
           { label: 'National Holiday', route: '/master/national-holiday' },
         ],

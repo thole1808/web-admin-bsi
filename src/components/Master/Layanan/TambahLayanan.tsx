@@ -12,7 +12,7 @@ interface Option {
     name: string;
 }
 
-interface TambahPeranProps {
+interface TambahLayananProps {
     isOpen: boolean;
     onClose: () => void;
 }
@@ -24,7 +24,7 @@ interface FormData {
     permissions: string[];
 }
 
-const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
+const TambahLayanan: React.FC<TambahLayananProps> = ({ isOpen, onClose }) => {
     const [permissionData, setPermissionData] = useState<any[]>([]);
 
     useEffect(() => {
@@ -76,7 +76,7 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/akses/peran`, {
+            const response = await fetch(`/api/master/layanan`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('Peran berhasil ditambahkan');
+                toast.success('Layanan berhasil ditambahkan');
                 onClose();
             } else {
                 toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
@@ -104,7 +104,7 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
     return (
         <ModalForm
             width="lg"
-            title="Tambah Peran"
+            title="Tambah Layanan"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
@@ -123,11 +123,11 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
                 {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
-                <Label htmlFor="name" required>Peran</Label>
+                <Label htmlFor="name" required>Layanan</Label>
                 <input
                     type="text"
                     id="name"
-                    placeholder="Peran"
+                    placeholder="Layanan"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={inputStyles}
@@ -170,4 +170,4 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
     );
 };
 
-export default TambahPeran;
+export default TambahLayanan;

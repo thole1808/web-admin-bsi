@@ -1,7 +1,7 @@
 import React from "react";
 
 type CreateButtonProps = {
-  size?: "sm" | "lg" | "xl" | "xs";
+  size?: "sm" | "md" | "lg" | "xl" | "xs";
   label?: string;
   onClick?: () => void;
 };
@@ -9,6 +9,7 @@ type CreateButtonProps = {
 const CreateButton: React.FC<CreateButtonProps> = ({ size = "sm", label = "Tambah", onClick }) => {
   const sizeClasses = {
     sm: "px-3 py-1.5 text-xs",
+    md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
     xl: "px-8 py-4 text-xl",
     xs: "px-2 py-1 text-xs",

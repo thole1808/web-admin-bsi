@@ -168,6 +168,13 @@ const DaftarPeran: React.FC = () => {
             sortField: 'name',
         },
         {
+            name: 'Guard',
+            selector: (row: { guardName: any; }) => row?.guardName || '',
+            grow: 3,
+            sortable: true,
+            sortField: 'guardName',
+        },
+        {
             name: 'Hak Akses',
             selector: (row: { permissions: any; }) => (row?.permissions?.length || '0') + ' item' || '',
             cell: (row: { permissions: any; }) => (
