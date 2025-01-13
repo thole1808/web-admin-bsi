@@ -12,7 +12,6 @@ import AddSubLayanan from "./AddSubLayanan";
 const DaftarLayanan: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [debouncedSearch, setDebouncedSearch] = useState("");
     const [isCreate, setIsCreate] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
@@ -43,7 +42,7 @@ const DaftarLayanan: React.FC = () => {
         if (isEdit || isCreate || isDelete || isAdd) return;
 
         fetchData();
-    }, [debouncedSearch, isEdit, isCreate, isDelete, isAdd]);
+    }, [isEdit, isCreate, isDelete, isAdd]);
 
     const openCreate = () => {
         setIsCreate(true);
@@ -87,7 +86,7 @@ const DaftarLayanan: React.FC = () => {
         <div className="grid gap-y-4">
             <div className="py-1 border rounded-lg bg-white">
                 <div className="p-4 border-b flex justify-between items-center">
-                    <h2 className="text-lg font-semibold ml-2">Layanan</h2>
+                    <h2 className="text-lg font-semibold ml-2">Menu Layanan</h2>
                     <div className="flex gap-2">
                         <CreateButton onClick={openCreate} />
                     </div>
@@ -106,6 +105,7 @@ const DaftarLayanan: React.FC = () => {
                 <TambahLayanan
                     isOpen={isCreate}
                     onClose={() => closeCreate()}
+                    layanan={data}
                 />
             )}
 
