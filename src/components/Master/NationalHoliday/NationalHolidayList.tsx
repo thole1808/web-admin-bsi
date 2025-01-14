@@ -6,15 +6,15 @@ import { FaSearch } from "react-icons/fa";
 import ActionGroup from "@/components/Tables/ActionGroup";
 import CustomLoader from "@/components/Tables/CustomLoader";
 import CreateButton from "@/components/Button/CreateButton";
-import CabinCheckCreate from "./CabinCheckCreate";
-import CabinCheckDelete from "./CabinCheckDelete";
-import CabinCheckEdit from "./CabinCheckEdit";
+import NationalHolidayCreate from "./NationalHolidayCreate";
+import NationalHolidayDelete from "./NationalHolidayDelete";
+import NationalHolidayEdit from "./NationalHolidayEdit";
 import ExportCSV from "@/components/Button/ExportCsvButton";
 import TextInput from "@/components/Forms/TextInput";
 import { FaRotateLeft } from "react-icons/fa6";
 import ResetButton from "@/components/Button/ResetButton";
 
-const CabinCheckList: React.FC = () => {
+const NationalHolidayList: React.FC = () => {
   const [originalData, setOriginalData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ const CabinCheckList: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/master/cabin-checks`);
+        const response = await fetch(`/api/master/national-holidays`);
         const result = await response.json();
 
         if (result.success) {
@@ -66,8 +66,8 @@ const CabinCheckList: React.FC = () => {
     }
 
     const filtered = originalData.filter((item) =>
-      item.activityName.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      item.activityType.toLowerCase().includes(debouncedSearch.toLowerCase())
+      item.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      item.date.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
 
     setFilteredData(filtered);
@@ -80,43 +80,17 @@ const CabinCheckList: React.FC = () => {
 
   const columns = [
     {
-      name: "Activity",
-      selector: (row: { activityName: string }) => row?.activityName || "",
+      name: "Date",
+      selector: (row: { date: string }) => row?.date || "",
+      sortable: true,
+      sortField: "date",
+    },
+    {
+      name: "Name",
+      selector: (row: { name: string }) => row?.name || "",
       grow: 3,
       sortable: true,
-      sortField: "activityName",
-    },
-    {
-      name: "Type",
-      selector: (row: { activityType: string }) => row?.activityType || "",
-      center: true,
-      sortable: true,
-      sortField: "activityType",
-    },
-    {
-      name: "Mandatory",
-      selector: (row: { mandatory: boolean }) =>
-        row?.mandatory === true ? "Yes" : "No",
-      center: true,
-      sortable: true,
-      sortField: "mandatory",
-    },
-    {
-      name: "Active",
-      selector: (row: { active: boolean }) =>
-        row?.active === true ? "Yes" : "No",
-      center: true,
-      sortable: true,
-      sortField: "active",
-    },
-    {
-      name: "Last Updated",
-      selector: (row: { updatedAt: string }) =>
-        new Date(row.updatedAt).toLocaleString("id-ID") || "",
-      sortable: true,
-      sortField: "updatedAt",
-      grow: 2,
-      right: true,
+      sortField: "name",
     },
     {
       name: "",
@@ -167,14 +141,14 @@ const CabinCheckList: React.FC = () => {
           <h2 className="text-lg font-semibold ml-2">Cabin Checks</h2>
           <div className="flex gap-2">
             <CreateButton onClick={openCreate} />
-            <ExportCSV data={filteredData} filename="cabin-checks.csv" />
+            <ExportCSV data={filteredData} filename="national-holidays.csv" />
           </div>
         </div>
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
             <TextInput
               label="Search"
-              placeholder="Search by activity name..."
+              placeholder="Search by holiday name or date..."
               value={search}
               textSize="xs"
               onChange={(value) => setSearch(value)}
@@ -195,16 +169,16 @@ const CabinCheckList: React.FC = () => {
         />
       </div>
 
-      {isCreate && <CabinCheckCreate isOpen={isCreate} onClose={closeCreate} />}
+      {isCreate && <NationalHolidayCreate isOpen={isCreate} onClose={closeCreate} />}
       {isDelete && (
-        <CabinCheckDelete
+        <NationalHolidayDelete
           isOpen={isDelete}
           onClose={closeDelete}
           data={selectedRow}
         />
       )}
       {isEdit && (
-        <CabinCheckEdit
+        <NationalHolidayEdit
           isOpen={isEdit}
           onClose={closeEdit}
           data={selectedRow}
@@ -214,4 +188,4 @@ const CabinCheckList: React.FC = () => {
   );
 };
 
-export default CabinCheckList;
+export default NationalHolidayList;

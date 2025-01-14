@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {   
+    try {
         const response = await fetch(`${process.env.API_URL}/master/national-holidays`, {
             method: 'GET',
             headers: {
@@ -19,74 +19,83 @@ export async function GET(req: NextRequest) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            return NextResponse.json({ error: errorData.error || 'Failed to fetch national holiday API' }, { status: response.status });
+            return NextResponse.json({ error: errorData.error || 'Failed to fetch national holidays API' }, { status: response.status });
         }
 
         const data = await response.json();
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
-        console.error("Error fetching national holiday :", error);
-        return NextResponse.json({ error: 'Failed to fetch national holiday API' }, { status: 500 });
+        console.error("Error fetching national-holidays :", error);
+        return NextResponse.json({ error: 'Failed to fetch national holidays API' }, { status: 500 });
     }
 }
 
-
 export async function POST(req: NextRequest) {
+    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     try {
-        const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-        if (!session) {
-            console.error("Session not found");
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const body = await req.json();
-        const { name, date } = body
 
-        if (!name || typeof name !== "string") {
-            return NextResponse.json({ error: "Field 'name' is required and must be a string." }, { status: 400 });
+        // Validasi field wajib
+        const errors: string[] = [];
+
+        if (!body.activityName || typeof body.activityName !== "string") {
+            errors.push("Field 'activityName' is required and must be a string.");
         }
 
-        if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-            return NextResponse.json({ error: "Field 'date' is required and must be in YYYY-MM-DD format." }, { status: 400 });
+        if (!body.activityType || !["SOD", "EOD"].includes(body.activityType)) {
+            errors.push(
+                "Field 'activityType' is required and must be either 'SOD' or 'EOD'."
+            );
+        }
+
+        if (body.isRequired !== undefined && typeof body.isRequired !== "boolean") {
+            errors.push("Field 'isRequired' must be a boolean.");
+        }
+
+        if (body.isActive !== undefined && typeof body.isActive !== "boolean") {
+            errors.push("Field 'isActive' must be a boolean.");
+        }
+
+        if (errors.length > 0) {
+            return NextResponse.json(
+                { error: "Validation errors", details: errors },
+                { status: 400 }
+            );
         }
 
         const payload = {
-            name,
-            date,
+            activityName: body.activityName,
+            activityType: body.activityType,
+            isRequired: body.isRequired || true,
+            isActive: body.isActive || true,
         };
 
-        console.log("Payload sent to API:", payload);
-
         const response = await fetch(`${process.env.API_URL}/master/national-holidays`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.accessToken || ''}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.accessToken || ""}`,
             },
             body: JSON.stringify(payload),
         });
 
-        console.log('Response Status:', response.status);
-
         if (!response.ok) {
             const errorData = await response.json();
-            console.log('Error Data:', errorData);
-
-            if (errorData?.data) {
-                const errorMessage = errorData.data.date || errorData.message;
-                return NextResponse.json({ error: errorMessage }, { status: response.status });
-            }
-
-            return NextResponse.json({ error: errorData.message || 'Failed to create holiday' }, { status: response.status });
+            return NextResponse.json(
+                { error: errorData.error || "Failed to create activity." },
+                { status: response.status }
+            );
         }
+
         const data = await response.json();
-        const { id, ...filteredData } = data;
-
-        return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
-
+        return NextResponse.json(data, { status: 201 });
     } catch (error) {
-        console.error('Error in POST /create holiday:', error);
-        return NextResponse.json({ error: 'Failed to create holiday due to server issue.' }, { status: 500 });
+        console.error("Error creating activity:", error);
+        return NextResponse.json({ error: "Failed to create activity." }, { status: 500 });
     }
 }

@@ -10,6 +10,7 @@ interface TextInputProps {
   suffixIcon?: React.ReactNode;
   error?: string;
   className?: string;
+  textSize?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -22,10 +23,11 @@ const TextInput: React.FC<TextInputProps> = ({
   suffixIcon,
   error,
   className = '',
+  textSize = 'sm',
 }) => {
   return (
     <div className={`w-full ${className}`}>
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label className={`block text-${textSize} font-medium text-gray-700 mb-1`}>{label}</label>}
       <div className="relative flex items-center">
         {/* Prefix Icon */}
         {prefixIcon && (
@@ -40,7 +42,7 @@ const TextInput: React.FC<TextInputProps> = ({
           value={value}
           onChange={(e) => onChange && onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700
+          className={`text-${textSize} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700
             ${prefixIcon ? 'pl-10' : ''} ${suffixIcon ? 'pr-10' : ''}
             ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
         />

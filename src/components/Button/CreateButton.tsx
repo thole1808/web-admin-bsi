@@ -8,7 +8,7 @@ type CreateButtonProps = {
 
 const CreateButton: React.FC<CreateButtonProps> = ({ size = "sm", label = "Create", onClick }) => {
   const sizeClasses = {
-    sm: "px-3 py-1.5 text-xs",
+    sm: "px-3 py-2 text-xs",
     md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
     xl: "px-8 py-4 text-xl",

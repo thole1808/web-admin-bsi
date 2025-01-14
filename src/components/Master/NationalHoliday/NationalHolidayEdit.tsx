@@ -7,12 +7,7 @@ import ToggleInput from "@/components/Forms/Toogle";
 import TextInput from "@/components/Forms/TextInput";
 import Select from "@/components/Forms/Select";
 
-interface Option {
-    id: string;
-    name: string;
-}
-
-interface CabinCheckEditProps {
+interface NationalHolidayEditProps {
     isOpen: boolean;
     onClose: () => void;
     data: any;
@@ -25,7 +20,7 @@ interface FormData {
     active: boolean;
 }
 
-const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }) => {
+const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClose, data }) => {
     const [permissionData, setPermissionData] = useState<any[]>([]);
 
     useEffect(() => {
@@ -67,7 +62,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/cabin-checks/${data.id}`, {
+            const response = await fetch(`/api/master/national-holidays/${data.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,7 +75,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('Cabin Check berhasil ditambahkan');
+                toast.success('National Holiday berhasil ditambahkan');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -95,7 +90,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
     return (
         <ModalForm
             width="lg"
-            title="Create Cabin Check"
+            title="Create National Holiday"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
@@ -126,7 +121,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             <div className="mb-4 text-sm">
                 <ToggleInput
                     label="Manadatory"
-                    initialValue={formData.mandatory}
+                    initialValue={false}
                     onChange={(value) => setFormData({ ...formData, mandatory: value })}
                 />
                 {errors?.mandatory && <p className="text-red-500 text-xs mt-1">{errors?.mandatory}</p>}
@@ -134,7 +129,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             <div className="mb-4 text-sm">
                 <ToggleInput
                     label="Active"
-                    initialValue={formData.active}
+                    initialValue={true}
                     onChange={(value) => setFormData({ ...formData, active: value })}
                 />
                 {errors?.active && <p className="text-red-500 text-xs mt-1">{errors?.active}</p>}
@@ -144,4 +139,4 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
     );
 };
 
-export default CabinCheckEdit;
+export default NationalHolidayEdit;

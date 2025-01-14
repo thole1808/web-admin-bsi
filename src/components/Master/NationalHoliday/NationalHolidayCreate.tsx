@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
+import Label from "@/components/Forms/Label";
 import ToggleInput from "@/components/Forms/Toogle";
 import TextInput from "@/components/Forms/TextInput";
+import { FaUser } from "react-icons/fa";
 import Select from "@/components/Forms/Select";
 
 interface Option {
@@ -12,10 +14,9 @@ interface Option {
     name: string;
 }
 
-interface CabinCheckEditProps {
+interface NationalHolidayCreateProps {
     isOpen: boolean;
     onClose: () => void;
-    data: any;
 }
 
 interface FormData {
@@ -25,7 +26,7 @@ interface FormData {
     active: boolean;
 }
 
-const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }) => {
+const NationalHolidayCreate: React.FC<NationalHolidayCreateProps> = ({ isOpen, onClose }) => {
     const [permissionData, setPermissionData] = useState<any[]>([]);
 
     useEffect(() => {
@@ -48,10 +49,10 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
     }, [isOpen]);
 
     const [formData, setFormData] = useState<FormData>({
-        activityName: data.activityName,
-        activityType: data.activityType,
-        mandatory: data.mandatory,
-        active: data.active,
+        activityName: "",
+        activityType: "",
+        mandatory: false,
+        active: true,
     });
 
     const [isProcessing, setIsProcessing] = useState(false);
@@ -63,12 +64,18 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
         });
     }, [permissionData]);
 
+    const handleCheckboxChange = (name: string) => {
+        setFormData((prevData) => ({
+            ...prevData,
+        }));
+    };
+
     const handleSubmit = async (formData: FormData) => {
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/cabin-checks/${data.id}`, {
-                method: 'PUT',
+            const response = await fetch(`/api/master/national-holidays`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -80,7 +87,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('Cabin Check berhasil ditambahkan');
+                toast.success('National Holiday berhasil ditambahkan');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -95,7 +102,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
     return (
         <ModalForm
             width="lg"
-            title="Create Cabin Check"
+            title="Create National Holiday"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
@@ -126,7 +133,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             <div className="mb-4 text-sm">
                 <ToggleInput
                     label="Manadatory"
-                    initialValue={formData.mandatory}
+                    initialValue={false}
                     onChange={(value) => setFormData({ ...formData, mandatory: value })}
                 />
                 {errors?.mandatory && <p className="text-red-500 text-xs mt-1">{errors?.mandatory}</p>}
@@ -134,7 +141,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             <div className="mb-4 text-sm">
                 <ToggleInput
                     label="Active"
-                    initialValue={formData.active}
+                    initialValue={true}
                     onChange={(value) => setFormData({ ...formData, active: value })}
                 />
                 {errors?.active && <p className="text-red-500 text-xs mt-1">{errors?.active}</p>}
@@ -144,4 +151,4 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
     );
 };
 
-export default CabinCheckEdit;
+export default NationalHolidayCreate;
