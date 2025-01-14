@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
         <div className="col-span-1 md:col-span-3 space-y-6">
           <QueueStatsOverview />
           <div className='grid grid-cols-3 gap-3 bg-white rounded-lg'>
-            <div className='col-span-2'>
+            <div className='col-span-2 border-r'>
               <GrafikPengunjung />
             </div>
             <div>

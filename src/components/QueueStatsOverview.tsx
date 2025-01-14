@@ -128,13 +128,13 @@ const QueueStatsOverview: React.FC = () => {
 const getStatusLabel = (status: string) => {
     switch (status) {
         case 'EXPIRE':
-            return 'Tidak Terlayani';
+            return 'Missed';
         case 'COMPLETED':
-            return 'Terlayani';
+            return 'Completed';
         case 'ALL':
-            return 'Total Pengunjung';
+            return 'Total Visitors';
         case 'ACTIVE':
-            return 'Aktif';
+            return 'Active';
         default:
             return status;
     }

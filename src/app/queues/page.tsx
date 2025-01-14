@@ -1,16 +1,16 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import Antrian from "@/components/Antrian/Antrian";
+import QueueTable from "@/components/Queues/QueueTable";
 
 export const metadata: Metadata = {
-    title: "QMS Console - Daftar Antrian"
+    title: "QMS Console - Queues"
 };
 
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
-            <Antrian />
+            <QueueTable />
         </DefaultLayout>
     );
 };

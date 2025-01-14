@@ -88,7 +88,7 @@ const TambahPengguna: React.FC<TambahPenggunaProps> = ({ isOpen, onClose }) => {
                 toast.success('Pengguna berhasil ditambahkan');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);
@@ -100,7 +100,7 @@ const TambahPengguna: React.FC<TambahPenggunaProps> = ({ isOpen, onClose }) => {
     return (
         <ModalForm
             width="lg"
-            title="Tambah Pengguna"
+            title="Create Pengguna"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}

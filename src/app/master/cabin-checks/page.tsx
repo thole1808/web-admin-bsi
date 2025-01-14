@@ -1,21 +1,17 @@
 import React from "react";
-import FormElements from "@/components/FormElements";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import Roles from "@/components/Roles/Roles";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import CabinCheckList from "@/components/Master/CabinChecks/CabinCheckList";
 
 export const metadata: Metadata = {
-    title:
-        "QMS Console - Template",
-    description: "Web Admin BSI",
+    title: "QMS Console - Cabin Checks"
 };
+
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
             <div className="flex flex-col gap-10">
-                {/* <Breadcrumb pageName="Queues"/> */}
-                <Roles />
+                <CabinCheckList />
             </div>
         </DefaultLayout>
     );

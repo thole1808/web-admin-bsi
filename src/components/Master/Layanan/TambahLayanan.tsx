@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
 import Label from "@/components/Forms/Label";
-import Select from 'react-select';
 
 interface TambahLayananProps {
     isOpen: boolean;
@@ -62,7 +61,7 @@ const TambahLayanan: React.FC<TambahLayananProps> = ({ isOpen, onClose, layanan 
                 toast.success('Layanan berhasil diperbarui');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);
@@ -74,7 +73,7 @@ const TambahLayanan: React.FC<TambahLayananProps> = ({ isOpen, onClose, layanan 
     return (
         <ModalForm
             width="lg"
-            title="Tambah Sub Layanan"
+            title="Create Sub Layanan"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}

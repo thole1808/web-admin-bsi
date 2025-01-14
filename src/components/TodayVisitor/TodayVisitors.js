@@ -51,7 +51,7 @@ const TodayVisitors = () => {
               Cabang <span style={{ fontSize: '12px', marginLeft: '5px' }}>{getSortIcon('branch')}</span>
             </th>
             <th className="text-right pb-2 cursor-pointer" onClick={() => handleSort('total')}>
-              Total Pengunjung <span style={{ fontSize: '14px', marginLeft: '5px' }}>{getSortIcon('total')}</span>
+              Total Visitors <span style={{ fontSize: '14px', marginLeft: '5px' }}>{getSortIcon('total')}</span>
             </th>
           </tr>
         </thead>

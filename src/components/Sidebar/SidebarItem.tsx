@@ -10,12 +10,12 @@ const IconMap: { [key: string]: JSX.Element } = {
   DashboardIcon: <FaHome className="w-4.5 h-4.5" />,
   RolesIcon: <FaUsers className="w-4.5 h-4.5" />,
   DatabaseIcon: <FaDatabase className="w-4.5 h-4.5" />,
-  BranchIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
-  AntrianIcon: <FaCalendarCheck className="w-4.5 h-4.5" />,
+  BranchesIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
+  QueuesIcon: <FaCalendarCheck className="w-4.5 h-4.5" />,
   CabangIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
   ReportingIcon: <FaChartBar className="w-4.5 h-4.5" />,
   SettingsIcon: <FaWrench className="w-4.5 h-4.5" />,
-  AksesIcon: <FaUserShield className="w-4.5 h-4.5" />,
+  AccessIcon: <FaUserShield className="w-4.5 h-4.5" />,
 };
 
 const SidebarItem = ({ item }: any) => {
@@ -49,7 +49,7 @@ const SidebarItem = ({ item }: any) => {
 
   return (
     <li className="relative mb-1 text-sm">
-      {/* Indikator aktif */}
+      {/* Indikator Active */}
       <div
         className={`absolute left-1 top-2 bottom-2 w-1 transition-all duration-300 ease-in-out ${
           isItemActive ? "bg-teal-400 rounded-lg opacity-100" : "opacity-0"

@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect  } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 import CustomLoader from "../Tables/CustomLoader";
 
-const Antrian: React.FC = () => {
+const QueueTable: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,7 +105,7 @@ const Antrian: React.FC = () => {
           throw new Error(result.message || "Failed to fetch queues");
         }
       } catch (err: any) {
-        setError(err.message);
+        console.error(err.message);
       } finally {
         setLoading(false);
       }
@@ -163,77 +161,93 @@ const Antrian: React.FC = () => {
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
-      <div className="p-6 bg-gray-50 text-xs">
+      <div className="py-4 px-16 bg-gray-50 text-xs">
         <div className="grid grid-cols-2">
           <div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Loket</span>
+              <span className="font-medium">Counter</span>
               <span className="col-span-2">:&nbsp;{data.counterName || ''} #{data.counterNum}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Nama Petugas</span>
+              <span className="font-medium">Officer</span>
               <span className="col-span-2">:&nbsp;{data.userName || ''}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Reservasi</span>
+              <span className="font-medium">Branch</span>
+              <span className="col-span-2">:&nbsp;{data.branchName || ''}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span className="font-medium">Area</span>
+              <span className="col-span-2">:&nbsp;{data.areaName || ''}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span className="font-medium">Region</span>
+              <span className="col-span-2">:&nbsp;{data.regionName || ''}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span className="font-medium">Reservation Type</span>
+              <span className="col-span-2">:&nbsp;{data.type}</span>
+            </div>
+            <div className="grid grid-cols-3 max-w-sm mb-1">
+              <span className="font-medium">Reservation Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Dipanggil</span>
+              <span className="font-medium">Called Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.calledAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Layanan Dimulai</span>
+              <span className="font-medium">Served Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.startedAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Dijeda</span>
+              <span className="font-medium">Paused Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.pausedAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Dilanjutkan</span>
+              <span className="font-medium">Continued Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.continuedAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Dibatalkan</span>
+              <span className="font-medium">Canceled Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.canceledAt)}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Pukul Ditransfer</span>
+              <span className="font-medium">Transferred Time</span>
               <span className="col-span-2">:&nbsp;{formatDateTime(data.transferredAt)}</span>
             </div>
           </div>
           <div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Prioritas</span>
+              <span className="font-medium">Is Priority</span>
               <span className="col-span-2">:&nbsp;{data.priority ? 'Ya' : 'Tidak'}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Durasi SLA Min.</span>
+              <span className="font-medium">SLA Min. Duration</span>
               <span className="col-span-2">:&nbsp;{data.slaMinDuration || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Durasi SLA Maks.</span>
+              <span className="font-medium">SLA Maks. Duration</span>
               <span className="col-span-2">:&nbsp;{data.slaMaxDuration || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Durasi Tunggu</span>
+              <span className="font-medium">Waiting Duration</span>
               <span className="col-span-2">:&nbsp;{(data.waitingDuration / 60).toFixed(0) || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Durasi Pelayanan</span>
+              <span className="font-medium">Service Duration</span>
               <span className="col-span-2">:&nbsp;{(data.serviceDuration / 60).toFixed(0) || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Durasi Jeda</span>
+              <span className="font-medium">Pause Duration</span>
               <span className="col-span-2">:&nbsp;{(data.pauseDuration / 60).toFixed(0) || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Total Durasi</span>
+              <span className="font-medium">Total Duration</span>
               <span className="col-span-2">:&nbsp;{(data.overallDuration / 60).toFixed(0) || 0} menit</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span>Keterangan</span>
+              <span className="font-medium">Status Message</span>
               <span className="col-span-2">:&nbsp;{data.statusMessage || ''}</span>
             </div>
           </div>
@@ -261,6 +275,7 @@ const Antrian: React.FC = () => {
     setToDate(today);
     setStatusField("");
     setTypeField("");
+    setSearch("");
   }
 
   function formatDateTime(date: string) {
@@ -278,11 +293,11 @@ const Antrian: React.FC = () => {
     switch (status) {
       case 'WAITING':
         style += 'bg-yellow-100 text-yellow-700';
-        message = 'Menunggu';
+        message = 'Waiting';
         break;
       case 'STARTED':
         style += 'bg-blue-100 text-blue-700';
-        message = 'Dilayani';
+        message = 'Served';
         break;
       case 'PAUSED':
         style += 'bg-yellow-100 text-yellow-700';
@@ -294,7 +309,7 @@ const Antrian: React.FC = () => {
         break;
       case 'STOPPED':
         style += 'bg-green-100 text-green-700';
-        message = 'Selesai';
+        message = 'Completed';
         break;
       case 'CANCELED':
         style += 'bg-red-100 text-red-700';
@@ -320,18 +335,16 @@ const Antrian: React.FC = () => {
 
     serviceDuration = serviceDuration / 60;
 
-    if (serviceDuration >= slaMinDuration && serviceDuration <= slaMaxDuration) {
-      return 'SLA Terpenuhi';
-    } else if (serviceDuration > slaMaxDuration) {
-      return 'Melebihi SLA';
+    if (serviceDuration > slaMaxDuration) {
+      return 'Exceeds SLA';
     } else if (serviceDuration < slaMinDuration) {
-      return 'Kurang dari SLA';
+      return 'SLA Met';
     }
   }
 
   const columns = [
     {
-      name: 'Cabang',
+      name: 'Branch',
       selector: (row: { branchName: any; }) => row.branchName || '',
       grow: 2,
       sortable: true,
@@ -344,40 +357,34 @@ const Antrian: React.FC = () => {
       ),
     },
     {
-      name: 'Tanggal',
+      name: 'Date',
       selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
       grow: 2,
       sortable: true,
       sortField: 'createdAt',
     },
     {
-      name: 'Kode Reservasi',
+      name: 'Resv. Code',
       selector: (row: { reservationCode: string; }) => row?.reservationCode || '',
       grow: 2,
       sortable: true,
       sortField: 'reservationCode',
-      cell: (row: { reservationCode: string; type: string; }) => (
-        <div className="">
-          <div>{row.reservationCode}</div>
-          <div className="text-xs text-gray-500 mt-1">{row.type}</div>
-        </div>
-      ),
     },
     {
-      name: 'Jenis Layanan',
+      name: 'Service Type',
       selector: (row: { serviceTypeName: string; }) => row?.serviceTypeName || '',
       grow: 2,
       sortable: true,
       sortField: 'serviceTypeName',
     },
     {
-      name: 'No. Antrian',
+      name: 'Queue No.',
       selector: (row: { displayNo: string; }) => row?.displayNo || '',
       sortable: true,
       sortField: 'displayNo',
     },
     {
-      name: 'Petugas',
+      name: 'Officer',
       selector: (row: { userName: string; }) => row?.userName || '',
       sortable: true,
       sortField: 'userName',
@@ -391,7 +398,7 @@ const Antrian: React.FC = () => {
       cell: (row: { status: string; }) => statusWithStyle(row.status),
     },
     {
-      name: 'Performa SLA',
+      name: 'SLA Criteria',
       selector: (row: { status: string; }) => slaCriteria(row) || '',
       grow: 2,
       sortable: true,
@@ -399,16 +406,6 @@ const Antrian: React.FC = () => {
       conditionalCellStyles: [
         {
           when: (row: { serviceDuration: number; slaMinDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 < row.slaMinDuration,
-          style: {
-            backgroundColor: '#f6d45a',
-            color: 'black',
-            '&:hover': {
-              cursor: 'pointer',
-            },
-          },
-        },
-        {
-          when: (row: { serviceDuration: number; slaMinDuration: number; slaMaxDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 >= row.slaMinDuration && row.serviceDuration / 60 <= row.slaMaxDuration,
           style: {
             backgroundColor: '#3daea4',
             color: 'white',
@@ -429,30 +426,30 @@ const Antrian: React.FC = () => {
         },
       ],
     },
-  ];
+  ];  
 
   const isCompleted = (status: string) => {
-    return status === 'STOPPED';
+    return status === 'STOPPED' || status === 'TRANSFERRED'; 
   }
 
   return (
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Antrian</h2>
+          <h2 className="text-lg font-semibold ml-2">Queues</h2>
           <div>
             <Export onExport={() => downloadCSV(data)} />
           </div>
         </div>
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
-            <label className="text-xs mb-1">Pencarian</label>
-            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan kode reservasi, no. antrian, jenis layanan, dan nama cabang..." />
+            <label className="text-xs mb-1">Search</label>
+            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Search by resv. code, queue number, service type or branch..." />
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">Jenis Reservasi</label>
+            <label className="text-xs mb-1">Reservation Type</label>
             <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={typeField} onChange={handleTypeChange}>
-              <option value="">Semua</option>
+              <option value="">All</option>
               <option value="ONLINE">Online</option>
               <option value="ONSITE">Onsite</option>
             </select>
@@ -464,20 +461,20 @@ const Antrian: React.FC = () => {
             </button>
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">Dari Tanggal</label>
+            <label className="text-xs mb-1">From Date</label>
             <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">Ke Tanggal</label>
+            <label className="text-xs mb-1">To Date</label>
             <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
           </div>
           <div className="grid col-span-2">
             <label className="text-xs mb-1">Status</label>
             <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={statusField} onChange={handleStatusChange}>
-              <option value="">Semua</option>
-              <option value="waiting">Menunggu</option>
-              <option value="serving">Dilayani</option>
-              <option value="done">Selesai</option>
+              <option value="">All</option>
+              <option value="waiting">Waiting</option>
+              <option value="serving">Served</option>
+              <option value="done">Completed</option>
             </select>
           </div>
         </div>
@@ -502,4 +499,4 @@ const Antrian: React.FC = () => {
   );
 };
 
-export default Antrian;
+export default QueueTable;

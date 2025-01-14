@@ -26,7 +26,7 @@ const GrafikPengunjungNew = () => {
         labels: ["Pasar Senin", "Margonda", "Pramuka", "Pulo Gadung", "Cempaka Mas", "Kota Wisata"],
         datasets: [
             {
-                label: "Terlayani",
+                label: "Completed",
                 data: [120, 150, 180, 200, 170, 140],
                 backgroundColor: "#C2F2EF",
                 borderRadius: 0,
@@ -34,7 +34,7 @@ const GrafikPengunjungNew = () => {
                 barThickness: 30,
             },
             {
-                label: "Total Pengunjung",
+                label: "Total Visitors",
                 data: [200, 220, 250, 270, 230, 210],
                 backgroundColor: "#C9D8F1",
                 borderRadius: 0,
@@ -42,7 +42,7 @@ const GrafikPengunjungNew = () => {
                 barThickness: 30,
             },
             {
-                label: "Tidak Terlayani",
+                label: "Missed",
                 data: [80, 70, 70, 70, 60, 70],
                 backgroundColor: "#F4A8A8",
                 borderRadius: 0,

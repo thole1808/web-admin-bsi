@@ -140,7 +140,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
                             X
                         </button>
                         <h2 className="text-lg font-semibold mb-1">{data.activityType} Checklist</h2>
-                        <p className="mb-4 text-sm">Harap lakukan checklist terhadap aktifitas yang sudah dilakukan!</p>
+                        <p className="mb-4 text-sm">Harap lakukan checklist terhadap Activeitas yang sudah dilakukan!</p>
 
                         {loading ? (
                             <SkeletonLoader /> // Show skeleton loader when loading

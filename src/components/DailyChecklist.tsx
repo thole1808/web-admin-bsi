@@ -61,9 +61,8 @@ const DailyChecklist: React.FC = () => {
     if (loading) {
         return (
             <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
-                <div className="text-sm font-bold mb-2">Checklist Harian</div>
+                <div className="text-sm font-bold mb-2">Cabin Crew Check</div>
                 <ul className='-mx-4 divide-y'>
-                    {/* Skeleton for SOD */}
                     <li className="flex items-center justify-between text-sm py-2 px-4 cursor-pointer">
                         <div className="flex items-center">
                             <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse mr-2"></div>
@@ -71,8 +70,6 @@ const DailyChecklist: React.FC = () => {
                         </div>
                         <div className="h-4 w-16 bg-gray-300 rounded animate-pulse"></div>
                     </li>
-
-                    {/* Skeleton for EOD */}
                     <li className="flex items-center justify-between text-sm py-2 px-4 cursor-pointer">
                         <div className="flex items-center">
                             <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse mr-2"></div>
@@ -89,7 +86,7 @@ const DailyChecklist: React.FC = () => {
         <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
             <div className="flex justify-between items-center mb-3">
                 <div className="text-sm font-bold">
-                    Checklist Harian
+                    Cabin Crew Check
                 </div>
                 <div className="text-xs">{activityDate}</div>
             </div>

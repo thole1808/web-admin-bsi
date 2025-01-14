@@ -285,7 +285,7 @@ const DaftarPengguna: React.FC = () => {
               </div>
               <div>
                 <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Aktif</span>
+                  <span>Active</span>
                   <span className="col-span-2">:&nbsp;{data.active ? 'Ya' : 'Tidak'}</span>
                 </div>
                 <div className="grid grid-cols-3 max-w-sm mb-1">
@@ -314,13 +314,13 @@ const DaftarPengguna: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
-                        <label className="text-xs mb-1">Pencarian</label>
+                        <label className="text-xs mb-1">Search</label>
                         <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email pengguna..." />
                     </div>
                     <div className="grid col-span-2">
                         <label className="text-xs mb-1">Peran</label>
                         <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={roleField} onChange={handleRoleChanged}>
-                            <option value="">Semua</option>
+                            <option value="">All</option>
                             {roles.length && roles.map((role: any) => (
                                 <option key={role.id} value={role.name}>{role.name}</option>
                             ))}

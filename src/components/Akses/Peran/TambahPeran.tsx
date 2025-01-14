@@ -92,7 +92,7 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
                 toast.success('Peran berhasil ditambahkan');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);
@@ -104,7 +104,7 @@ const TambahPeran: React.FC<TambahPeranProps> = ({ isOpen, onClose }) => {
     return (
         <ModalForm
             width="lg"
-            title="Tambah Peran"
+            title="Create Peran"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}

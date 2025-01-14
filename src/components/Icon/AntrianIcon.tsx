@@ -6,7 +6,7 @@ interface IconProps {
     color?: string;
 }
 
-const AntrianIcon: React.FC<IconProps> = ({
+const QueuesIcon: React.FC<IconProps> = ({
     width = 24,
     height = 24,
     color = "#007C80",
@@ -23,4 +23,4 @@ const AntrianIcon: React.FC<IconProps> = ({
     );
 };
 
-export default AntrianIcon;
+export default QueuesIcon;

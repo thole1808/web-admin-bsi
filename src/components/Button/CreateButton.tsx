@@ -6,7 +6,7 @@ type CreateButtonProps = {
   onClick?: () => void;
 };
 
-const CreateButton: React.FC<CreateButtonProps> = ({ size = "sm", label = "Tambah", onClick }) => {
+const CreateButton: React.FC<CreateButtonProps> = ({ size = "sm", label = "Create", onClick }) => {
   const sizeClasses = {
     sm: "px-3 py-1.5 text-xs",
     md: "px-4 py-2 text-base",

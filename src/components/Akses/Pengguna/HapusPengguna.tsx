@@ -36,10 +36,10 @@ const HapusPengguna: React.FC<HapusPenggunaProps> = ({ isOpen, onClose, data }) 
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Pengguna berhasil dihapus');
+                toast.success('Pengguna successfully deleted.');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);

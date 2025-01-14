@@ -119,7 +119,7 @@ const BranchVisitor: React.FC = () => {
     return (
         <div className="bg-white rounded-lg shadow-lg p-4">
             <h2 className="text-sm font-semibold">
-                Pengunjung hari ini
+                Today Visitors
             </h2>
             <div className="overflow-x-auto -mx-4 mt-2">
                 <table className="min-w-full bg-white rounded-sm shadow-sm text-xs">
@@ -129,17 +129,17 @@ const BranchVisitor: React.FC = () => {
                                 className="py-2 px-4 text-left text-gray-600 font-medium cursor-pointer"
                                 onClick={() => handleSort("branch")}
                             >
-                                Cabang{" "}
+                                Branch{" "}
                                 <FaSort
                                     className={`inline ml-1 ${sortBy === "branch" ? "text-gray-800" : "text-gray-400"
                                         }`}
                                 />
                             </th>
                             <th
-                                className="py-2 px-4 text-left text-gray-600 font-medium cursor-pointer"
+                                className="py-2 text-left text-gray-600 font-medium cursor-pointer"
                                 onClick={() => handleSort("visitors")}
                             >
-                                Pengunjung{" "}
+                                Queues{" "}
                                 <FaSort
                                     className={`inline ml-1 ${sortBy === "visitors" ? "text-gray-800" : "text-gray-400"
                                         }`}
@@ -165,7 +165,7 @@ const BranchVisitor: React.FC = () => {
                                         }`}
                                 >
                                     <td className="py-2 px-4 text-gray-700">{item.branch}</td>
-                                    <td className="py-2 px-4 text-gray-900 font-semibold">
+                                    <td className="py-2 pl-2 pr-6 text-gray-900 font-semibold text-right">
                                         {item.visitors}
                                     </td>
                                 </tr>

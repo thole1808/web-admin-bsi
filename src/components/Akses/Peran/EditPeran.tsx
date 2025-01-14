@@ -87,7 +87,7 @@ const EditPeran: React.FC<EditPeranProps> = ({ isOpen, onClose, data }) => {
                 toast.success('Peran berhasil diperbarui');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);

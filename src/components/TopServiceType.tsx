@@ -103,8 +103,8 @@ const DoughnutChartCard: React.FC = () => {
                     <div className="relative h-56 flex items-center justify-center">
                         <Doughnut data={chartData} options={chartOptions} />
                         <div className="absolute inset-2 flex items-center justify-center">
-                            <span className="text-gray-600 font-semibold text-sm">
-                                Top 3<br />Layanan
+                            <span className="text-gray-600 font-semibold text-sm text-center">
+                                Top 3<br />Services
                             </span>
                         </div>
                     </div>

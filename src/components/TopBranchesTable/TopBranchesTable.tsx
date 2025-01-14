@@ -108,16 +108,16 @@ const TopBranchesTable = () => {
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow overflow-x-auto">
-      <h3 className="text-sm font-semibold mb-4">5 Cabang Terbaik</h3>
+      <h3 className="text-sm font-semibold mb-4">Top 5 Most Visited Branches</h3>
       <table className="min-w-full text-xs table-auto border-collapse">
         <thead>
           <tr className="bg-gradient-to-r from-blue-50 to-green-50 text-left">
-            <th className="px-4 py-2">Nama Cabang</th>
-            <th className="px-4 py-2">Prosentase Total Antrian</th>
-            <th className="px-4 py-2 text-center">Terlayani</th>
-            <th className="px-4 py-2 text-center">Tidak Terlayani</th>
-            <th className="px-4 py-2 text-center">Menunggu</th>
-            <th className="px-4 py-2 text-center">Dilayani</th>
+            <th className="px-4 py-2">Branch</th>
+            <th className="px-4 py-2">Percentage</th>
+            <th className="px-4 py-2 text-center">Completed</th>
+            <th className="px-4 py-2 text-center">Missed</th>
+            <th className="px-4 py-2 text-center">Waiting</th>
+            <th className="px-4 py-2 text-center">Served</th>
           </tr>
         </thead>
         <tbody>
@@ -125,7 +125,7 @@ const TopBranchesTable = () => {
             <tr key={index} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
               <td className="px-4 py-3">{branch.branch}</td>
               <td className="px-4 py-3">
-                {branch.percentage.toFixed(2)}% dari total {branch.total} antrian
+                {branch.percentage.toFixed(2)}% from {branch.total} queues
               </td>
               <td className="px-4 py-3 text-center">
                 <span className="bg-green-100 text-green-700 px-2 py-1 rounded">{branch.served}</span>

@@ -6,7 +6,7 @@ interface IconProps {
     color?: string;
 }
 
-const BranchIcon: React.FC<IconProps> = ({
+const BranchesIcon: React.FC<IconProps> = ({
     width = 24,
     height = 24,
     color = "#007C80",
@@ -64,4 +64,4 @@ const BranchIcon: React.FC<IconProps> = ({
     );
 };
 
-export default BranchIcon;
+export default BranchesIcon;

@@ -26,7 +26,7 @@ interface Cabang {
     alamat: string;
     totalPengunjung: string;
     terlayani: string;
-    tidakTerlayani: string;
+    tidakCompleted: string;
     graphic: any;  // JSX for chart + percentage
     option: any;
 }
@@ -65,7 +65,7 @@ const CabangTable: React.FC = () => {
         alamat: true,
         totalPengunjung: true,
         terlayani: true,
-        tidakTerlayani: true,
+        tidakCompleted: true,
         graphic: true,
         option: true,
     });
@@ -101,7 +101,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Pemuda No.152',
             totalPengunjung: '214',
             terlayani: '212',
-            tidakTerlayani: '02',
+            tidakCompleted: '02',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -126,7 +126,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-            // option: 'Sedang Dilayani',
+            // option: 'Sedang Served',
             option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -174,7 +174,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Letjen S. Parman No.10',
             totalPengunjung: '120',
             terlayani: '118',
-            tidakTerlayani: '02',
+            tidakCompleted: '02',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -199,7 +199,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -268,7 +268,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Raya Bogor No.1',
             totalPengunjung: '300',
             terlayani: '290',
-            tidakTerlayani: '10',
+            tidakCompleted: '10',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -293,7 +293,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -362,7 +362,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Bintaro Utama No.5',
             totalPengunjung: '400',
             terlayani: '395',
-            tidakTerlayani: '05',
+            tidakCompleted: '05',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -387,7 +387,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -456,7 +456,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Margonda Raya No.88',
             totalPengunjung: '500',
             terlayani: '490',
-            tidakTerlayani: '10',
+            tidakCompleted: '10',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -481,7 +481,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -550,7 +550,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Raya Serpong No.8',
             totalPengunjung: '350',
             terlayani: '340',
-            tidakTerlayani: '10',
+            tidakCompleted: '10',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -575,7 +575,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -644,7 +644,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Raya Cikarang No.15',
             totalPengunjung: '250',
             terlayani: '245',
-            tidakTerlayani: '05',
+            tidakCompleted: '05',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -669,7 +669,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -738,7 +738,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Kebon Sirih No.99',
             totalPengunjung: '600',
             terlayani: '590',
-            tidakTerlayani: '10',
+            tidakCompleted: '10',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -763,7 +763,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -832,7 +832,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Ahmad Yani No.20',
             totalPengunjung: '450',
             terlayani: '440',
-            tidakTerlayani: '10',
+            tidakCompleted: '10',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -857,7 +857,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -926,7 +926,7 @@ const CabangTable: React.FC = () => {
             alamat: 'Jl. Serpong Raya No.5',
             totalPengunjung: '700',
             terlayani: '680',
-            tidakTerlayani: '20',
+            tidakCompleted: '20',
             graphic: (
                 <div className="flex items-center space-x-2">
                     <div className="w-40">
@@ -951,7 +951,7 @@ const CabangTable: React.FC = () => {
                     </span>
                 </div>
             ),
-             // option: 'Sedang Dilayani',
+             // option: 'Sedang Served',
              option: (
                 <div className="relative inline-block text-left">
                     <button
@@ -1051,22 +1051,22 @@ const CabangTable: React.FC = () => {
             omit: !visibleColumns.alamat,
         },
         {
-            name: "Total Pengunjung",
+            name: "Total Visitors",
             selector: (row: Cabang) => row.totalPengunjung,
             sortable: true,
             omit: !visibleColumns.totalPengunjung,
         },
         {
-            name: "Terlayani",
+            name: "Completed",
             selector: (row: Cabang) => row.terlayani,
             sortable: true,
             omit: !visibleColumns.terlayani,
         },
         {
-            name: "Tidak Terlayani",
-            selector: (row: Cabang) => row.tidakTerlayani,
+            name: "Missed",
+            selector: (row: Cabang) => row.tidakCompleted,
             sortable: true,
-            omit: !visibleColumns.tidakTerlayani,
+            omit: !visibleColumns.tidakCompleted,
         },
         {
             name: "Graphic",
@@ -1088,7 +1088,7 @@ const CabangTable: React.FC = () => {
             cabang.alamat.toLowerCase().includes(search.toLowerCase()) ||
             cabang.totalPengunjung.toLowerCase().includes(search.toLowerCase()) ||
             cabang.terlayani.toLowerCase().includes(search.toLowerCase()) ||
-            cabang.tidakTerlayani.toLowerCase().includes(search.toLowerCase()) ||
+            cabang.tidakCompleted.toLowerCase().includes(search.toLowerCase()) ||
             cabang.option.toLowerCase().includes(search.toLowerCase())
         );
     }, [search, dataCabang]);
@@ -1105,7 +1105,7 @@ const CabangTable: React.FC = () => {
                 <div className="relative w-1/2">
                     <input
                         type="text"
-                        placeholder="Cari disini"
+                        placeholder="Search..."
                         className="w-full px-4 py-2 border rounded-xl pr-10"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}

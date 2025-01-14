@@ -25,14 +25,14 @@ const menuGroups = [
         icon: 'DashboardIcon',
       },
       {
-        label: 'Antrian',
-        route: '/antrian',
-        icon: "AntrianIcon",
+        label: 'Queues',
+        route: '/queues',
+        icon: "QueuesIcon",
       },
       {
-        label: 'Cabang',
+        label: 'Branches',
         route: '/branches/branch',
-        icon: "BranchIcon",
+        icon: "BranchesIcon",
       },
       {
         label: 'Master',
@@ -40,38 +40,23 @@ const menuGroups = [
         icon: "DatabaseIcon",
         children: [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
-          { label: 'Checklist', route: '/master/checklist' },
-          { label: 'Menu Layanan', route: '/master/layanan' },
-          { label: 'Status Messages', route: '/master/status-messages' },
+          { label: 'Cabin Checks', route: '/master/cabin-checks' },
           { label: 'National Holiday', route: '/master/national-holiday' },
+          { label: 'Service Types', route: '/master/service-types' },
+          { label: 'Status Messages', route: '/master/status-messages' },
         ],
       },
       {
-        label: 'Akses',
-        route: '/akses',
-        icon: "AksesIcon",
+        label: 'Access',
+        route: '/access',
+        icon: "AccessIcon",
         children: [
-          { label: 'Pengguna', route: '/akses/pengguna' },
-          { label: 'Peran', route: '/akses/peran' },
+          { label: 'Pengguna', route: '/access/users' },
+          { label: 'Peran', route: '/access/roles' },
         ],
       },
-      // {
-      //   label: 'Settings Content',
-      //   route: '/content',
-      //   icon: "SettingsIcon",
-      //   children: [
-      //     {
-      //       label: 'Caller',
-      //       route: '/content/caller',
-      //       children: [
-      //         { label: 'Sound Asset', route: '/content/caller/sound-asset' },
-      //       ],
-      //     },
-      //     { label: 'Signage', route: '/content/signage' },
-      //   ],
-      // },
       {
-        label: 'Reporting',
+        label: 'Reports',
         route: '/reporting',
         icon: "ReportingIcon",
       },

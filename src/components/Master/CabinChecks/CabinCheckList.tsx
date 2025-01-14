@@ -6,27 +6,19 @@ import { FaRotateLeft } from "react-icons/fa6";
 import ActionGroup from "@/components/Tables/ActionGroup";
 import CustomLoader from "@/components/Tables/CustomLoader";
 import CreateButton from "@/components/Button/CreateButton";
-import TambahPeran from "./TambahPeran";
-import HapusPeran from "./HapusPeran";
-import EditPeran from "./EditPeran";
-import ModalView from "@/components/Tables/ModalView";
+import CabinCheckCreate from "./CabinCheckCreate";
+import CabinCheckDelete from "./CabinCheckDelete";
+import CabinCheckEdit from "./CabinCheckEdit";
 
-const DaftarPeran: React.FC = () => {
+const CabinCheckList: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [totalRows, setTotalRows] = useState(0);
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [sortField, setSortField] = useState<string | null>(null);
-    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [isCreate, setIsCreate] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<any | null>(null);
-    const [permissions, setPermissions] = useState<any[]>([]);
-    const [isViewPermission, setIsViewPermission] = useState(false);
+    const [selectedRow, setSelectedRow] = useState<any | null>(null);
 
     const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearch(event.target.value);
@@ -45,29 +37,16 @@ const DaftarPeran: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const size = perPage.toString();
-                const page = (currentPage - 1).toString();
-                const sortBy = sortField ? sortField : "id";
-                const direction = sortDirection.toString();
                 const search = debouncedSearch;
 
-                const queryParams = new URLSearchParams({
-                    size,
-                    page,
-                    sortBy,
-                    direction,
-                    search
-                });
-
                 const response = await fetch(
-                    `/api/akses/peran?${queryParams.toString()}`
+                    `/api/master/cabin-checks`
                 );
 
                 const result = await response.json();
 
                 if (result.success) {
-                    setData(result.data.content);
-                    setTotalRows(result.data.totalElements);
+                    setData(result.data);
                 } else {
                     throw new Error(result.message || "Failed to fetch users");
                 }
@@ -81,7 +60,7 @@ const DaftarPeran: React.FC = () => {
         if (isEdit || isCreate || isDelete) return;
 
         fetchData();
-    }, [debouncedSearch, isEdit, isCreate, isDelete, perPage, currentPage, sortField, sortDirection]);
+    }, [debouncedSearch, isEdit, isCreate, isDelete]);
 
     const convertArrayOfObjectsToCSV = (array: any[]) => {
         let result: string;
@@ -128,20 +107,6 @@ const DaftarPeran: React.FC = () => {
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
         <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
     );
-    
-    const handlePerRowsChange = async (newPerPage: number, page: number) => {
-        setPerPage(newPerPage);
-        setCurrentPage(page);
-    };
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
-    const handleSort = async (column: any, sortDirection: "asc" | "desc") => {
-        setSortField(column.selector);
-        setSortDirection(sortDirection);
-    };
 
     const handleResetFilter = () => {
         setSearch("");
@@ -155,34 +120,32 @@ const DaftarPeran: React.FC = () => {
 
     const columns = [
         {
-            name: 'Kode',
-            selector: (row: { code: any; }) => row?.code || '-',
-            sortable: true,
-            sortField: 'code',
-        },
-        {
-            name: 'Nama Peran',
-            selector: (row: { name: any; }) => row?.name || '',
+            name: 'Activity',
+            selector: (row: { activityName: string; }) => row?.activityName || '',
             grow: 3,
             sortable: true,
-            sortField: 'name',
+            sortField: 'activityName',
         },
         {
-            name: 'Guard',
-            selector: (row: { guardName: any; }) => row?.guardName || '',
-            grow: 3,
+            name: 'Type',
+            selector: (row: { activityType: string; }) => row?.activityType || '',
+            center: true,
             sortable: true,
-            sortField: 'guardName',
+            sortField: 'activityType',
         },
         {
-            name: 'Hak Akses',
-            selector: (row: { permissions: any; }) => (row?.permissions?.length || '0') + ' item' || '',
-            cell: (row: { permissions: any; }) => (
-                <button onClick={() => viewPermissions(row?.permissions)} className={`${row?.permissions?.length > 0 ? 'text-blue-500' : ''} flex items-center gap-1`}>
-                    <span>{row?.permissions?.length || '0'}</span>
-                    <span className="text-xs">item</span>
-                </button>
-            ),
+            name: 'Mandatory',
+            selector: (row: { mandatory: boolean; }) => row?.mandatory === true ? 'Yes' : 'No',
+            center: true,
+            sortable: true,
+            sortField: 'mandatory',
+        },
+        {
+            name: 'Active',
+            selector: (row: { active: boolean; }) => row?.active === true ? 'Yes' : 'No',
+            center: true,
+            sortable: true,
+            sortField: 'active',
         },
         {
             name: 'Update Terakhir',
@@ -206,11 +169,6 @@ const DaftarPeran: React.FC = () => {
         },
     ];
 
-    const viewPermissions = (permissions: any) => {
-        setPermissions(permissions);
-        setIsViewPermission(true);
-    }
-
     const openCreate = () => {
         setIsCreate(true);
     }
@@ -219,31 +177,31 @@ const DaftarPeran: React.FC = () => {
         setIsCreate(false);
     }
 
-    const openEdit = (user: any) => {
-        setSelectedUser(user);
+    const openEdit = (row: any) => {
+        setSelectedRow(row);
         setIsEdit(true);
     };
 
     const closeEdit = () => {
         setIsEdit(false);
-        setSelectedUser(null);
+        setSelectedRow(null);
     }
 
-    const handleDelete = (user: any) => {
-        setSelectedUser(user);
+    const handleDelete = (row: any) => {
+        setSelectedRow(row);
         setIsDelete(true);
     };
 
     const closeDelete = () => {
         setIsDelete(false);
-        setSelectedUser(null);
+        setSelectedRow(null);
     }
 
     return (
         <div className="grid gap-y-4">
             <div className="py-1 border rounded-lg bg-white">
                 <div className="p-4 border-b flex justify-between items-center">
-                    <h2 className="text-lg font-semibold ml-2">Peran</h2>
+                    <h2 className="text-lg font-semibold ml-2">Cabin Checks</h2>
                     <div className="flex gap-2">
                         <CreateButton onClick={openCreate} />
                         <Export onExport={() => downloadCSV(data)} />
@@ -252,7 +210,7 @@ const DaftarPeran: React.FC = () => {
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
                         <label className="text-xs mb-1">Search</label>
-                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email peran..." />
+                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Search by activity name..." />
                     </div>
                     <div className="grid text-xs items-end justify-end">
                         <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
@@ -268,61 +226,33 @@ const DaftarPeran: React.FC = () => {
                     progressPending={loading}
                     progressComponent={<CustomLoader />}
                     pagination
-                    paginationServer
-                    paginationTotalRows={totalRows}
-                    onChangeRowsPerPage={handlePerRowsChange}
-                    onChangePage={handlePageChange}
-                    onSort={handleSort}
-                    sortServer
                 />
             </div>
 
             {isCreate && (
-                <TambahPeran
+                <CabinCheckCreate
                     isOpen={isCreate}
                     onClose={() => closeCreate()}
                 />
             )}
 
             {isDelete && (
-                <HapusPeran
+                <CabinCheckDelete
                     isOpen={isDelete}
                     onClose={() => closeDelete()}
-                    data={selectedUser}
+                    data={selectedRow}
                 />
             )}
 
-            {selectedUser && (
-                <EditPeran
+            {isEdit && (
+                <CabinCheckEdit
                     isOpen={isEdit}
                     onClose={() => closeEdit()}
-                    data={selectedUser}
+                    data={selectedRow}
                 />
-            )}
-
-            {isViewPermission && (
-                <ModalView
-                    width="lg"
-                    title="View Permissions"
-                    isOpen={isViewPermission}
-                    onClose={() => { setIsViewPermission(false); setPermissions([]); }}
-                >
-                    {permissions.length === 0 ? (
-                        <div className="text-center text-gray-500">No permissions found</div>
-                    ) : (
-                    <div className="grid grid-cols-3 gap-2">
-                        {permissions.map((permission: any) => (
-                            <div key={permission.id} className="border border-gray-300 hover:bg-teal-400 hover:text-white rounded p-2 text-sm">
-                                <div className="font-medium">{permission.name}</div>
-                                <div className="text-xs">{permission.description}</div>
-                            </div>
-                        ))}
-                    </div>
-                    )}
-                </ModalView>
             )}
         </div>
     );
 };
 
-export default DaftarPeran;
+export default CabinCheckList;

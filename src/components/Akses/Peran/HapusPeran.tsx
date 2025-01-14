@@ -36,10 +36,10 @@ const HapusPeran: React.FC<HapusPeranProps> = ({ isOpen, onClose, data }) => {
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Peran berhasil dihapus');
+                toast.success('Peran successfully deleted.');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);

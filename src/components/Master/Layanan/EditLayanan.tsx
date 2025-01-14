@@ -63,7 +63,7 @@ const EditLayanan: React.FC<EditLayananProps> = ({ isOpen, onClose, data, layana
                 toast.success('Layanan berhasil diperbarui');
                 onClose();
             } else {
-                toast.error(result.message || "Terjadi kendala sistem. Harap ulangi beberapa saat lagi.");
+                toast.error(result.message || "A system error has occurred. Please try again later.");
             }
         } catch (err) {
             console.error('Error submitting form:', err);
@@ -75,7 +75,7 @@ const EditLayanan: React.FC<EditLayananProps> = ({ isOpen, onClose, data, layana
     return (
         <ModalForm
             width="lg"
-            title="Tambah Sub Layanan"
+            title="Create Sub Layanan"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}

@@ -47,15 +47,15 @@ const OperationalStatus: React.FC = () => {
     const getStatusText = (status: string) => {
         switch (status) {
             case 'NATIONAL_HOLIDAY':
-                return 'Libur Nasional';
+                return 'National Holiday';
             case 'OPEN':
-                return 'Buka';
+                return 'Open';
             case 'CLOSED':
-                return 'Tutup';
+                return 'Closed';
             case 'HOLIDAY':
-                return 'Libur';
+                return 'Regular Holiday';
             default:
-                return 'Tutup';
+                return 'Closed';
         }
     };
 
@@ -100,7 +100,7 @@ const OperationalStatus: React.FC = () => {
         <div className={`flex gap-2 items-start ${getStatusCardColor(data.status)} mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
             <div className="flex-1">
                 <div className="text-xl font-bold">{getStatusText(data.status) || 'Tutup'}</div>
-                <div className="text-sm">{data.status === 'OPEN' ? `Pukul ${data.timeOpen} hingga ${data.timeClosed}` : '-'}</div>
+                <div className="text-sm">{data.status === 'OPEN' ? `From ${data.timeOpen} until ${data.timeClosed}` : '-'}</div>
             </div>
             <div className='-mr-6 -mt-6'>
                 {getStatusIcon(data.status)}

@@ -9,7 +9,7 @@ interface Option {
     name: string;
 }
 
-interface HapusLayananProps {
+interface CabinCheckDeleteProps {
     isOpen: boolean;
     onClose: () => void;
     data: any;
@@ -19,14 +19,14 @@ interface FormData {
     id: string;
 }
 
-const HapusLayanan: React.FC<HapusLayananProps> = ({ isOpen, onClose, data }) => {
+const CabinCheckDelete: React.FC<CabinCheckDeleteProps> = ({ isOpen, onClose, data }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSubmit = async () => {
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/layanan/${data.id}`, {
+            const response = await fetch(`/api/master/cabin-checks/${data.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ const HapusLayanan: React.FC<HapusLayananProps> = ({ isOpen, onClose, data }) =>
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Layanan successfully deleted.');
+                toast.success('Cabin check successfully deleted.');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -50,7 +50,7 @@ const HapusLayanan: React.FC<HapusLayananProps> = ({ isOpen, onClose, data }) =>
 
     return (
         <ModalForm
-            title="Hapus Layanan"
+            title="Delete Cabin Check"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit()}
@@ -58,10 +58,10 @@ const HapusLayanan: React.FC<HapusLayananProps> = ({ isOpen, onClose, data }) =>
             isDestructive
         >
             <div className="text-sm">
-                Apakah Anda yakin ingin menghapus <strong className="underline">{data.name}</strong> dari daftar layanan?
+                Are you sure you want to remove <strong className="underline">{data.activityName}</strong> from the cabin check list?
             </div>
         </ModalForm>
     );
 };
 
-export default HapusLayanan;
+export default CabinCheckDelete;

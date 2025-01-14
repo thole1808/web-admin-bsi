@@ -80,21 +80,21 @@ const GrafikPengunjung = () => {
     labels: data.map((item: any) => item.branch),
     datasets: [
       {
-        label: "Total Pengunjung",
+        label: "Total Visitors",
         data: data.map((item: any) => item.total),
         backgroundColor: "#C9D8F1",
         borderRadius: 5,
         barThickness: 30,
       },
       {
-        label: "Terlayani",
+        label: "Completed",
         data: data.map((item: any) => item.served),
         backgroundColor: "#C2F2EF",
         borderRadius: 5,
         barThickness: 30,
       },
       {
-        label: "Tidak Terlayani",
+        label: "Missed",
         data: data.map((item: any) => item.unserved),
         backgroundColor: "#F4A8A8",
         borderRadius: 5,
@@ -143,7 +143,7 @@ const GrafikPengunjung = () => {
           {loading ? (
             <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse"></div>
           ) : (
-            "Pengunjung Cabang"
+            "Visitor Statistics"
           )}
         </h4>
         {loading ? (

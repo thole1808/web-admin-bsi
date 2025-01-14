@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({
                     <div className="relative w-full max-w-xl flex items-center">
                         <input
                             type="text"
-                            placeholder="Cari disini.."
+                            placeholder="Search....."
                             className="w-[400px] px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                         />
 
