@@ -4,7 +4,8 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import BranchProfile from "@/components/Branches/BranchProfile";
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
-import BranchOfficeHourList from "@/components/Branches/BranchOfficeHoursList";
+import BranchOfficeHoursList from "@/components/Branches/BranchOfficeHoursList";
+import BranchCountersList from "@/components/Branches/BranchCountersList";
 
 export const metadata: Metadata = {
     title: "QMS Console - Branches"
@@ -21,7 +22,8 @@ const FormElementsPage = () => {
             </div>
             <div className="flex flex-col p-6 gap-6 mt-4 bg-white rounded">
                 <BranchProfile />
-                <BranchOfficeHourList />
+                <BranchOfficeHoursList />
+                <BranchCountersList />
             </div>
         </DefaultLayout>
     );

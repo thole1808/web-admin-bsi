@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const API_URL = process.env.API_URL;
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest) {
   try {
       if (!API_URL) {
           console.error('API_URL is not defined in environment variables');
@@ -19,8 +19,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
 
-      const id = (await params).id;
-      const endpoint = `${API_URL}/branches/${id}/office-hours`;
+      const url = new URL(req.url);
+      const branch = Number(url.pathname.split('/').pop());
+      const endpoint = `${API_URL}/branches/${branch}`;
 
       const response = await fetch(endpoint, {
           method: 'GET',
