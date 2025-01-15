@@ -220,7 +220,7 @@ const QueueTable: React.FC = () => {
           <div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
               <span className="font-medium">Is Priority</span>
-              <span className="col-span-2">:&nbsp;{data.priority ? 'Ya' : 'Tidak'}</span>
+              <span className="col-span-2">:&nbsp;{data.priority ? 'Yes' : 'No'}</span>
             </div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
               <span className="font-medium">SLA Min. Duration</span>

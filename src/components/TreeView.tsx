@@ -9,6 +9,9 @@ interface TreeNode {
   prefix: string;
   parentId: number;
   children: TreeNode[];
+  disableAdd?: boolean;
+  disableEdit?: boolean;
+  disableDelete?: boolean;
 }
 
 interface Props {
@@ -16,9 +19,20 @@ interface Props {
   onAdd: (item: any) => void;
   onEdit: (item: any) => void;
   onDelete: (item: any) => void;
+  disableAdd?: boolean;
+  disableEdit?: boolean;
+  disableDelete?: boolean;
 }
 
-const TreeView: React.FC<Props> = ({ data, onEdit, onDelete, onAdd }) => {
+const TreeView: React.FC<Props> = ({
+  data,
+  onEdit,
+  onDelete,
+  onAdd,
+  disableAdd = false,
+  disableEdit = false,
+  disableDelete = false,
+}) => {
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
 
   const buildTree = (data: any[]): TreeNode[] => {
@@ -61,27 +75,44 @@ const TreeView: React.FC<Props> = ({ data, onEdit, onDelete, onAdd }) => {
                 </span>
               </span>
               <div className="space-x-1">
+                {/* Add Button */}
                 <button
                   onClick={() => onAdd(node)}
-                  className="text-gray-400 hover:bg-teal-100 hover:text-teal-500 border rounded-full p-1"
+                  disabled={disableAdd || node.disableAdd}
+                  className={`text-gray-400 border rounded-full p-1 ${
+                    disableAdd || node.disableAdd
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-teal-100 hover:text-teal-500"
+                  }`}
                   aria-label="Add child"
                 >
                   <FaPlus className="h-3 w-3" />
                 </button>
+
+                {/* Edit Button */}
                 <button
                   onClick={() => onEdit(node)}
-                  className="text-gray-400 hover:bg-orange-100 hover:text-orange-500 border rounded-full p-1"
+                  disabled={disableEdit || node.disableEdit}
+                  className={`text-gray-400 border rounded-full p-1 ${
+                    disableEdit || node.disableEdit
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-orange-100 hover:text-orange-500"
+                  }`}
                   aria-label="Edit"
                 >
                   <FaPencil className="h-3 w-3" />
                 </button>
+
+                {/* Delete Button */}
                 <button
                   onClick={() => onDelete(node)}
-                  aria-label="Delete"
-                  disabled={node.children.length > 0}
+                  disabled={disableDelete || node.disableDelete || node.children.length > 0}
                   className={`text-gray-400 border rounded-full p-1 ${
-                    node.children.length > 0 ? "cursor-not-allowed opacity-50" : "hover:bg-red-100 hover:text-red-500"
+                    disableDelete || node.disableDelete || node.children.length > 0
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:bg-red-100 hover:text-red-500"
                   }`}
+                  aria-label="Delete"
                 >
                   <FaTrashAlt className="h-3 w-3" />
                 </button>

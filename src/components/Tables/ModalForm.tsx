@@ -58,7 +58,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ width, title, isOpen, onClose, on
                             className="px-4 py-2 border border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-md"
                             disabled={isProcessing}
                         >
-                            Batal
+                            Cancel
                         </button>
                         <button
                             type="submit"
@@ -68,15 +68,15 @@ const ModalForm: React.FC<ModalFormProps> = ({ width, title, isOpen, onClose, on
                             disabled={isProcessing}
                         >
                             {isProcessing ? (
-                                <span>Memproses...</span>
+                                <span>Proccessing...</span>
                             ) : (
                                 isDestructive ? (
                                     <>
-                                        Hapus <FaTrash className="ml-2" />
+                                        Delete <FaTrash className="ml-2" />
                                     </>
                                 ) : (
                                     <>
-                                        Simpan <FaSave className="ml-2" />
+                                        Save <FaSave className="ml-2" />
                                     </>
                                 )
                             )}

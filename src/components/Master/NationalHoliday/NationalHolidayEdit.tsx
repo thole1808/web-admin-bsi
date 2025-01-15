@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
-import ToggleInput from "@/components/Forms/Toogle";
 import TextInput from "@/components/Forms/TextInput";
-import Select from "@/components/Forms/Select";
+import DateTimePicker from "@/components/Forms/DateTimePicker";
 
 interface NationalHolidayEditProps {
     isOpen: boolean;
@@ -14,10 +13,8 @@ interface NationalHolidayEditProps {
 }
 
 interface FormData {
-    activityName: string;
-    activityType: string;
-    mandatory: boolean;
-    active: boolean;
+    name: string;
+    date: string;
 }
 
 const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClose, data }) => {
@@ -43,10 +40,8 @@ const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClo
     }, [isOpen]);
 
     const [formData, setFormData] = useState<FormData>({
-        activityName: data.activityName,
-        activityType: data.activityType,
-        mandatory: data.mandatory,
-        active: data.active,
+        name: data.name,
+        date: data.date,
     });
 
     const [isProcessing, setIsProcessing] = useState(false);
@@ -75,7 +70,7 @@ const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClo
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('National Holiday berhasil ditambahkan');
+                toast.success('National holiday successfully updated');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -90,7 +85,7 @@ const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClo
     return (
         <ModalForm
             width="lg"
-            title="Create National Holiday"
+            title="Edit National Holiday"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
@@ -98,43 +93,24 @@ const NationalHolidayEdit: React.FC<NationalHolidayEditProps> = ({ isOpen, onClo
         >
             <div className="mb-4 text-sm">
                 <TextInput
-                    label="Activity"
-                    placeholder="Enter your activity name"
-                    value={formData.activityName}
-                    onChange={(value) => setFormData({ ...formData, activityName: value })}
-                    error={errors?.activityName}
+                    label="Holiday"
+                    placeholder="Enter holiday name"
+                    value={formData.name}
+                    onChange={(value) => setFormData({ ...formData, name: value })}
+                    error={errors?.name}
+                    required
                 />
             </div>
             <div className="mb-4 text-sm">
-                <Select
-                    label="Type"
-                    options={[
-                        { value: 'SOD', label: 'SOD (Start of Day)' },
-                        { value: 'EOD', label: 'EOD (End of Day)' },
-                      ]}
-                    value={formData.activityType}
-                    onChange={(value: string) => setFormData({ ...formData, activityType: value })}
-                    placeholder="Select an option"
-                    error={errors?.activityType}
+                <DateTimePicker
+                    label="Date"
+                    value={formData.date}
+                    onChange={(value) => setFormData({ ...formData, date: value })}
+                    error={errors?.date}
+                    disableTime
+                    required
                 />
             </div>
-            <div className="mb-4 text-sm">
-                <ToggleInput
-                    label="Manadatory"
-                    initialValue={false}
-                    onChange={(value) => setFormData({ ...formData, mandatory: value })}
-                />
-                {errors?.mandatory && <p className="text-red-500 text-xs mt-1">{errors?.mandatory}</p>}
-            </div>
-            <div className="mb-4 text-sm">
-                <ToggleInput
-                    label="Active"
-                    initialValue={true}
-                    onChange={(value) => setFormData({ ...formData, active: value })}
-                />
-                {errors?.active && <p className="text-red-500 text-xs mt-1">{errors?.active}</p>}
-            </div>
-
         </ModalForm>
     );
 };

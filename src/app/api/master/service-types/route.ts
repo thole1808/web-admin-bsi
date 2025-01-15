@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const response = await fetch(`${API_URL}/master/checklists`, {
+    const response = await fetch(`${API_URL}/master/service-types`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: errorMessage || 'Failed to fetch API' }, { status: response.status });
     }
 
-    // Return the fetched data
     const data = await response.json();
     console.log(data);
     return NextResponse.json(data, { status: 200 });
@@ -59,7 +58,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const endpoint = `${API_URL}/master/checklists`;
+    const endpoint = `${API_URL}/master/service-types`;
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -72,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       const errorMessage = await response.text();
-      return NextResponse.json({ error: errorMessage || 'Failed to update resource' }, { status: response.status });
+      return NextResponse.json({ error: errorMessage || 'Failed to create resource' }, { status: response.status });
     }
 
     const data = await response.json();

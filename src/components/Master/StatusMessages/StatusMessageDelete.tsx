@@ -17,7 +17,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/national-holidays/${data.id}`, {
+            const response = await fetch(`/api/master/status-messages/${data.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Cabin check successfully deleted.');
+                toast.success('Status message successfully deleted.');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -41,7 +41,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
 
     return (
         <ModalForm
-            title="Delete National Holiday"
+            title="Delete Status Message"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit()}
@@ -49,7 +49,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
             isDestructive
         >
             <div className="text-sm">
-                Are you sure you want to remove <strong className="underline">{data.name}</strong> from the national holidays list?
+                Are you sure you want to remove <strong className="underline">{data.message}</strong> from the status messages list?
             </div>
         </ModalForm>
     );

@@ -1,23 +1,27 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
 
-interface NationalHolidayDeleteProps {
+interface ServiceTypeCreateProps {
     isOpen: boolean;
     onClose: () => void;
     data: any;
 }
 
-const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, onClose, data }) => {
+interface FormData {
+    id: string;
+}
+
+const ServiceTypeCreate: React.FC<ServiceTypeCreateProps> = ({ isOpen, onClose, data }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSubmit = async () => {
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/national-holidays/${data.id}`, {
+            const response = await fetch(`/api/master/layanan/${data.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,7 +31,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Cabin check successfully deleted.');
+                toast.success('Layanan successfully deleted.');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -41,7 +45,7 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
 
     return (
         <ModalForm
-            title="Delete National Holiday"
+            title="Hapus Layanan"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit()}
@@ -49,10 +53,10 @@ const NationalHolidayDelete: React.FC<NationalHolidayDeleteProps> = ({ isOpen, o
             isDestructive
         >
             <div className="text-sm">
-                Are you sure you want to remove <strong className="underline">{data.name}</strong> from the national holidays list?
+                Apakah Anda yakin ingin menghapus <strong className="underline">{data.name}</strong> dari daftar layanan?
             </div>
         </ModalForm>
     );
 };
 
-export default NationalHolidayDelete;
+export default ServiceTypeCreate;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface TextInputProps {
   label?: string;
@@ -9,8 +9,9 @@ interface TextInputProps {
   prefixIcon?: React.ReactNode;
   suffixIcon?: React.ReactNode;
   error?: string;
+  required?: boolean;
   className?: string;
-  textSize?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -22,12 +23,28 @@ const TextInput: React.FC<TextInputProps> = ({
   prefixIcon,
   suffixIcon,
   error,
+  required = false,
   className = '',
-  textSize = 'sm',
+  size = 'sm',
 }) => {
+  const [localError, setLocalError] = useState<string | undefined>(error);
+
+  const handleBlur = () => {
+    if (required && !value) {
+      setLocalError('This field is required.');
+    } else {
+      setLocalError(undefined);
+    }
+  };
+
   return (
     <div className={`w-full ${className}`}>
-      {label && <label className={`block text-${textSize} font-medium text-gray-700 mb-1`}>{label}</label>}
+      {label && (
+        <label className={`block text-${size} font-medium text-gray-700 mb-1`}>
+          {label}
+          {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
       <div className="relative flex items-center">
         {/* Prefix Icon */}
         {prefixIcon && (
@@ -41,10 +58,12 @@ const TextInput: React.FC<TextInputProps> = ({
           type={type}
           value={value}
           onChange={(e) => onChange && onChange(e.target.value)}
+          onBlur={handleBlur}
           placeholder={placeholder}
-          className={`text-${textSize} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700
+          required={required}
+          className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700
             ${prefixIcon ? 'pl-10' : ''} ${suffixIcon ? 'pr-10' : ''}
-            ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
+            ${localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
         />
 
         {/* Suffix Icon */}
@@ -56,7 +75,7 @@ const TextInput: React.FC<TextInputProps> = ({
       </div>
 
       {/* Error Message */}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {(localError || error) && <p className="text-red-500 text-xs mt-1">{localError || error}</p>}
     </div>
   );
 };

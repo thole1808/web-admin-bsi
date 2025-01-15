@@ -1,17 +1,17 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import StatusMessageList from "@/components/Master/StatusMessages/StatusMessageList";
+import BranchList from "@/components/Branches/BranchList";
 
 export const metadata: Metadata = {
-    title: "QMS Console - Status Messages",
+    title: "QMS Console - Branches"
 };
 
 const FormElementsPage = () => {
     return (
         <DefaultLayout>
             <div className="flex flex-col gap-10">
-                <StatusMessageList />
+                <BranchList />
             </div>
         </DefaultLayout>
     );

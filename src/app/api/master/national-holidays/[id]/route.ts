@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest) {
         const url = new URL(req.url);
         const id = Number(url.pathname.split('/').pop());
         const body = await req.json();
-        const endpoint = `${API_URL}/master/checklists/${id}`;
+        const endpoint = `${API_URL}/master/national-holidays/${id}`;
 
         const response = await fetch(endpoint, {
             method: 'PUT',
@@ -65,7 +65,7 @@ export async function DELETE(req: NextRequest) {
 
         const url = new URL(req.url);
         const id = Number(url.pathname.split('/').pop());
-        const endpoint = `${API_URL}/master/checklists/${id}`;
+        const endpoint = `${API_URL}/master/national-holidays/${id}`;
 
         const response = await fetch(endpoint, {
             method: 'DELETE',

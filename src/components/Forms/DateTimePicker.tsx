@@ -5,7 +5,9 @@ interface DateTimePickerProps {
   value?: string;
   onChange: (value: string) => void;
   disableTime?: boolean;
+  required?: boolean;
   className?: string;
+  error?: string;
 }
 
 const DateTimePicker: React.FC<DateTimePickerProps> = ({
@@ -13,9 +15,20 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
   value,
   onChange,
   disableTime = false,
+  required = false,
   className = '',
+  error,
 }) => {
   const [dateValue, setDateValue] = useState<string>(value || '');
+  const [localError, setLocalError] = useState<string | undefined>(error);
+
+  const handleBlur = () => {
+    if (required && !dateValue) {
+      setLocalError('This field is required.');
+    } else {
+      setLocalError(undefined);
+    }
+  };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const datePart = e.target.value;
@@ -23,7 +36,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
       const timePart = dateValue.split('T')[1] || '00:00';
       const newValue = `${datePart}T${timePart}`;
       setDateValue(newValue);
-      onChange(newValue.split('T')[0]);
+      onChange(newValue);
     } else {
       setDateValue(datePart);
       onChange(datePart);
@@ -35,19 +48,27 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
     const datePart = dateValue.split('T')[0] || new Date().toISOString().split('T')[0];
     const newValue = `${datePart}T${timePart}`;
     setDateValue(newValue);
-    onChange(newValue.split('T')[0]);
+    onChange(newValue);
   };
 
   return (
     <div className={`w-full ${className}`}>
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+          {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
       <div className="flex space-x-4">
         {/* Date Input */}
         <input
           type="date"
           value={dateValue.split('T')[0]}
           onChange={handleDateChange}
-          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none border-gray-300"
+          onBlur={handleBlur}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
+            localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+          }`}
         />
         {/* Time Input (optional) */}
         {!disableTime && (
@@ -55,10 +76,14 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
             type="time"
             value={dateValue.split('T')[1] || ''}
             onChange={handleTimeChange}
-            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none border-gray-300"
+            onBlur={handleBlur}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
+              localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+            }`}
           />
         )}
       </div>
+      {(localError || error) && <p className="text-red-500 text-xs mt-1">{localError || error}</p>}
     </div>
   );
 };

@@ -80,7 +80,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('Cabin Check berhasil ditambahkan');
+                toast.success('Cabin Check successfully added');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");

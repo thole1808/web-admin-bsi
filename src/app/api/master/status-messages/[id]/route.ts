@@ -1,137 +1,90 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { getToken } from 'next-auth/jwt';
+import { NextRequest, NextResponse } from 'next/server';
 
+const API_URL = process.env.API_URL;
 
-export async function GET(req: NextRequest) {
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const url = new URL(req.url);
-    const id = url.pathname.split('/').pop();
-
-    if (!id) {
-        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-    }
-
+export async function PUT(req: NextRequest) {
     try {
-        const response = await fetch(`${process.env.API_URL}/master/status-messages/${id}`, {
-            method: 'GET',
+        if (!API_URL) {
+            console.error('API_URL is not defined in environment variables');
+            return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        }
+
+        const session = await getToken({
+            req,
+            secret: process.env.NEXTAUTH_SECRET,
+        });
+
+        if (!session || !session.accessToken) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const url = new URL(req.url);
+        const id = Number(url.pathname.split('/').pop());
+        const body = await req.json();
+        const endpoint = `${API_URL}/master/status-messages/${id}`;
+
+        const response = await fetch(endpoint, {
+            method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${session.accessToken || ''}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.accessToken}`,
             },
+            body: JSON.stringify(body),
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            return NextResponse.json(
-                { error: errorData.message || 'Failed to status messages' },
-                { status: response.status }
-            );
+            const errorMessage = await response.text();
+            return NextResponse.json({ error: errorMessage || 'Failed to update resource' }, { status: response.status });
         }
 
         const data = await response.json();
+        console.log(data);
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to fetch status messages API ' },
-            { status: 500 }
-        );
+        console.error('Error processing request:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
-
-
-export async function PUT(req: NextRequest) {
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const url = new URL(req.url);
-    const id = url.pathname.split('/').pop();
-
-    if (!id) {
-        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-    }
-
-    try {
-        const requestBody = await req.json(); 
-
-        const { status, message } = requestBody;
-
-        if (!status || !message) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-        }
-
-        const response = await fetch(`${process.env.API_URL}/master/status-messages/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${session.accessToken || ''}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                status,
-                message
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            return NextResponse.json(
-                { error: errorData.message || 'Failed to update status message' },
-                { status: response.status }
-            );
-        }
-
-        const updatedData = await response.json();
-        return NextResponse.json(updatedData, { status: 200 });
-    } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to update status message API' },
-            { status: 500 }
-        );
-    }
-}
-
 
 export async function DELETE(req: NextRequest) {
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const url = new URL(req.url);
-    const id = url.pathname.split('/').pop();
-
-    if (!id) {
-        return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-    }
-
     try {
-        const response = await fetch(`${process.env.API_URL}/master/status-messages/${id}`, {
+        if (!API_URL) {
+            console.error('API_URL is not defined in environment variables');
+            return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        }
+
+        const session = await getToken({
+            req,
+            secret: process.env.NEXTAUTH_SECRET,
+        });
+
+        if (!session || !session.accessToken) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const url = new URL(req.url);
+        const id = Number(url.pathname.split('/').pop());
+        const endpoint = `${API_URL}/master/status-messages/${id}`;
+
+        const response = await fetch(endpoint, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${session.accessToken || ''}`,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.accessToken}`,
             },
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            return NextResponse.json(
-                { error: errorData.message || 'Failed to delete status message' },
-                { status: response.status }
-            );
+            const errorMessage = await response.text();
+            return NextResponse.json({ error: errorMessage || 'Failed to delete resource' }, { status: response.status });
         }
-        return NextResponse.json({ message: "Status message deleted successfully" }, { status: 200 });
 
+        const data = await response.json();
+        console.log(data);
+        return NextResponse.json(data, { status: 200 });
     } catch (error) {
-        return NextResponse.json(
-            { error: 'Failed to delete status message' },
-            { status: 500 }
-        );
+        console.error('Error processing request:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

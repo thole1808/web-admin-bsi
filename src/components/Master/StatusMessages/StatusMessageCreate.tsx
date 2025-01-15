@@ -5,6 +5,7 @@ import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
 import TextInput from "@/components/Forms/TextInput";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
+import Select from "@/components/Forms/Select";
 
 interface NationalHolidayCreateProps {
     isOpen: boolean;
@@ -12,14 +13,14 @@ interface NationalHolidayCreateProps {
 }
 
 interface FormData {
-    name: string;
-    date: string;
+    message: string;
+    status: string;
 }
 
 const NationalHolidayCreate: React.FC<NationalHolidayCreateProps> = ({ isOpen, onClose }) => {
     const [formData, setFormData] = useState<FormData>({
-        name: "",
-        date: "",
+        message: "",
+        status: "",
     });
 
     const [isProcessing, setIsProcessing] = useState(false);
@@ -29,7 +30,7 @@ const NationalHolidayCreate: React.FC<NationalHolidayCreateProps> = ({ isOpen, o
         try {
             setIsProcessing(true);
 
-            const response = await fetch(`/api/master/national-holidays`, {
+            const response = await fetch(`/api/master/status-messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,29 +58,34 @@ const NationalHolidayCreate: React.FC<NationalHolidayCreateProps> = ({ isOpen, o
     return (
         <ModalForm
             width="lg"
-            title="Create National Holiday"
+            title="Create Status Message"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
             isProcessing={isProcessing}
         >
             <div className="mb-4 text-sm">
-                <TextInput
-                    label="Holiday"
-                    placeholder="Enter holiday name"
-                    value={formData.name}
-                    onChange={(value) => setFormData({ ...formData, name: value })}
-                    error={errors?.name}
+                <Select
+                    label="Status"
+                    options={[
+                        { value: 'TRANSFERRED', label: 'Transferred' },
+                        { value: 'CANCELED', label: 'Canceled' },
+                        { value: 'STOPPED', label: 'Stopped' },
+                    ]}
+                    value={formData.status}
+                    onChange={(value: string) => setFormData({ ...formData, status: value })}
+                    placeholder="Select an option"
+                    error={errors?.status}
                     required
                 />
             </div>
             <div className="mb-4 text-sm">
-                <DateTimePicker
-                    label="Date"
-                    value={formData.date}
-                    onChange={(value) => setFormData({ ...formData, date: value })}
-                    error={errors?.date}
-                    disableTime
+                <TextInput
+                    label="Message"
+                    placeholder="Enter status message"
+                    value={formData.message}
+                    onChange={(value) => setFormData({ ...formData, message: value })}
+                    error={errors?.message}
                     required
                 />
             </div>

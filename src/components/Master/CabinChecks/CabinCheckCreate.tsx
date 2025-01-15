@@ -87,7 +87,7 @@ const CabinCheckCreate: React.FC<CabinCheckCreateProps> = ({ isOpen, onClose }) 
             if (response.status === 422) {
                 setErrors(JSON.parse(result.error).data);
             } else if (result.success) {
-                toast.success('Cabin Check berhasil ditambahkan');
+                toast.success('Cabin Check successfully added');
                 onClose();
             } else {
                 toast.error(result.message || "A system error has occurred. Please try again later.");
@@ -115,6 +115,7 @@ const CabinCheckCreate: React.FC<CabinCheckCreateProps> = ({ isOpen, onClose }) 
                     value={formData.activityName}
                     onChange={(value) => setFormData({ ...formData, activityName: value })}
                     error={errors?.activityName}
+                    required
                 />
             </div>
             <div className="mb-4 text-sm">
@@ -128,6 +129,7 @@ const CabinCheckCreate: React.FC<CabinCheckCreateProps> = ({ isOpen, onClose }) 
                     onChange={(value: string) => setFormData({ ...formData, activityType: value })}
                     placeholder="Select an option"
                     error={errors?.activityType}
+                    required
                 />
             </div>
             <div className="mb-4 text-sm">
@@ -146,7 +148,6 @@ const CabinCheckCreate: React.FC<CabinCheckCreateProps> = ({ isOpen, onClose }) 
                 />
                 {errors?.active && <p className="text-red-500 text-xs mt-1">{errors?.active}</p>}
             </div>
-
         </ModalForm>
     );
 };

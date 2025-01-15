@@ -138,7 +138,7 @@ const NationalHolidayList: React.FC = () => {
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Cabin Checks</h2>
+          <h2 className="text-lg font-semibold ml-2">National Holiday</h2>
           <div className="flex gap-2">
             <CreateButton onClick={openCreate} />
             <ExportCSV data={filteredData} filename="national-holidays.csv" />
@@ -150,7 +150,7 @@ const NationalHolidayList: React.FC = () => {
               label="Search"
               placeholder="Search by holiday name or date..."
               value={search}
-              textSize="xs"
+              size="xs"
               onChange={(value) => setSearch(value)}
               suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
             />

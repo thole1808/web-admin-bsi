@@ -31,7 +31,7 @@ const menuGroups = [
       },
       {
         label: 'Branches',
-        route: '/branches/branch',
+        route: '/branches',
         icon: "BranchesIcon",
       },
       {
