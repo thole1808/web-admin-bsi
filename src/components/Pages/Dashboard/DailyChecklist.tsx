@@ -44,12 +44,12 @@ const DailyChecklist: React.FC = () => {
             }
         };
 
+        fetchDailyChecklist();
+
         if (sodChecklists.length === 0 && onceShow) {
             handleChecklistClick({ activityType: 'SOD', content: sodChecklists });
             setOnceShow(false);
         }
-
-        fetchDailyChecklist();
     }, [modalOpen, activityDate]);
 
 
