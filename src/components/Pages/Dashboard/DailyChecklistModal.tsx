@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface ModalProps {
     isOpen: boolean;
@@ -35,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
                 setLoading(true);
     
                 const response = await fetch(
-                    `/api/master/checklist`
+                    `/api/master/cabin-checks`
                 );
     
                 const result = await response.json();
@@ -101,7 +102,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
             const result = await response.json();
 
             if (result.success) {
-                console.log('Data successfully submitted:', result);
+                toast.success('Cabin crew check successfully saved');
             } else {
                 console.error('Failed to submit data:', result);
             }
@@ -140,7 +141,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
                             X
                         </button>
                         <h2 className="text-lg font-semibold mb-1">{data.activityType} Checklist</h2>
-                        <p className="mb-4 text-sm">Harap lakukan checklist terhadap Activeitas yang sudah dilakukan!</p>
+                        <p className="mb-4 text-sm">Harap lakukan checklist terhadap aktifitas yang sudah dilakukan!</p>
 
                         {loading ? (
                             <SkeletonLoader /> // Show skeleton loader when loading

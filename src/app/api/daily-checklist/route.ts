@@ -24,17 +24,18 @@ export async function POST(req: NextRequest) {
         const { checklists, method } = await req.json();
 
         const branchId = 2;
-        const activityDate = new Date().toISOString().split("T")[0];
         const activityType = req.nextUrl.searchParams.get('activityType');
+
+        const today = new Date();
+        const timezoneOffset = today.getTimezoneOffset() * 60000;
+        const localTime = new Date(today.getTime() - timezoneOffset);
+        const activityDate = localTime.toISOString().split("T")[0];
 
         if (!activityType || !checklists) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
         const url = `${API_URL}/daily-checklists`;
-
-        console.log('Sending request to:', url);
-        console.log('Request body:', JSON.stringify({ method, activityDate, activityType, checklists, branchId }));
 
         const response = await fetch(url, {
             method: method,

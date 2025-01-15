@@ -54,6 +54,7 @@ const GenerateReportForm: React.FC = () => {
                         { value: 'MTR', label: 'Monthly and Trend Analysis Report' },
                         { value: 'RAR', label: 'Resource Allocation Report' },
                         { value: 'STP', label: 'Service Type Popularity Report' },
+                        { value: 'CRC', label: 'Cabin Crew Check Report' },
                     ]}
                     value={formData.reportType}
                     placeholder="Select report type"

@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
-import AsyncSelectComponent from "@/components/Forms/AsycSelect";
-import debounce from 'lodash.debounce';
 import { toast } from 'react-toastify';
 import Label from "@/components/Forms/Label";
 

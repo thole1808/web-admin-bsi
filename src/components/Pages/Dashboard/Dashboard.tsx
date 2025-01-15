@@ -12,8 +12,6 @@ import GrafikPengunjung from "@/components/Pages/Dashboard/VisitorGraph";
 const Dashboard: React.FC = () => {
   return (
     <>
-      {/* <DailyChecklistPopup /> */}
-      
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="col-span-1 md:col-span-3 space-y-6">
           <QueueStatsOverview />

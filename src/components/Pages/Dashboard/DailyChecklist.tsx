@@ -3,7 +3,6 @@ import { FaCheckCircle, FaRegTimesCircle } from 'react-icons/fa';
 import Modal from './DailyChecklistModal';  // Import the Modal component
 
 const DailyChecklist: React.FC = () => {
-    const [data, setData] = useState<any[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [sodChecklists, setSodChecklists] = useState<any[]>([]);
@@ -11,11 +10,11 @@ const DailyChecklist: React.FC = () => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [selectedChecklist, setSelectedChecklist] = useState<any | null>(null);
 
-    // TODO: mark this line as a helper function
     const today = new Date();
     const timezoneOffset = today.getTimezoneOffset() * 60000;
     const localTime = new Date(today.getTime() - timezoneOffset);
     const activityDate = localTime.toISOString().split("T")[0];
+    const [onceShow, setOnceShow] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchDailyChecklist = async () => {
@@ -45,8 +44,14 @@ const DailyChecklist: React.FC = () => {
             }
         };
 
+        if (sodChecklists.length === 0 && onceShow) {
+            handleChecklistClick({ activityType: 'SOD', content: sodChecklists });
+            setOnceShow(false);
+        }
+
         fetchDailyChecklist();
     }, [modalOpen, activityDate]);
+
 
     const handleChecklistClick = (checklistData: any) => {
         setSelectedChecklist(checklistData);
