@@ -60,6 +60,11 @@ const menuGroups = [
         route: '/reporting',
         icon: "ReportingIcon",
       },
+      {
+        label: 'Audit Trails',
+        route: '/audit',
+        icon: "AuditIcon",
+      },
     ],
   },
 ];

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "@/components/Sidebar/SidebarDropdown";
-import { FaHome, FaUsers, FaDatabase, FaCalendarCheck, FaChartBar, FaRegBuilding, FaUserShield, } from 'react-icons/fa';
+import { FaHome, FaUsers, FaDatabase, FaCalendarCheck, FaChartBar, FaRegBuilding, FaUserShield, FaExclamationTriangle, } from 'react-icons/fa';
 import Link from 'next/link'
 import SettingsIcon from "../Icon/SettingsIcon";
 import { FaWrench } from "react-icons/fa6";
@@ -16,6 +16,7 @@ const IconMap: { [key: string]: JSX.Element } = {
   ReportingIcon: <FaChartBar className="w-4.5 h-4.5" />,
   SettingsIcon: <FaWrench className="w-4.5 h-4.5" />,
   AccessIcon: <FaUserShield className="w-4.5 h-4.5" />,
+  AuditIcon: <FaExclamationTriangle className="w-4.5 h-4.5" />,
 };
 
 const SidebarItem = ({ item }: any) => {

@@ -8,6 +8,7 @@ interface DateTimePickerProps {
   required?: boolean;
   className?: string;
   error?: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const DateTimePicker: React.FC<DateTimePickerProps> = ({
@@ -18,6 +19,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
   required = false,
   className = '',
   error,
+  size = 'sm',
 }) => {
   const [dateValue, setDateValue] = useState<string>(value || '');
   const [localError, setLocalError] = useState<string | undefined>(error);
@@ -54,7 +56,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className={`block text-${size} font-medium text-gray-700 mb-1`}>
           {label}
           {required && <span className="text-red-500">*</span>}
         </label>
@@ -66,7 +68,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
           value={dateValue.split('T')[0]}
           onChange={handleDateChange}
           onBlur={handleBlur}
-          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
+          className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
             localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
           }`}
         />
@@ -77,7 +79,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
             value={dateValue.split('T')[1] || ''}
             onChange={handleTimeChange}
             onBlur={handleBlur}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
+            className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
               localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
             }`}
           />
