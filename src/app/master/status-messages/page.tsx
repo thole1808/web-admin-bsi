@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import StatusMessageList from "@/components/Master/StatusMessages/StatusMessageList";
+import StatusMessageList from "@/components/Pages/Master/StatusMessages/StatusMessageList";
 
 export const metadata: Metadata = {
     title: "QMS Console - Status Messages",

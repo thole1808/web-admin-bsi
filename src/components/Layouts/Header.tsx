@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link'; // Import Link from Next.js
+import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
 
 interface DropdownItem {
     id: number;
@@ -129,25 +130,18 @@ const Header: React.FC<HeaderProps> = ({
                             {/* Use Link without <a> */}
                             <Link href="/profile">
                                 <span
-                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
                                     onClick={navigateToProfile}
                                 >
-                                    Profil
+                                    <FaUserCircle className="inline-block mr-2 text-gray-500 h-4 w-4" />Profil
                                 </span>
                             </Link>
-                            <Link href="/update-password">
-                                <span
-                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                                    onClick={navigateToUpdatePassword}
-                                >
-                                    Update Password
-                                </span>
-                            </Link>
+                            <div className="border-t border-gray-200" />
                             <span
-                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                                className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
                                 onClick={handleLogout}
                             >
-                                Logout
+                                <FaSignOutAlt className="inline-block mr-2 text-gray-500 h-4 w-4" />Logout
                             </span>
                         </div>
                     )}

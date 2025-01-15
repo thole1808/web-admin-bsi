@@ -1,11 +1,11 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import BranchProfile from "@/components/Branches/BranchProfile";
+import BranchProfile from "@/components/Pages/Branches/BranchProfile";
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
-import BranchOfficeHoursList from "@/components/Branches/BranchOfficeHoursList";
-import BranchCountersList from "@/components/Branches/BranchCountersList";
+import BranchOfficeHoursList from "@/components/Pages/Branches/BranchOfficeHoursList";
+import BranchCountersList from "@/components/Pages/Branches/BranchCountersList";
 
 export const metadata: Metadata = {
     title: "QMS Console - Branches"

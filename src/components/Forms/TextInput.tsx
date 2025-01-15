@@ -10,6 +10,7 @@ interface TextInputProps {
   suffixIcon?: React.ReactNode;
   error?: string;
   required?: boolean;
+  disabled?: boolean;
   className?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }
@@ -24,6 +25,7 @@ const TextInput: React.FC<TextInputProps> = ({
   suffixIcon,
   error,
   required = false,
+  disabled = false,
   className = '',
   size = 'sm',
 }) => {
@@ -48,7 +50,11 @@ const TextInput: React.FC<TextInputProps> = ({
       <div className="relative flex items-center">
         {/* Prefix Icon */}
         {prefixIcon && (
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+          <span
+            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+              disabled ? 'text-gray-300' : 'text-gray-400'
+            }`}
+          >
             {prefixIcon}
           </span>
         )}
@@ -61,14 +67,20 @@ const TextInput: React.FC<TextInputProps> = ({
           onBlur={handleBlur}
           placeholder={placeholder}
           required={required}
-          className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700
+          disabled={disabled}
+          className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none text-gray-700
             ${prefixIcon ? 'pl-10' : ''} ${suffixIcon ? 'pr-10' : ''}
-            ${localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
+            ${localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
+            ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}`}
         />
 
         {/* Suffix Icon */}
         {suffixIcon && (
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+          <span
+            className={`absolute inset-y-0 right-0 flex items-center pr-3 ${
+              disabled ? 'text-gray-300' : 'text-gray-400'
+            }`}
+          >
             {suffixIcon}
           </span>
         )}

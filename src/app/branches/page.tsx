@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import BranchList from "@/components/Branches/BranchList";
+import BranchList from "@/components/Pages/Branches/BranchList";
 
 export const metadata: Metadata = {
     title: "QMS Console - Branches"

@@ -43,7 +43,7 @@ const ModalView: React.FC<ModalViewProps> = ({ width, title, isOpen, onClose, ch
                         onClick={onClose}
                         className="px-4 py-2 border border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-md w-full font-medium"
                     >
-                        Tutup
+                        Close
                     </button>
                 </div>
             </div>

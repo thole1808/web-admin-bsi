@@ -1,7 +1,7 @@
 "use client";
-import Sidebar from "@/components/Sidebar";
 import React, { useState } from 'react';
 import Header from "./Header";
+import Sidebar from "./Sidebar";
 import { ToastContainer } from "react-toastify";
 
 export default function DefaultLayout({

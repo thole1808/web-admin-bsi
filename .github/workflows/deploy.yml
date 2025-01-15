@@ -50,16 +50,16 @@ jobs:
             # Stop dan hapus container yang berjalan sebelumnya
             docker stop nextjs-container || true
             docker rm nextjs-container || true
-            # Hapus image lama dengan tag <none> untuk image achmadagus/nextjs-app-image-dev
+            # Delete image lama dengan tag <none> untuk image achmadagus/nextjs-app-image-dev
             docker images achmadagus/nextjs-app-image-dev -f "dangling=true" -q | xargs -r docker rmi || true
-            # Hapus image dengan tag 'old' untuk image achmadagus/nextjs-app-image-dev
+            # Delete image dengan tag 'old' untuk image achmadagus/nextjs-app-image-dev
             docker rmi achmadagus/nextjs-app-image-dev:old || true
             # Tandai image yang lama (sebelum menjalankan container baru)
             docker tag achmadagus/nextjs-app-image-dev:latest achmadagus/nextjs-app-image-dev:old || true
             # Jalankan container dengan image yang baru
             docker run -d --name nextjs-container -p 3002:3000 achmadagus/nextjs-app-image-dev:latest
-            # Hapus image yang tidak digunakan (untuk menghindari image menumpuk)
+            # Delete image yang tidak digunakan (untuk menghindari image menumpuk)
             #docker image prune -af
-            # Hapus semua container yang berhenti
+            # Delete semua container yang berhenti
             #docker container prune -f
           EOF

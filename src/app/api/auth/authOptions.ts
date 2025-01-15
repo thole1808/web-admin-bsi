@@ -38,7 +38,7 @@
 //     accessToken?: string;
 //     refreshToken?: string;
 //     expires?: number;
-//     user?: any; // Tambahkan user ke token
+//     user?: any; // Createkan user ke token
 //   }
 // }
 
@@ -318,7 +318,7 @@
 //       return session;
 //     },
 //     async redirect({ url, baseUrl }) {
-//       // Jika pengguna berhasil login, arahkan mereka ke dashboard
+//       // Jika pengguna successfully login, arahkan mereka ke dashboard
 //       if (url === baseUrl || url.startsWith(baseUrl)) {
 //         return '/dashboard'; // Ganti dengan URL halaman dashboard Anda
 //       }

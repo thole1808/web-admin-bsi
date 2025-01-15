@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import CabinCheckList from "@/components/Master/CabinChecks/CabinCheckList";
+import CabinCheckList from "@/components/Pages/Master/CabinChecks/CabinCheckList";
 
 export const metadata: Metadata = {
     title: "QMS Console - Cabin Checks"

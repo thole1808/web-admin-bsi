@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
 //             },
 //         });
 
-//         // Jika penghapusan berhasil
+//         // Jika penghapusan successfully
 //         return NextResponse.json(
 //             {
 //                 success: true,

@@ -1,7 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import NationalHolidayList from "@/components/Master/NationalHoliday/NationalHolidayList";
+import NationalHolidayList from "@/components/Pages/Master/NationalHoliday/NationalHolidayList";
 
 export const metadata: Metadata = {
     title: "QMS Console - National Holidays"

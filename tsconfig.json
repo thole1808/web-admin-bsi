@@ -36,7 +36,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/components/Dashboard/Dashboardtsx",
+    "src/components/Pages/Dashboard/Dashboardtsx",
     "src/pages/api/auth/callback/auth0.js",
     "src/pages/api/auth/[...nextauth].js",
     "src/pages/api/auth/callback/protected.js",
