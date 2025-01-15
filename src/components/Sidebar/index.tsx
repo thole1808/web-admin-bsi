@@ -40,7 +40,7 @@ const menuGroups = [
         icon: "DatabaseIcon",
         children: [
           { label: 'Approval Matrix', route: '/master/approval-matrix' },
-          { label: 'Cabin Checks', route: '/master/cabin-checks' },
+          { label: 'Cabin Crew Checks', route: '/master/cabin-crew-checks' },
           { label: 'National Holiday', route: '/master/national-holiday' },
           { label: 'Service Types', route: '/master/service-types' },
           { label: 'Status Messages', route: '/master/status-messages' },
