@@ -13,13 +13,18 @@ const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps
     const [data, setData] = useState([]);
     const [columns, setColumns] = useState<TableColumn<any>[]>([]);
     const [loading, setLoading] = useState(false);
+    const [totalRows, setTotalRows] = useState(0);
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(apiUrl);
+                const size = perPage.toString();
+                const page = (currentPage - 1).toString();
+                const response = await fetch(apiUrl + `?size=${size}&page=${page}`);
                 const result = await response.json();
 
                 if (result.success) {
@@ -62,6 +67,15 @@ const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps
     const handleDownloadCsv = () => {
         // Logic to download CSV
         console.log('Downloading CSV...');
+    };
+
+    const handlePerRowsChange = async (newPerPage: number, page: number) => {
+        setPerPage(newPerPage);
+        setCurrentPage(page);
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
 
     if (error)
@@ -107,6 +121,10 @@ const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps
                 progressPending={loading}
                 progressComponent={<CustomLoader />}
                 pagination
+                paginationServer
+                paginationTotalRows={totalRows}
+                onChangeRowsPerPage={handlePerRowsChange}
+                onChangePage={handlePageChange}
                 highlightOnHover
                 striped
             />
