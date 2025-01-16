@@ -32,7 +32,9 @@ const DailyChecklist: React.FC = () => {
                 const result = await response.json();
 
                 if (result.success) {
-                    setSodChecklists(result.data.content.filter((item: any) => item.activityType === 'SOD'));
+                    const sodChecklists = result.data.content.filter((item: any) => item.activityType === 'SOD');
+                    
+                    setSodChecklists(sodChecklists);
                     setEodChecklists(result.data.content.filter((item: any) => item.activityType === 'EOD'));
 
                     if (sodChecklists.length === 0 && onceShow) {
