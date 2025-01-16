@@ -34,6 +34,11 @@ const DailyChecklist: React.FC = () => {
                 if (result.success) {
                     setSodChecklists(result.data.content.filter((item: any) => item.activityType === 'SOD'));
                     setEodChecklists(result.data.content.filter((item: any) => item.activityType === 'EOD'));
+
+                    if (sodChecklists.length === 0 && onceShow) {
+                        handleChecklistClick({ activityType: 'SOD', content: sodChecklists });
+                        setOnceShow(false);
+                    }
                 } else {
                     throw new Error(result.message || "Failed to fetch branch visitors");
                 }
@@ -45,11 +50,6 @@ const DailyChecklist: React.FC = () => {
         };
 
         fetchDailyChecklist();
-
-        if (sodChecklists.length === 0 && onceShow) {
-            handleChecklistClick({ activityType: 'SOD', content: sodChecklists });
-            setOnceShow(false);
-        }
     }, [modalOpen, activityDate]);
 
 
