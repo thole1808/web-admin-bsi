@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link'; // Import Link from Next.js
 import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
@@ -24,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isClient, setIsClient] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
         setIsClient(true);
@@ -47,22 +49,13 @@ const Header: React.FC<HeaderProps> = ({
         };
     }, [isClient, dropdownOpen]);
 
-    const handleItemClick = (item: DropdownItem) => {
-        setSelectedItem(item);
-        setDropdownOpen(false);
-    };
-
     const navigateToProfile = () => {
         setDropdownOpen(false); // Close dropdown before navigating
     };
 
-    const navigateToUpdatePassword = () => {
-        setDropdownOpen(false); // Close dropdown before navigating
-    };
-
     const handleLogout = () => {
-        localStorage.removeItem('userToken');
         setDropdownOpen(false); // Close dropdown before logout
+        signOut(); // Use next-auth's signOut function
     };
 
     // Make sure component is rendered on the client-side
@@ -109,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({
                                 priority
                             />
                             <span className="font-medium text-sm text-gray-700">
-                                {selectedItem?.name || 'Admin'}
+                                {session?.user?.name || 'Admin'}
                             </span>
                         </div>
                         <svg
