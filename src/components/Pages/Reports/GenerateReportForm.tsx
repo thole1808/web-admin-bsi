@@ -5,6 +5,7 @@ import { FaDownload, FaPlay } from "react-icons/fa";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
 import Select from "@/components/Forms/Select";
 import DynamicReportTable from "./DynamicReportTable";
+import { FaArrowRotateLeft } from "react-icons/fa6";
 
 const GenerateReportForm: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -57,7 +58,18 @@ const GenerateReportForm: React.FC = () => {
         const month = date.toLocaleString('id-ID', { month: 'short' });
         const year = date.getFullYear();
         return `${day} ${month} ${year}`;
-      };
+    };
+
+    const handleReset = () => {
+        setFormData({
+            reportType: "",
+            startDate: "",
+            endDate: "",
+            format: "pdf",
+        });
+        setApiUrl(null);
+        setIsProcessing(false);
+    }
 
     return (
         <div className="grid grid-cols-3 gap-4">
@@ -93,26 +105,37 @@ const GenerateReportForm: React.FC = () => {
                             />
                         </div>
 
-                        <button
-                            onClick={fetchReport}
-                            disabled={isProcessing}
-                            className={`${isProcessing
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-teal-500 hover:bg-teal-600"
-                                } text-white rounded flex items-center px-4 py-2 text-sm font-medium w-full justify-center`}
-                        >
-                            {isProcessing ? (
-                                <>
-                                    <span className="animate-spin border-t-2 border-white border-solid rounded-full w-4 h-4 mr-2"></span>
-                                    Generating...
-                                </>
-                            ) : (
-                                <>
-                                    <FaPlay className="w-3 h-3 mr-2" />
-                                    Generate
-                                </>
-                            )}
-                        </button>
+                        {!apiUrl ? (
+                            <button
+                                onClick={fetchReport}
+                                disabled={isProcessing}
+                                className={`${isProcessing
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-teal-500 hover:bg-teal-600"
+                                    } text-white rounded flex items-center px-4 py-2 text-sm font-medium w-full justify-center`}
+                            >
+                                {isProcessing ? (
+                                    <>
+                                        <span className="animate-spin border-t-2 border-white border-solid rounded-full w-4 h-4 mr-2"></span>
+                                        Generating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaPlay className="w-3 h-3 mr-2" />
+                                        Generate
+                                    </>
+                                )}
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleReset}
+                                disabled={isProcessing}
+                                className="bg-gray-400 text-white rounded flex items-center px-4 py-2 text-sm font-medium w-full justify-center"
+                            >
+                                <FaArrowRotateLeft className="w-3 h-3 mr-2" />
+                                Reset
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
