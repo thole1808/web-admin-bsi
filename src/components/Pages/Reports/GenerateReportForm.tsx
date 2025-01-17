@@ -15,30 +15,32 @@ const GenerateReportForm: React.FC = () => {
     });
 
     const [apiUrl, setApiUrl] = useState<string | null>(null);
+    const [period, setPeriod] = useState<string>("");
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [title, setTitle] = useState<string>("");
 
     const reportTypes = [
-        { value: 'daily-queue-report', label: 'Daily Queue Report' },
-        { value: 'waiting-time-report', label: 'Waiting Time Report' },
-        { value: 'branch-load-report', label: 'Branch Load Report' },
-        { value: 'sla-report', label: 'Service Level Agreement Report' },
-        { value: 'monthly-trend-report', label: 'Monthly and Trend Analysis Report' },
-        { value: 'resource-allocation-report', label: 'Resource Allocation Report' },
-        { value: 'service-type-popularity-report', label: 'Service Type Popularity Report' },
-        { value: 'cabin-crew-check-report', label: 'Cabin Crew Check Report' },
+        { value: '/api/reports/daily-queue-report', label: 'Daily Queue Report' },
+        { value: '/api/reports/waiting-time-report', label: 'Waiting Time Report' },
+        { value: '/api/reports/branch-load-report', label: 'Branch Load Report' },
+        { value: '/api/reports/sla-report', label: 'Service Level Agreement Report' },
+        { value: '/api/reports/monthly-trend-report', label: 'Monthly and Trend Analysis Report' },
+        { value: '/api/reports/resource-allocation-report', label: 'Resource Allocation Report' },
+        { value: '/api/reports/service-type-popularity-report', label: 'Service Type Popularity Report' },
+        { value: '/api/reports/cabin-crew-check-report', label: 'Cabin Crew Check Report' },
     ];
 
     const fetchReport = (e: React.FormEvent) => {
         e.preventDefault();
-        setIsProcessing(true);
 
         const type = formData.reportType;
         const start = formData.startDate;
         const end = formData.endDate;
         const format = formData.format;
 
+        setIsProcessing(true);
         setTitle(reportTypes.find((item) => item.value === type)?.label || "");
+        setPeriod(`${formatDate(start)} - ${formatDate(end)}`);
 
         const queryParams = new URLSearchParams({
             start,
@@ -46,8 +48,16 @@ const GenerateReportForm: React.FC = () => {
             format,
         });
 
-        setApiUrl(`/api/reports/${type}?${queryParams.toString()}`);
+        setApiUrl(`${type}?${queryParams.toString()}`);
     };
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('id-ID', { month: 'short' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+      };
 
     return (
         <div className="grid grid-cols-3 gap-4">
@@ -111,6 +121,7 @@ const GenerateReportForm: React.FC = () => {
                     <DynamicReportTable
                         title={title}
                         apiUrl={apiUrl}
+                        period={period}
                         onLoaded={() => setIsProcessing(false)}
                     />
                 ) : (

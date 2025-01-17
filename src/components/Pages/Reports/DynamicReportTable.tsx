@@ -1,15 +1,18 @@
 import CustomLoader from '@/components/Tables/CustomLoader';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { FaFilePdf, FaFileExcel, FaFileCsv } from 'react-icons/fa';
+import { FaFileExcel, FaFileCsv } from 'react-icons/fa';
+import ReportPDF from './ReportPDF';
+import ReportExcel from './ReportExcel';
 
 interface DynamicReportTableProps {
     title: string;
     apiUrl: string;
+    period?: string;
     onLoaded?: () => void;
 }
 
-const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps) => {
+const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTableProps) => {
     const [data, setData] = useState([]);
     const [columns, setColumns] = useState<TableColumn<any>[]>([]);
     const [loading, setLoading] = useState(false);
@@ -53,20 +56,9 @@ const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps
         fetchData();
     }, [apiUrl, onLoaded]);
 
-    // Download handlers
-    const handleDownloadPdf = () => {
-        // Logic to download PDF
-        console.log('Downloading PDF...');
-    };
-
     const handleDownloadExcel = () => {
         // Logic to download Excel
         console.log('Downloading Excel...');
-    };
-
-    const handleDownloadCsv = () => {
-        // Logic to download CSV
-        console.log('Downloading CSV...');
     };
 
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
@@ -85,33 +77,21 @@ const DynamicReportTable = ({ title, apiUrl, onLoaded }: DynamicReportTableProps
         <div className="px-4 py-6 bg-white rounded-lg">
             <div className="flex items-center justify-between border-b pb-2">
                 <div>
-                    <p className="text-xs text-gray-400">Report Generated</p>
                     <h2 className="text-md font-medium text-gray-800">
-                        {title}
+                        Preview: {title}
                     </h2>
+                    <p className="text-xs text-gray-500 mt-1">Period: {period}</p>
                 </div>
                 <div className="flex items-center space-x-1">
-                    <button
-                        onClick={handleDownloadPdf}
-                        className="bg-red-500 hover:bg-red-600 text-white flex items-center px-3 py-2 text-xs rounded"
-                    >
-                        <FaFilePdf className="mr-2" />
-                        PDF
-                    </button>
-                    <button
-                        onClick={handleDownloadExcel}
-                        className="bg-green-500 hover:bg-green-600 text-white flex items-center px-3 py-2 text-xs rounded"
-                    >
-                        <FaFileExcel className="mr-2" />
-                        Excel
-                    </button>
-                    <button
-                        onClick={handleDownloadCsv}
-                        className="bg-blue-500 hover:bg-blue-600 text-white flex items-center px-3 py-2 text-xs rounded"
-                    >
-                        <FaFileCsv className="mr-2" />
-                        CSV
-                    </button>
+                    <ReportPDF
+                        title={title}
+                        period={period || ''}
+                        apiUrl={apiUrl}
+                    />
+                    <ReportExcel
+                        title={title}
+                        apiUrl={apiUrl}
+                    />
                 </div>
             </div>
 
