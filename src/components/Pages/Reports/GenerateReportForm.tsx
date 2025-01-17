@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaDownload, FaPlay } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
 import Select from "@/components/Forms/Select";
 import DynamicReportTable from "./DynamicReportTable";
@@ -12,7 +12,6 @@ const GenerateReportForm: React.FC = () => {
         reportType: "",
         startDate: "",
         endDate: "",
-        format: "pdf",
     });
 
     const [apiUrl, setApiUrl] = useState<string | null>(null);
@@ -37,7 +36,10 @@ const GenerateReportForm: React.FC = () => {
         const type = formData.reportType;
         const start = formData.startDate;
         const end = formData.endDate;
-        const format = formData.format;
+
+        if (!type || !start || !end) {
+            return;
+        }
 
         setIsProcessing(true);
         setTitle(reportTypes.find((item) => item.value === type)?.label || "");
@@ -46,7 +48,6 @@ const GenerateReportForm: React.FC = () => {
         const queryParams = new URLSearchParams({
             start,
             end,
-            format,
         });
 
         setApiUrl(`${type}?${queryParams.toString()}`);
@@ -62,10 +63,8 @@ const GenerateReportForm: React.FC = () => {
 
     const handleReset = () => {
         setFormData({
-            reportType: "",
-            startDate: "",
-            endDate: "",
-            format: "pdf",
+            ...formData,
+            reportType: ""
         });
         setApiUrl(null);
         setIsProcessing(false);
@@ -85,6 +84,7 @@ const GenerateReportForm: React.FC = () => {
                             required
                             size="xs"
                             onChange={(value) => setFormData({ ...formData, reportType: value.toString() })}
+                            disabled={apiUrl ? true : false}
                         />
                         <div className="flex justify-between gap-3">
                             <DateTimePicker
@@ -117,12 +117,12 @@ const GenerateReportForm: React.FC = () => {
                                 {isProcessing ? (
                                     <>
                                         <span className="animate-spin border-t-2 border-white border-solid rounded-full w-4 h-4 mr-2"></span>
-                                        Generating...
+                                        Fetching...
                                     </>
                                 ) : (
                                     <>
                                         <FaPlay className="w-3 h-3 mr-2" />
-                                        Generate
+                                        Fetch Report
                                     </>
                                 )}
                             </button>

@@ -15,6 +15,7 @@ interface SelectProps {
   required?: boolean;
   className?: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  disabled?: boolean;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -27,6 +28,7 @@ const Select: React.FC<SelectProps> = ({
   required = false,
   className = '',
   size = 'sm',
+  disabled = false,
 }) => {
   const [localError, setLocalError] = useState<string | undefined>(error);
 
@@ -52,7 +54,9 @@ const Select: React.FC<SelectProps> = ({
           onChange={(e) => onChange(e.target.value)}
           onBlur={handleBlur}
           className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none text-gray-700
-            ${localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}`}
+            ${localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'}
+            ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}`}
+          disabled={disabled}
         >
           {placeholder && (
             <option value="" disabled>

@@ -27,7 +27,7 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
             try {
                 const size = perPage.toString();
                 const page = (currentPage - 1).toString();
-                const response = await fetch(apiUrl + `?size=${size}&page=${page}`);
+                const response = await fetch(apiUrl + `&size=${size}&page=${page}`);
                 const result = await response.json();
 
                 if (result.success) {
