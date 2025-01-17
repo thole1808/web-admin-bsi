@@ -25,7 +25,7 @@ const ReportExcel: React.FC<ReportExcelProps> = ({ title, apiUrl }) => {
 
         try {
             while (currentPage < totalPages) {
-                const response = await fetch(`${apiUrl}?page=${currentPage}`);
+                const response = await fetch(`${apiUrl}&page=${currentPage}`);
                 const result = await response.json();
 
                 if (result.success) {
