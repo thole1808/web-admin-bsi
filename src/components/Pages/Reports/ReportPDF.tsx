@@ -27,7 +27,6 @@ const titleCaseToCamelCase = (text: string): string => {
 };
 
 const ReportPDF: React.FC<ReportPDFProps> = ({ title, period, apiUrl }) => {
-    const [tableData, setTableData] = useState<Array<{ [key: string]: any }>>([]);
     const [tableColumns, setTableColumns] = useState<string[]>([]);
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -74,6 +73,8 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ title, period, apiUrl }) => {
                 setIsGenerating(false);
                 return;
             }
+            
+            const headers = Object.keys(allData[0]).map(camelCaseToTitleCase);
 
             const doc = new jsPDF({
                 orientation: "landscape",
@@ -91,10 +92,10 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ title, period, apiUrl }) => {
             const tableStartY = 30;
             autoTable(doc, {
                 startY: tableStartY,
-                head: [tableColumns], // Dynamic column headers
-                body: allData.map((row) =>
-                    tableColumns.map((col) => row[titleCaseToCamelCase(col)] || "-")
-                ),
+                head: [headers], // Dynamic column headers
+                body: allData.map((row) => {
+                    return headers.map((col) => row[titleCaseToCamelCase(col)] || "-")
+                }),
                 theme: "striped",
                 headStyles: {
                     fillColor: [78, 159, 156],
