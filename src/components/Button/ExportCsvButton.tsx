@@ -19,7 +19,7 @@ const ExportCSV: React.FC<ExportCSVProps> = ({ data, filename = 'export.csv' }) 
       let row = '';
       keys.forEach((key, index) => {
         if (index > 0) row += columnDelimiter;
-        row += `"${item[key]}"`; // Add quotes to handle commas in data
+        row += `"${item[key]}"`;
       });
       result += row + lineDelimiter;
     });
@@ -31,12 +31,15 @@ const ExportCSV: React.FC<ExportCSVProps> = ({ data, filename = 'export.csv' }) 
     const csv = convertArrayOfObjectsToCSV(array);
     if (!csv) return;
 
+    const currentDate = new Date().toISOString().split('T')[0];
+    const dynamicFilename = filename.replace('.csv', `-${currentDate}.csv`);
+
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
 
     link.setAttribute('href', url);
-    link.setAttribute('download', filename);
+    link.setAttribute('download', dynamicFilename);
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
