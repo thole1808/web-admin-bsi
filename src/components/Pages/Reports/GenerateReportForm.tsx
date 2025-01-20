@@ -27,7 +27,7 @@ const GenerateReportForm: React.FC = () => {
         { value: '/api/reports/monthly-trend-report', label: 'Monthly and Trend Analysis Report' },
         { value: '/api/reports/resource-allocation-report', label: 'Resource Allocation Report' },
         { value: '/api/reports/service-type-popularity-report', label: 'Service Type Popularity Report' },
-        { value: '/api/reports/cabin-crew-check-report', label: 'Cabin Crew Check Report' },
+        { value: '/api/reports/crew-cabin-check-report', label: 'Cabin Crew Check Report' },
     ];
 
     const fetchReport = (e: React.FormEvent) => {

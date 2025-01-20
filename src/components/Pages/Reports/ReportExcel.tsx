@@ -29,9 +29,9 @@ const ReportExcel: React.FC<ReportExcelProps> = ({ title, apiUrl }) => {
                 const result = await response.json();
 
                 if (result.success) {
-                    allData = allData.concat(result.data.content);
-                    currentPage = result.data.pageable.pageNumber + 1;
-                    totalPages = result.data.totalPages;
+                    allData = allData.concat(result.data.details.content);
+                    currentPage = result.data.details.pageable.pageNumber + 1;
+                    totalPages = result.data.details.totalPages;
                 } else {
                     throw new Error(result.message || "Failed to fetch data");
                 }

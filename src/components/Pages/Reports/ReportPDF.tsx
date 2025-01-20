@@ -42,13 +42,13 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ title, period, apiUrl }) => {
                 const result = await response.json();
 
                 if (result.success) {
-                    allData = allData.concat(result.data.content);
-                    currentPage = result.data.pageable.pageNumber + 1;
-                    totalPages = result.data.totalPages;
+                    allData = allData.concat(result.data.details.content);
+                    currentPage = result.data.details.pageable.pageNumber + 1;
+                    totalPages = result.data.details.totalPages;
 
                     // Ambil kolom dari respons halaman pertama
                     if (currentPage === 1) {
-                        const keys = Object.keys(result.data.content[0] || {});
+                        const keys = Object.keys(result.data.details.content[0] || {});
                         setTableColumns(keys.map(camelCaseToTitleCase));
                     }
                 } else {

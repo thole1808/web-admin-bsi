@@ -1,7 +1,6 @@
 import CustomLoader from '@/components/Tables/CustomLoader';
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { FaFileExcel, FaFileCsv } from 'react-icons/fa';
 import ReportPDF from './ReportPDF';
 import ReportExcel from './ReportExcel';
 
@@ -31,7 +30,7 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                 const result = await response.json();
 
                 if (result.success) {
-                    const keys = Object.keys(result.data.content[0]);
+                    const keys = Object.keys(result.data.details.content[0]);
 
                     // Dynamically generate columns based on keys
                     const generatedColumns: TableColumn<any>[] = keys.map((key) => ({
@@ -41,7 +40,8 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                     }));
 
                     setColumns(generatedColumns);
-                    setData(result.data.content);
+                    setData(result.data.details.content);
+                    setTotalRows(result.data.details.totalElements);
                 } else {
                     throw new Error(result.message || 'Failed to fetch data');
                 }
@@ -53,13 +53,9 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
             }
         };
 
-        fetchData();
-    }, [apiUrl, onLoaded]);
-
-    const handleDownloadExcel = () => {
-        // Logic to download Excel
-        console.log('Downloading Excel...');
-    };
+        if (apiUrl)
+            fetchData();
+    }, [perPage, currentPage]);
 
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
         setPerPage(newPerPage);

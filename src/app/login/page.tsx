@@ -4,10 +4,11 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { FaFingerprint } from "react-icons/fa";
 
 const SignIn: React.FC = () => {
-  const { data: session, status } = useSession(); 
-  const router = useRouter(); 
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (session) {
@@ -33,27 +34,27 @@ const SignIn: React.FC = () => {
 
       {/* Login Form Layer */}
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full">
-        <div className="relative z-20 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-strokedark dark:bg-boxdark max-w-md w-full">
-          <div className="flex justify-center bg-transparent mt-5">
-            <Image
-              src="/images/logo/logo-bsi.png"
-              alt="Logo"
-              width={100}
-              height={100}
-              style={{ backgroundColor: "transparent" }}
-            />
+        <div className="relative z-20 rounded-lg border border-gray-200 bg-white shadow dark:border-strokedark dark:bg-boxdark max-w-lg w-full p-6">
+          <div className="flex justify-between bg-transparent">
+            <div>
+              <Image
+                src="/images/logo/bsi.svg"
+                alt="Logo"
+                width={160}
+                height={160}
+                style={{ backgroundColor: "transparent" }}
+              />
+              <div className="text-teal-600 font-semibold mt-1">QMS Webadmin</div>
+            </div>
+            <div className="text-xs font-medium">Version 1.0</div>
           </div>
-          <div className="w-full px-8 py-6">
-            {/* Tombol untuk login dengan OAuth */}
             <button
               onClick={() => signIn('auth0')} // Memulai proses login
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none"
-              style={{ backgroundColor: "#007C80" }}
+              className="mt-6 w-full bg-teal-500 text-white py-2 px-4 rounded hover:bg-teal-600 focus:outline-none flex items-center justify-center gap-2 text-lg font-semibold"
             >
-              Sign in with OAuth2
+              <FaFingerprint className="w-5 h-5" /> Sign in with OAuth2
             </button>
-          </div>
         </div>
       </div>
     </div>
