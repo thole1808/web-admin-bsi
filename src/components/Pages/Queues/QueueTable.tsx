@@ -146,7 +146,9 @@ const QueueTable: React.FC = () => {
     let csv = convertArrayOfObjectsToCSV(array);
     if (csv == null) return;
 
-    const filename = 'queues.csv';
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split('T')[0]; 
+    const filename = `queues-${formattedDate}.csv`;
 
     if (!csv.match(/^data:text\/csv/i)) {
       csv = `data:text/csv;charset=utf-8,${csv}`;
