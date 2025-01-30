@@ -63,6 +63,16 @@ const menuGroups = [
         route: '/audit',
         icon: "AuditIcon",
       },
+      {
+        label: 'Setting',
+        route: '/setting',
+        icon: "AppsIcon",
+        children: [
+          { label: 'Sounds', route: '/setting/sounds' },
+          { label: 'Banner', route: '/setting/banners' },
+          { label: 'Video', route: '/setting/videos' },
+        ],
+      },
     ],
   },
 ];

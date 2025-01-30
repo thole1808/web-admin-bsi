@@ -28,7 +28,6 @@ const Spinner = styled.div<{ $grow?: number }>`
 const CustomLoader: React.FC = () => (
   <div style={{ padding: '16px' }}>
     <Spinner $grow={1} />
-    Loading...
   </div>
 );
 

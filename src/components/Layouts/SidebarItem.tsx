@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarDropdown from "@/components/Layouts/SidebarDropdown";
-import { FaHome, FaUsers, FaDatabase, FaCalendarCheck, FaChartBar, FaRegBuilding, FaUserShield, FaExclamationTriangle, FaBuilding, } from 'react-icons/fa';
+import { FaHome, FaUsers, FaDatabase, FaCalendarCheck, FaChartBar, FaRegBuilding, FaUserShield, FaExclamationTriangle, FaBuilding, FaTools, } from 'react-icons/fa';
 import Link from 'next/link'
-import { FaWrench } from "react-icons/fa6";
+import { FaBoxesStacked, FaWrench } from "react-icons/fa6";
+import { FiSettings } from "react-icons/fi";
 
 const IconMap: { [key: string]: JSX.Element } = {
   DashboardIcon: <FaHome className="w-4.5 h-4.5" />,
@@ -13,9 +14,10 @@ const IconMap: { [key: string]: JSX.Element } = {
   QueuesIcon: <FaCalendarCheck className="w-4.5 h-4.5" />,
   CabangIcon: <FaRegBuilding className="w-4.5 h-4.5" />,
   ReportingIcon: <FaChartBar className="w-4.5 h-4.5" />,
-  SettingsIcon: <FaWrench className="w-4.5 h-4.5" />,
+  SettingsIcon: <FiSettings className="w-4.5 h-4.5" />,
   AccessIcon: <FaUserShield className="w-4.5 h-4.5" />,
   AuditIcon: <FaExclamationTriangle className="w-4.5 h-4.5" />,
+  AppsIcon: <FaTools className="w-4.5 h-4.5" />,
 };
 
 const SidebarItem = ({ item }: any) => {
