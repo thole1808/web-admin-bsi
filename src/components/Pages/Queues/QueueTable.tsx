@@ -1,9 +1,31 @@
 "use client";
 
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 import CustomLoader from "../../Tables/CustomLoader";
+import Label from "@/components/Forms/Label";
+import AsyncSelectComponent from "@/components/Forms/AsycSelect";
+import debounce from 'lodash.debounce';
+import Select from "@/components/Forms/Select";
+import { FaSearch } from "react-icons/fa";
+import TextInput from "@/components/Forms/TextInput";
+import DateTimePicker from "@/components/Forms/DateTimePicker";
+
+interface Option {
+  code: string;
+  name: string;
+}
+
+interface Area {
+  code: string;
+  name: string;
+}
+
+interface Region {
+  code: string;
+  name: string;
+}
 
 const QueueTable: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
@@ -17,7 +39,11 @@ const QueueTable: React.FC = () => {
   const [typeField, setTypeField] = useState("");
   const [statusField, setStatusField] = useState("");
   const [search, setSearch] = useState("");
+  const [area, setArea] = useState("");
+  const [region, setRegion] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [areaOptions, setAreaOptions] = useState<any[]>([]);
+  const [regionOptions, setRegionOptions] = useState<any[]>([]);
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
@@ -29,9 +55,44 @@ const QueueTable: React.FC = () => {
     return today.toISOString().split("T")[0];
   });
 
-  const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setSearch(event.target.value);
-  };
+  useEffect(() => {
+    const loadRegions = async () => {
+      setRegion('');
+      setArea('');
+
+      try {
+        const response = await fetch(`/api/branches?type=REGION&size=100`);
+        const result = await response.json();
+
+        if (result.success) {
+          setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+        }
+      } catch (err) {
+        console.error('Error fetching regions:', err);
+      }
+    };
+
+    loadRegions();
+  }, []);
+
+  useEffect(() => {
+    const loadAreas = async () => {
+      setArea('');
+
+      try {
+        const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+        const result = await response.json();
+
+        if (result.success) {
+          setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+        }
+      } catch (err) {
+        console.error('Error fetching areas:', err);
+      }
+    };
+
+    loadAreas();
+  }, [region]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -42,30 +103,6 @@ const QueueTable: React.FC = () => {
       clearTimeout(handler);
     };
   }, [search]);
-
-  const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFromDate(event.target.value);
-  };
-
-  const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setToDate(event.target.value);
-  };
-
-  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setTypeField(event.target.value);
-  }
-
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-
-    if (value === 'waiting') {
-      setStatusField('WAITING');
-    } else if (value === 'serving') {
-      setStatusField('STARTED,PAUSED,CONTINUED');
-    } else if (value === 'done') {
-      setStatusField('STOPPED,CANCELED,TRANSFERRED');
-    }
-  }
 
   useEffect(() => {
     const fetchQueues = async () => {
@@ -79,7 +116,9 @@ const QueueTable: React.FC = () => {
         const status = statusField.toString();
         const search = debouncedSearch;
         const type = typeField;
-  
+        const areaCode = area;
+        const regionCode = region;
+
         const queryParams = new URLSearchParams({
           start,
           end,
@@ -88,16 +127,18 @@ const QueueTable: React.FC = () => {
           sortBy,
           direction,
           type,
+          areaCode,
+          regionCode,
           status,
           search
         });
-  
+
         const response = await fetch(
           `/api/antrian?${queryParams.toString()}`
         );
-  
+
         const result = await response.json();
-  
+
         if (result.success) {
           setData(result.data.content);
           setTotalRows(result.data.totalElements);
@@ -110,9 +151,9 @@ const QueueTable: React.FC = () => {
         setLoading(false);
       }
     };
-    
+
     fetchQueues();
-  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField]);
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField, region, area]);
 
 
   function convertArrayOfObjectsToCSV(array: any[]) {
@@ -147,7 +188,7 @@ const QueueTable: React.FC = () => {
     if (csv == null) return;
 
     const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().split('T')[0]; 
+    const formattedDate = currentDate.toISOString().split('T')[0];
     const filename = `queues-${formattedDate}.csv`;
 
     if (!csv.match(/^data:text\/csv/i)) {
@@ -428,10 +469,10 @@ const QueueTable: React.FC = () => {
         },
       ],
     },
-  ];  
+  ];
 
   const isCompleted = (status: string) => {
-    return status === 'STOPPED' || status === 'TRANSFERRED'; 
+    return status === 'STOPPED' || status === 'TRANSFERRED';
   }
 
   return (
@@ -445,16 +486,20 @@ const QueueTable: React.FC = () => {
         </div>
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
-            <label className="text-xs mb-1">Search</label>
-            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Search by resv. code, queue number, service type or branch..." />
+            <TextInput
+              label="Search"
+              placeholder="Search by resv. code, queue number, service type or branch..."
+              value={search}
+              size="xs"
+              onChange={(value) => setSearch(value)}
+              suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
+            />
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">Reservation Type</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={typeField} onChange={handleTypeChange}>
-              <option value="">All</option>
-              <option value="ONLINE">Online</option>
-              <option value="ONSITE">Onsite</option>
-            </select>
+            <Select size="xs" label="Type" options={[
+              { value: 'ONSITE', label: 'Onsite' },
+              { value: 'ONLINE', label: 'Online' },
+            ]} value={typeField} onChange={(value) => setTypeField(value as string)} />
           </div>
           <div className="grid text-xs items-end justify-end">
             <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
@@ -463,21 +508,36 @@ const QueueTable: React.FC = () => {
             </button>
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">From Date</label>
-            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={fromDate} onChange={handleFromDateChange} max={today} />
+            <DateTimePicker
+              label="From Date"
+              value={fromDate}
+              onChange={(value) => setFromDate(value)}
+              size="xs"
+              disableTime
+            />
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">To Date</label>
-            <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="date" value={toDate} onChange={handleToDateChange} max={today} />
+            <DateTimePicker
+              label="To Date"
+              value={toDate}
+              onChange={(value) => setToDate(value)}
+              size="xs"
+              disableTime
+            />
           </div>
           <div className="grid col-span-2">
-            <label className="text-xs mb-1">Status</label>
-            <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={statusField} onChange={handleStatusChange}>
-              <option value="">All</option>
-              <option value="waiting">Waiting</option>
-              <option value="serving">Served</option>
-              <option value="done">Completed</option>
-            </select>
+            <Select size="xs" label="Status" options={[
+              { value: '', label: 'All' },
+              { value: 'WAITING', label: 'Waiting' },
+              { value: 'STARTED,PAUSED,CONTINUED', label: 'Serving' },
+              { value: 'STOPPED,CANCELED,TRANSFERRED', label: 'Done' },
+            ]} value={statusField} onChange={(value) => setStatusField(value as string)} />
+          </div>
+          <div className="grid col-span-2">
+            <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+          </div>
+          <div className="grid col-span-2">
+            <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
           </div>
         </div>
 

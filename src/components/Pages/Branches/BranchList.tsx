@@ -21,6 +21,52 @@ const BranchList: React.FC = () => {
   const [typeField, setTypeField] = useState("");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [area, setArea] = useState("");
+  const [region, setRegion] = useState("");
+  const [areaOptions, setAreaOptions] = useState<any[]>([]);
+  const [regionOptions, setRegionOptions] = useState<any[]>([]);
+
+  const typeOptions = [
+    { value: 'REGION', label: 'Region' },
+    { value: 'AREA', label: 'Area' },
+    { value: 'BRANCH', label: 'Branch' },
+  ];
+
+  useEffect(() => {
+    const loadRegions = async () => {
+      setArea('');
+
+      try {
+        const response = await fetch(`/api/branches?type=REGION&size=100`);
+        const result = await response.json();
+
+        if (result.success) {
+          setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+        }
+      } catch (err) {
+        console.error('Error fetching regions:', err);
+      }
+    };
+
+    loadRegions();
+  }, []);
+
+  useEffect(() => {
+    const loadAreas = async () => {
+      try {
+        const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+        const result = await response.json();
+
+        if (result.success) {
+          setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+        }
+      } catch (err) {
+        console.error('Error fetching areas:', err);
+      }
+    };
+
+    loadAreas();
+  }, [region]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -41,6 +87,8 @@ const BranchList: React.FC = () => {
         const direction = sortDirection.toString();
         const search = debouncedSearch;
         const type = typeField;
+        const areaCode = area;
+        const regionCode = region;
 
         const queryParams = new URLSearchParams({
           size,
@@ -48,7 +96,9 @@ const BranchList: React.FC = () => {
           sortBy,
           direction,
           type,
-          search
+          search,
+          areaCode,
+          regionCode,
         });
 
         const response = await fetch(
@@ -71,7 +121,7 @@ const BranchList: React.FC = () => {
     };
 
     fetchQueues();
-  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField]);
+  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region]);
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
@@ -135,6 +185,8 @@ const BranchList: React.FC = () => {
   const handleResetFilter = () => {
     setTypeField("");
     setSearch("");
+    setRegion("");
+    setArea("");
   }
 
   function formatDateTime(date: string) {
@@ -234,7 +286,7 @@ const BranchList: React.FC = () => {
           <div className="grid col-span-4">
             <TextInput
               label="Search"
-              placeholder="Search by status or message..."
+              placeholder="Search by code or name..."
               value={search}
               size="xs"
               onChange={(value) => setSearch(value)}
@@ -244,20 +296,21 @@ const BranchList: React.FC = () => {
           <div className="grid col-span-2">
             <Select
               label="Type"
-              options={[
-                { value: '', label: 'All' },
-                { value: 'REGION', label: 'Region' },
-                { value: 'AREA', label: 'Area' },
-                { value: 'BRANCH', label: 'Branch' },
-              ]}
+              options={typeOptions}
               size="xs"
               value={typeField}
-              onChange={(value) => setTypeField(value.toString())}
+              onChange={(value) => setTypeField(value as string)}
               placeholder="Select an option"
             />
           </div>
           <div className="grid text-xs items-end justify-end col-span-1">
             <ResetButton onClick={handleResetFilter} />
+          </div>
+          <div className="grid col-span-2">
+            <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+          </div>
+          <div className="grid col-span-2">
+            <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
           </div>
         </div>
 

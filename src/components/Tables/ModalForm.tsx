@@ -35,7 +35,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ width, title, isOpen, onClose, on
 
     return (
         <div
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-hidden z-50"
             onClick={onClose}
         >
             <div

@@ -3,7 +3,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Dashboard from "@/components/Pages/Dashboard/Dashboard";
 
 export const metadata: Metadata = {
-  title: "QMS Console - Template",
+  title: "QMS Console - Dashboard",
   description: "Web Admin BSI",
 };
 

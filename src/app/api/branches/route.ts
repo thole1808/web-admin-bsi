@@ -47,6 +47,8 @@ export async function GET(req: NextRequest) {
     const search = req.nextUrl.searchParams.get('search');
     const isActive = req.nextUrl.searchParams.get('isActive');
     const type = req.nextUrl.searchParams.get('type');
+    const areaCode = req.nextUrl.searchParams.get('areaCode');
+    const regionCode = req.nextUrl.searchParams.get('regionCode');
     const sortBy = req.nextUrl.searchParams.get('sortBy');
     const direction = req.nextUrl.searchParams.get('direction');
     const size = req.nextUrl.searchParams.get('size');
@@ -58,6 +60,8 @@ export async function GET(req: NextRequest) {
     if (search) params.append('search', search);
     if (isActive) params.append('isActive', isActive);
     if (type) params.append('type', type);
+    if (areaCode) params.append('areaCode', areaCode);
+    if (regionCode) params.append('regionCode', regionCode);
     if (sortBy) params.append('sortBy', sortBy);
     if (direction) params.append('direction', direction);
     if (size) params.append('size', size);

@@ -20,7 +20,7 @@ const FormElementsPage = () => {
                     <FaChevronLeft className="h-4 w-4" />Back
                 </Link>
             </div>
-            <div className="flex flex-col p-6 gap-6 mt-4 bg-white rounded">
+            <div className="flex flex-col p-6 gap-6 mt-4 bg-white rounded-lg shadow-md">
                 <BranchProfile />
                 <BranchOfficeHoursList />
                 <BranchCountersList />

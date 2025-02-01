@@ -49,6 +49,8 @@ export async function GET(req: NextRequest) {
     const serviceTypeId = req.nextUrl.searchParams.get('serviceTypeId');
     const status = req.nextUrl.searchParams.get('status');
     const type = req.nextUrl.searchParams.get('type');
+    const areaCode = req.nextUrl.searchParams.get('areaCode');
+    const regionCode = req.nextUrl.searchParams.get('regionCode');
     const priority = req.nextUrl.searchParams.get('priority');
     const sortBy = req.nextUrl.searchParams.get('sortBy');
     const direction = req.nextUrl.searchParams.get('direction');
@@ -64,6 +66,8 @@ export async function GET(req: NextRequest) {
     if (serviceTypeId) params.append('serviceTypeId', serviceTypeId);
     if (status) params.append('status', status);
     if (type) params.append('type', type);
+    if (areaCode) params.append('areaCode', areaCode);
+    if (regionCode) params.append('regionCode', regionCode);
     if (priority) params.append('priority', priority);
     if (start) params.append('startOfDay', start + 'T00:00:00');
     if (end) params.append('endOfDay', end + 'T23:59:59');

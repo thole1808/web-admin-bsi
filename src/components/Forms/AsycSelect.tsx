@@ -11,6 +11,8 @@ interface AsyncSelectProps {
     optionLabel?: string;
     optionValue?: string;
     value?: Option | null;
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    disabled?: boolean;
     onChange?: (selectedOption: Option | null) => void;
 }
 
@@ -20,14 +22,17 @@ const AsyncSelectComponent: React.FC<AsyncSelectProps> = ({
     optionLabel = 'name',
     optionValue = 'id',
     value,
+    size = 'sm',
+    disabled = false,
     onChange
 }) => {
     return (
         <div className="async-select-container">
             <AsyncSelect
+                className={`text-${size}`}
                 placeholder={placeholder || 'Select option...'}
                 cacheOptions
-                defaultOptions
+                defaultOptions={true}
                 loadOptions={loadOptions}
                 value={value}
                 onChange={(selectedOption) => {
@@ -37,6 +42,7 @@ const AsyncSelectComponent: React.FC<AsyncSelectProps> = ({
                 }}
                 getOptionLabel={(e: Option) => e[optionLabel]}
                 getOptionValue={(e: Option) => e[optionValue]}
+                isDisabled={disabled}
             />
         </div>
     );

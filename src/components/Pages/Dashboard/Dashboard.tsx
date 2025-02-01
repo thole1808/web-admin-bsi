@@ -7,6 +7,7 @@ import OperationalStatus from './OperationalStatus';
 import DailyChecklist from "./DailyChecklist";
 import TopBranchesTable from "./TopBranchesTable";
 import GrafikPengunjung from "@/components/Pages/Dashboard/VisitorGraph";
+import BranchStatsOverview from "./BranchStatsOverview";
 
 
 const Dashboard: React.FC = () => {
@@ -14,6 +15,8 @@ const Dashboard: React.FC = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="col-span-1 md:col-span-3 space-y-6">
+          <BranchStatsOverview />
+
           <QueueStatsOverview />
           <div className='grid grid-cols-3 gap-3 bg-white rounded-lg'>
             <div className='col-span-2 border-r'>

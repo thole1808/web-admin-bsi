@@ -1,4 +1,4 @@
-   "use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
@@ -225,9 +225,9 @@ const BranchCountersList: React.FC = () => {
 
     return (
         <div className="grid gap-y-4">
-            <div className="py-1 border rounded-lg bg-white">
+            <div className="grid border rounded-lg bg-gray-50 overflow-hidden z-1">
                 <div className="p-2 border-b flex justify-between items-center">
-                    <h2 className="text-md font-semibold ml-2 text-gray-700">Counters</h2>
+                    <h2 className="text-md font-semibold ml-2 text-gray-600">Counters</h2>
                     <div className="flex gap-2">
                         <CreateButton onClick={() => handleFormOpen('POST')} />
                     </div>
@@ -267,7 +267,7 @@ const BranchCountersList: React.FC = () => {
                             type="number"
                             placeholder="Counter Number"
                             value={formData.num.toFixed(0)}
-                            onChange={(value) => setFormData({...formData, num: Number(value)})}
+                            onChange={(value) => setFormData({ ...formData, num: Number(value) })}
                             error={errors?.name}
                             required
                         />

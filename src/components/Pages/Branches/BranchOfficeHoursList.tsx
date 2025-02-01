@@ -197,9 +197,9 @@ const BranchOfficeHourList: React.FC = () => {
 
     return (
         <div className="grid gap-y-4">
-            <div className="py-1 border rounded-lg bg-white">
+            <div className="grid border rounded-lg bg-gray-50 overflow-hidden">
                 <div className="p-2 border-b flex justify-between items-center">
-                    <h2 className="text-md font-semibold ml-2 text-gray-700">Office Hours</h2>
+                    <h2 className="text-md font-semibold ml-2 text-gray-600">Office Hours</h2>
                     <div className="flex gap-2">
                         <CreateButton onClick={() => handleFormOpen('POST')} />
                     </div>

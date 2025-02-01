@@ -96,8 +96,8 @@ const BranchProfile: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-lg font-semibold text-gray-800">
-                {branchData.name} <small className="text-gray-600">#{branchData.code || '-'}</small>
+            <h2 className="text-xl font-semibold text-gray-800">
+                {branchData.name} <small className="text-teal-500 text-xs">#{branchData.code || '-'}</small>
             </h2>
             <div className="text-sm text-gray-600 flex items-center">{branchData.address}</div>
             {branchData.phone && (
