@@ -21,6 +21,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ type
 
     const type = (await params).type;
 
+    console.log('Fetching ' + `${API_URL}/reports/${type}?${getParams()}`);
+
     const response = await fetch(`${API_URL}/reports/${type}?${getParams()}`, {
       method: 'GET',
       headers: {
@@ -51,6 +53,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ type
     const start = req.nextUrl.searchParams.get('start');
     const end = req.nextUrl.searchParams.get('end');
     const search = req.nextUrl.searchParams.get('search');
+    const regionCode = req.nextUrl.searchParams.get('regionCode');
+    const areaCode = req.nextUrl.searchParams.get('areaCode');
+    const branchCode = req.nextUrl.searchParams.get('branchCode');
+
 
     const params = new URLSearchParams();
 
@@ -61,6 +67,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ type
     if (size) params.append('size', size);
     if (page) params.append('page', page);
     if (search) params.append('search', search);
+    if (regionCode) params.append('regionCode', regionCode);
+    if (areaCode) params.append('areaCode', areaCode);
+    if (branchCode) params.append('branchCode', branchCode);
 
     return params.toString();
   }

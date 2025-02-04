@@ -23,6 +23,8 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
+
+            console.log('Fetching data from:', apiUrl);
             try {
                 const size = perPage.toString();
                 const page = (currentPage - 1).toString();
@@ -30,6 +32,10 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                 const result = await response.json();
 
                 if (result.success) {
+                    if (result.data.details.content.length === 0) {
+                        throw new Error('No data available');
+                    }
+
                     const keys = Object.keys(result.data.details.content[0]);
 
                     // Dynamically generate columns based on keys
@@ -46,7 +52,8 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                     throw new Error(result.message || 'Failed to fetch data');
                 }
             } catch (err) {
-                setError('Failed to fetch data');
+                if (err.message !== 'No data available')
+                    setError(err.message);
             } finally {
                 setLoading(false);
                 if (onLoaded) onLoaded();
@@ -79,31 +86,40 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                     <p className="text-xs text-gray-500 mt-1">Period: {period}</p>
                 </div>
                 <div className="flex items-center space-x-1">
-                    <ReportPDF
-                        title={title}
-                        period={period || ''}
-                        apiUrl={apiUrl}
-                    />
-                    <ReportExcel
-                        title={title}
-                        apiUrl={apiUrl}
-                    />
+                    {data.length > 0 && (
+                        <>
+                            <ReportPDF
+                                title={title}
+                                period={period || ''}
+                                apiUrl={apiUrl}
+                            />
+                            <ReportExcel
+                                title={title}
+                                apiUrl={apiUrl}
+                            />
+                        </>
+                    )}
                 </div>
             </div>
+            {data.length > 0 && (
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    progressPending={loading}
+                    progressComponent={<CustomLoader />}
+                    pagination
+                    paginationServer
+                    paginationTotalRows={totalRows}
+                    onChangeRowsPerPage={handlePerRowsChange}
+                    onChangePage={handlePageChange}
+                    highlightOnHover
+                    striped
+                />
+            )}
+            {data.length === 0 && (
+                <p className="text-center text-gray-500 mt-6">No data available</p>
+            )}
 
-            <DataTable
-                columns={columns}
-                data={data}
-                progressPending={loading}
-                progressComponent={<CustomLoader />}
-                pagination
-                paginationServer
-                paginationTotalRows={totalRows}
-                onChangeRowsPerPage={handlePerRowsChange}
-                onChangePage={handlePageChange}
-                highlightOnHover
-                striped
-            />
         </div>
     );
 };

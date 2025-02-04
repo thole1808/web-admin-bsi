@@ -21,6 +21,7 @@ interface UserCreateProps {
 }
 
 interface FormData {
+    type: string;
     username: string;
     name: string;
     email: string;
@@ -36,12 +37,8 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
         name: string;
     }
 
-    const [branch, setBranch] = useState<Branch>({
-        id: "",
-        name: ""
-    });
-
     const [formData, setFormData] = useState<FormData>({
+        type: "",
         username: "",
         name: "",
         email: "",
@@ -53,6 +50,68 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
     const [roles, setRoles] = useState<any[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [errors, setErrors] = useState<any>(null);
+    const [branch, setBranch] = useState("");
+    const [area, setArea] = useState("");
+    const [region, setRegion] = useState("");
+    const [branchOptions, setBranchOptions] = useState<any[]>([]);
+    const [areaOptions, setAreaOptions] = useState<any[]>([]);
+    const [regionOptions, setRegionOptions] = useState<any[]>([]);
+
+    useEffect(() => {
+        const loadBranches = async () => {
+            try {
+                const response = await fetch(`/api/branches?type=BRANCH&areaCode=${area}&size=500`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching branches:', err);
+            }
+        };
+
+        loadBranches();
+    }, [area]);
+
+    useEffect(() => {
+        const loadAreas = async () => {
+            setBranch('');
+
+            try {
+                const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        loadAreas();
+    }, [region]);
+
+    useEffect(() => {
+        const loadRegions = async () => {
+            setBranch('');
+            setArea('');
+
+            try {
+                const response = await fetch(`/api/branches?type=REGION&size=100`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching regions:', err);
+            }
+        };
+
+        loadRegions();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,7 +120,7 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
                 const result = await response.json();
 
                 if (result.success) {
-                    setRoles(result.data.content.map((role: any) => ({value: role.id, label: role.name})));
+                    setRoles(result.data.content.map((role: any) => ({ value: role.id, label: role.name })));
                 } else {
                     toast.error(result.message || "Failed to fetch roles");
                 }
@@ -76,7 +135,7 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
     useEffect(() => {
         setFormData({
             ...formData,
-            branchId: branch.id
+            branchId: branch
         });
     }, [branch]);
 
@@ -118,6 +177,20 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
             onSubmit={() => handleSubmit(formData)}
             isProcessing={isProcessing}
         >
+            <div className="mb-4 text-sm">
+                <Select
+                    label="User Type"
+                    options={[
+                        { value: 'REGION', label: 'Region' },
+                        { value: 'AREA', label: 'Area' },
+                        { value: 'BRANCH', label: 'Branch' },
+                    ]}
+                    value={formData.type}
+                    onChange={(value) => setFormData({ ...formData, type: String(value) })}
+                    placeholder="Select an option"
+                    required
+                />
+            </div>
             <div className="mb-4 text-sm">
                 <TextInput
                     label="Username"
@@ -171,19 +244,18 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
                 />
             </div>
             <div className="mb-4 text-sm">
-                <Label htmlFor="branchId">Branch</Label>
-                <AsyncSelectComponent optionLabel="name" optionValue="id" value={branch} onChange={(selectedOption) => setBranch(selectedOption as Branch)} loadOptions={debounce(async (inputValue: string) => {
-                    const response = await fetch(`/api/branches?name=${inputValue}`);
-                    const result = await response.json();
-
-                    if (result.success) {
-                        return result.data.content;
-                    } else {
-                        throw new Error(result.message || "Failed to fetch branches");
-                    }
-                }, 500) as (inputValue: string) => Promise<Option[]>} />
-                {errors?.branchId && <p className="text-red-500 text-xs mt-1">{errors?.branchId}</p>}
+                <Select size="sm" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
             </div>
+            {formData.type === 'AREA' || formData.type === 'BRANCH' && (
+            <div className="mb-4 text-sm">
+                <Select size="sm" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
+            </div>
+            )}
+            {formData.type === 'BRANCH' && (
+            <div className="mb-4 text-sm">
+                <Select size="sm" label="Branch" options={branchOptions} value={branch} onChange={(value) => setBranch(value as string)} disabled={area === ''} />
+            </div>
+            )}
         </ModalForm>
     );
 };

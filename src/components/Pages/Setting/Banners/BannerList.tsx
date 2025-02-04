@@ -167,15 +167,27 @@ const BannerList: React.FC = () => {
                         {
                             name: "Label",
                             selector: (row: { label: string }) => row?.label || "",
+                            grow: 2
+                        },
+                        {
+                            name: "Thumbnail",
+                            selector: (row: { imageUrl: string }) => row?.imageUrl || "",
+                            cell: (row: { imageUrl: string }) => row.imageUrl ? (
+                                <img src={`${row.imageUrl}`} className="rounded max-h-30 py-2" />
+                            ) : (
+                                <span>No banner available</span>
+                            ),
+                            grow: 2
                         },
                         {
                             name: "Link",
                             selector: (row: { imageUrl: string }) => row?.imageUrl || "",
                             cell: (row: { imageUrl: string }) => row.imageUrl ? (
-                                <a href={`${row.imageUrl}`} className="hover:underline text-blue-500" target="_blank">{row.imageUrl}</a>
+                                <a href={`${row.imageUrl}`} className="text-blue-500 hover:text-blue-600 underline">{row.imageUrl}</a>
                             ) : (
                                 <span>No banner available</span>
                             ),
+                            grow: 2
                         },
                         {
                             name: "",

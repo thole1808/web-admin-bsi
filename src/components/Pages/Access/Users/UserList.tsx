@@ -10,6 +10,10 @@ import ExportCSV from "@/components/Button/ExportCsvButton";
 import UserCreate from "./UserCreate";
 import UserDelete from "./UserDelete";
 import UserEdit from "./UserEdit";
+import TextInput from "@/components/Forms/TextInput";
+import { FaSearch } from "react-icons/fa";
+import Select from "@/components/Forms/Select";
+import ResetButton from "@/components/Button/ResetButton";
 
 const UserList: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
@@ -19,7 +23,7 @@ const UserList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [sortField, setSortField] = useState<string | null>("id");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-    const [roleField, setRoleField] = useState("");
+    const [role, setRole] = useState("");
     const [statusField, setStatusField] = useState("");
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -39,7 +43,7 @@ const UserList: React.FC = () => {
                 const result = await response.json();
 
                 if (result.success) {
-                    setRoles(result.data);
+                    setRoles(result.data.content.map((role: any) => ({ value: role.name, label: role.name })));
                 } else {
                     throw new Error(result.message || "Failed to fetch roles");
                 }
@@ -51,10 +55,6 @@ const UserList: React.FC = () => {
         fetchRoles();
     }, []);
 
-    const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setSearch(event.target.value);
-    };
-
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(search);
@@ -65,10 +65,6 @@ const UserList: React.FC = () => {
         };
     }, [search]);
 
-    const handleRoleChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setRoleField(event.target.value);
-    };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -78,7 +74,7 @@ const UserList: React.FC = () => {
                 const direction = sortDirection.toString();
                 const status = statusField.toString();
                 const search = debouncedSearch;
-                const roleName = roleField;
+                const roleName = role;
 
                 const queryParams = new URLSearchParams({
                     size,
@@ -112,7 +108,7 @@ const UserList: React.FC = () => {
         if (isEdit || isCreate || isDelete) return;
 
         fetchData();
-    }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, roleField, isEdit, isCreate, isDelete]);
+    }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, role, isEdit, isCreate, isDelete]);
 
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
         <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
@@ -134,7 +130,6 @@ const UserList: React.FC = () => {
 
     const handleResetFilter = () => {
         setStatusField("");
-        setRoleField("");
         setSearch("");
     };
 
@@ -222,44 +217,44 @@ const UserList: React.FC = () => {
 
     const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
         return (
-          <div className="p-6 bg-gray-50 text-xs">
-            <div className="grid grid-cols-2">
-              <div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Username</span>
-                  <span className="col-span-2">:&nbsp;{data.username || '-'}</span>
+            <div className="p-6 bg-gray-50 text-xs">
+                <div className="grid grid-cols-2">
+                    <div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Username</span>
+                            <span className="col-span-2">:&nbsp;{data.username || '-'}</span>
+                        </div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Phone</span>
+                            <span className="col-span-2">:&nbsp;{data.phone || '-'}</span>
+                        </div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Loket</span>
+                            <span className="col-span-2">:&nbsp;{data.counter?.name || '-'}</span>
+                        </div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Cabang</span>
+                            <span className="col-span-2">:&nbsp;{data.branch?.name || '-'}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Active</span>
+                            <span className="col-span-2">:&nbsp;{data.active ? 'Ya' : 'Tidak'}</span>
+                        </div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Dibuat Tanggal</span>
+                            <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
+                        </div>
+                        <div className="grid grid-cols-3 max-w-sm mb-1">
+                            <span>Diperbarui Tanggal</span>
+                            <span className="col-span-2">:&nbsp;{formatDateTime(data.updatedAt)}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Phone</span>
-                  <span className="col-span-2">:&nbsp;{data.phone || '-'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Loket</span>
-                  <span className="col-span-2">:&nbsp;{data.counter?.name || '-'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Cabang</span>
-                  <span className="col-span-2">:&nbsp;{data.branch?.name || '-'}</span>
-                </div>
-              </div>
-              <div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Active</span>
-                  <span className="col-span-2">:&nbsp;{data.active ? 'Ya' : 'Tidak'}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Dibuat Tanggal</span>
-                  <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
-                </div>
-                <div className="grid grid-cols-3 max-w-sm mb-1">
-                  <span>Diperbarui Tanggal</span>
-                  <span className="col-span-2">:&nbsp;{formatDateTime(data.updatedAt)}</span>
-                </div>
-              </div>
             </div>
-          </div>
         )
-      };
+    };
 
     return (
         <div className="grid gap-y-4">
@@ -273,23 +268,27 @@ const UserList: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
-                        <label className="text-xs mb-1">Search</label>
-                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email pengguna..." />
+                        <TextInput
+                            label="Search"
+                            placeholder="Search by id, name and email..."
+                            value={search}
+                            size="xs"
+                            onChange={(value) => setSearch(value)}
+                            suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
+                        />
                     </div>
                     <div className="grid col-span-2">
-                        <label className="text-xs mb-1">Role</label>
-                        <select className="border border-gray-300 w-full text-sm py-1 px-2 rounded" value={roleField} onChange={handleRoleChanged}>
-                            <option value="">All</option>
-                            {roles.length && roles.map((role: any) => (
-                                <option key={role.id} value={role.name}>{role.name}</option>
-                            ))}
-                        </select>
+                        <Select
+                            label="Role"
+                            options={roles}
+                            size="xs"
+                            value={role}
+                            onChange={(value) => setRole(value as string)}
+                            placeholder="Select an option"
+                        />
                     </div>
-                    <div className="grid text-xs items-end justify-end">
-                        <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
-                            <FaRotateLeft className="w-3 h-3" />
-                            Reset
-                        </button>
+                    <div className="grid text-xs items-end justify-end col-span-1">
+                        <ResetButton onClick={handleResetFilter} />
                     </div>
                 </div>
 

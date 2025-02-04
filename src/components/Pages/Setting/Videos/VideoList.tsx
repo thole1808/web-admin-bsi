@@ -168,12 +168,23 @@ const VideoList: React.FC = () => {
                             selector: (row: { label: string }) => row?.label || "",
                         },
                         {
+                            name: "Video",
+                            selector: (row: { videoUrl: string }) => row?.videoUrl || "",
+                            cell: (row: { videoUrl: string }) => row.videoUrl ? (
+                                <video controls className="max-h-40 py-2">
+                                    <source src={row.videoUrl} type="video/mp4" />
+                                </video>
+                            ) : (
+                                <span>No video available</span>
+                            ),
+                        },
+                        {
                             name: "Link",
                             selector: (row: { videoUrl: string }) => row?.videoUrl || "",
                             cell: (row: { videoUrl: string }) => row.videoUrl ? (
                                 <a href={`${row.videoUrl}`} className="hover:underline text-blue-500" target="_blank">{row.videoUrl}</a>
                             ) : (
-                                <span>No banner available</span>
+                                <span>No video available</span>
                             ),
                         },
                         {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
 import Select from "@/components/Forms/Select";
@@ -18,13 +18,74 @@ const GenerateReportForm: React.FC = () => {
     const [period, setPeriod] = useState<string>("");
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [title, setTitle] = useState<string>("");
+    const [branch, setBranch] = useState("");
+    const [area, setArea] = useState("");
+    const [region, setRegion] = useState("");
+    const [branchOptions, setBranchOptions] = useState<any[]>([]);
+    const [areaOptions, setAreaOptions] = useState<any[]>([]);
+    const [regionOptions, setRegionOptions] = useState<any[]>([]);
+    
+    useEffect(() => {
+        const loadBranches = async () => {
+            try {
+                const response = await fetch(`/api/branches?type=BRANCH&areaCode=${area}&size=500`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching branches:', err);
+            }
+        };
+
+        loadBranches();
+    }, [area]);
+
+    useEffect(() => {
+        const loadAreas = async () => {
+            setBranch('');
+            
+            try {
+                const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        loadAreas();
+    }, [region]);
+
+    useEffect(() => {
+        const loadRegions = async () => {
+            setBranch('');
+            setArea('');
+
+            try {
+                const response = await fetch(`/api/branches?type=REGION&size=100`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching regions:', err);
+            }
+        };
+
+        loadRegions();
+    }, []);
 
     const reportTypes = [
         { value: '/api/reports/daily-queue-report', label: 'Daily Queue Report' },
         { value: '/api/reports/waiting-time-report', label: 'Waiting Time Report' },
         { value: '/api/reports/branch-load-report', label: 'Branch Load Report' },
         { value: '/api/reports/sla-report', label: 'Service Level Agreement Report' },
-        { value: '/api/reports/monthly-trend-report', label: 'Monthly and Trend Analysis Report' },
         { value: '/api/reports/resource-allocation-report', label: 'Resource Allocation Report' },
         { value: '/api/reports/service-type-popularity-report', label: 'Service Type Popularity Report' },
         { value: '/api/reports/crew-cabin-check-report', label: 'Cabin Crew Check Report' },
@@ -36,6 +97,9 @@ const GenerateReportForm: React.FC = () => {
         const type = formData.reportType;
         const start = formData.startDate;
         const end = formData.endDate;
+        const regionCode = region;
+        const areaCode = area;
+        const branchCode = branch;
 
         if (!type || !start || !end) {
             return;
@@ -48,9 +112,14 @@ const GenerateReportForm: React.FC = () => {
         const queryParams = new URLSearchParams({
             start,
             end,
+            regionCode,
+            areaCode,
+            branchCode,
         });
 
         setApiUrl(`${type}?${queryParams.toString()}`);
+
+        console.log(`${type}?${queryParams.toString()}`);
     };
 
     const formatDate = (dateString: string) => {
@@ -76,6 +145,9 @@ const GenerateReportForm: React.FC = () => {
                 <div className="p-6 bg-white rounded-lg">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Generate Report</h2>
                     <div className="space-y-4">
+                        <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+                        <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
+                        <Select size="xs" label="Branch" options={branchOptions} value={branch} onChange={(value) => setBranch(value as string)} disabled={area === ''} />
                         <Select
                             label="Report Type"
                             options={reportTypes}

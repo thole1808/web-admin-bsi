@@ -2,18 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
-import AsyncSelectComponent from "@/components/Forms/AsycSelect";
-import debounce from 'lodash.debounce';
 import { toast } from 'react-toastify';
-import Label from "@/components/Forms/Label";
 import Select from "@/components/Forms/Select";
 import { FaEnvelope, FaPhone } from "react-icons/fa";
 import TextInput from "@/components/Forms/TextInput";
-
-interface Option {
-    id: string;
-    name: string;
-}
 
 interface UserEditProps {
     isOpen: boolean;
@@ -23,38 +15,103 @@ interface UserEditProps {
 
 interface FormData {
     id: string;
+    type: string;
     username: string;
     name: string;
     email: string;
     phone: string;
     roleId: string;
     branchId: string;
+    areaCode: string;
+    regionCode: string;
 }
 
 const UserEdit: React.FC<UserEditProps> = ({ isOpen, onClose, data }) => {
-    interface Branch {
-        id: string;
-        name: string;
-    }
-
-    const [branch, setBranch] = useState<Branch>({
-        id: data?.branch?.id,
-        name: data?.branch?.name
-    });
-
     const [formData, setFormData] = useState<FormData>({
         id: data.id,
         username: data.username,
+        type: data.type,
         name: data.name,
         email: data.email,
         phone: data.phone,
         roleId: data?.role?.id,
         branchId: data?.branch?.id,
+        areaCode: data?.areaCode,
+        regionCode: data?.regionCode,
     });
 
     const [roles, setRoles] = useState<any[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [errors, setErrors] = useState<any>({});
+    const [branchOptions, setBranchOptions] = useState<any[]>([]);
+    const [areaOptions, setAreaOptions] = useState<any[]>([]);
+    const [regionOptions, setRegionOptions] = useState<any[]>([]);
+
+    useEffect(() => {
+        const loadBranches = async () => {
+            try {
+                const response = await fetch(`/api/branches?type=BRANCH&areaCode=${formData.areaCode}&size=500`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching branches:', err);
+            }
+        };
+
+        loadBranches();
+    }, [formData.areaCode]);
+
+    useEffect(() => {
+        const loadAreas = async () => {
+            setFormData({
+                ...formData,
+                branchId: '',
+            });
+
+            try {
+                const response = await fetch(`/api/branches?type=AREA&regionCode=${formData.regionCode}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        loadAreas();
+    }, [formData.regionCode]);
+
+    useEffect(() => {
+        const loadRegions = async () => {
+            setFormData({
+                ...formData,
+                areaCode: '',
+            });
+
+            setFormData({
+                ...formData,
+                branchId: '',
+            });
+
+            try {
+                const response = await fetch(`/api/branches?type=REGION&size=100`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching regions:', err);
+            }
+        };
+
+        loadRegions();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,13 +131,6 @@ const UserEdit: React.FC<UserEditProps> = ({ isOpen, onClose, data }) => {
 
         fetchData();
     }, []);
-
-    useEffect(() => {
-        setFormData({
-            ...formData,
-            branchId: branch.id
-        });
-    }, [branch]);
 
     const handleSubmit = async (formData: FormData) => {
         try {
@@ -120,6 +170,20 @@ const UserEdit: React.FC<UserEditProps> = ({ isOpen, onClose, data }) => {
             onSubmit={() => handleSubmit(formData)}
             isProcessing={isProcessing}
         >
+            <div className="mb-4 text-sm">
+                <Select
+                    label="User Type"
+                    options={[
+                        { value: 'REGION', label: 'Region' },
+                        { value: 'AREA', label: 'Area' },
+                        { value: 'BRANCH', label: 'Branch' },
+                    ]}
+                    value={formData.type}
+                    onChange={(value) => setFormData({ ...formData, type: String(value) })}
+                    placeholder="Select an option"
+                    required
+                />
+            </div>
             <div className="mb-4 text-sm">
                 <TextInput
                     label="Username"
@@ -173,19 +237,18 @@ const UserEdit: React.FC<UserEditProps> = ({ isOpen, onClose, data }) => {
                 />
             </div>
             <div className="mb-4 text-sm">
-                <Label htmlFor="branchId">Branch</Label>
-                <AsyncSelectComponent optionLabel="name" optionValue="id" value={branch} onChange={(selectedOption: Option) => setBranch(selectedOption as Branch)} loadOptions={debounce(async (inputValue: string) => {
-                    const response = await fetch(`/api/branches?name=${inputValue}`);
-                    const result = await response.json();
-
-                    if (result.success) {
-                        return result.data.content;
-                    } else {
-                        throw new Error(result.message || "Failed to fetch branches");
-                    }
-                }, 500) as (inputValue: string) => Promise<Option[]>} />
-                {errors?.cabangId && <p className="text-red-500 text-xs mt-1">{errors?.cabangId}</p>}
+                <Select size="sm" label="Region" options={regionOptions} value={formData.regionCode} onChange={(value) => setFormData({ ...formData, regionCode: String(value) })} />
             </div>
+            {formData.type === 'AREA' || formData.type === 'BRANCH' && (
+                <div className="mb-4 text-sm">
+                    <Select size="sm" label="Area" options={areaOptions} value={formData.areaCode} onChange={(value) => setFormData({ ...formData, areaCode: String(value) })} />
+                </div>
+            )}
+            {formData.type === 'BRANCH' && (
+                <div className="mb-4 text-sm">
+                    <Select size="sm" label="Branch" options={branchOptions} value={formData.branchId} onChange={(value) => setFormData({ ...formData, branchId: String(value) })} />
+                </div>
+            )}
         </ModalForm>
     );
 };

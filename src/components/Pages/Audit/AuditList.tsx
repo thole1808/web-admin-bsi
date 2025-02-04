@@ -180,7 +180,7 @@ const AuditList: React.FC = () => {
                 <div className="p-4 border-b flex justify-between items-center">
                     <h2 className="text-lg font-semibold ml-2">Audit Trails</h2>
                     <div>
-                        <ExportCSV data={data} filename="branches.csv" />
+                        <ExportCSV data={data} filename="audit-trails.csv" />
                     </div>
                 </div>
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">

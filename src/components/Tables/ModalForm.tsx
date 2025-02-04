@@ -39,7 +39,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ width, title, isOpen, onClose, on
             onClick={onClose}
         >
             <div
-                className={`bg-white p-6 rounded-lg shadow-lg max-w-${width || 'md'} w-full z-50`}
+                className={`bg-white p-6 rounded-lg shadow-lg max-w-${width || 'sm'} w-full z-50`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-lg font-bold mb-4">{title}</h2>
