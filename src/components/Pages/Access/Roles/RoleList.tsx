@@ -173,6 +173,9 @@ const RoleList: React.FC = () => {
             grow: 3,
             sortable: true,
             sortField: 'guardName',
+            cell: (row: { guardName: any; }) => (
+                <span className="text-xs bg-gray-100 text-gray-500 py-1 px-2 rounded">{row.guardName === 'api' ? 'Caller' : 'Webadmin'}</span>
+            ),
         },
         {
             name: 'Permissions',

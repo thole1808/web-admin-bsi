@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import ModalForm from "@/components/Tables/ModalForm";
 import { toast } from 'react-toastify';
 import Label from "@/components/Forms/Label";
+import Select from "@/components/Forms/Select";
 
 interface RoleEditProps {
     isOpen: boolean;
@@ -130,16 +131,18 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
                 {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
-                <Label htmlFor="guardName" required>Guard</Label>
-                <input
-                    type="text"
-                    id="guardName"
-                    placeholder="Guard"
+                <Select
+                    label="Guard"
+                    options={[
+                        { value: 'api', label: 'Caller' },
+                        { value: 'admin', label: 'Webadmin' },
+                    ]}
                     value={formData.guardName}
-                    onChange={(e) => setFormData({ ...formData, guardName: e.target.value })}
-                    className={inputStyles}
+                    onChange={(value) => setFormData({ ...formData, guardName: String(value) })}
+                    placeholder="Select an option"
+                    error={errors?.guardName}
+                    required
                 />
-                {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="permissions" required>Permissions</Label>
