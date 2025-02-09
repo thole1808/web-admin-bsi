@@ -4,7 +4,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import ServicesTypeList from "@/components/Pages/Master/ServiceTypes/ServiceTypeList";
 
 export const metadata: Metadata = {
-    title: "QMS Console - Layanan"
+    title: "QMS Console - Service Types"
 };
 
 const FormElementsPage = () => {

@@ -64,29 +64,6 @@ const Header: React.FC<HeaderProps> = ({
     return (
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
             <div className="w-full px-6 py-3 flex items-center justify-between border-b">
-                {/* Search Box */}
-                <div className="flex items-center space-x-4">
-                    <div className="relative w-full max-w-xl flex items-center">
-                        <input
-                            type="text"
-                            placeholder="Search....."
-                            className="w-[400px] px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        />
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 50 50"
-                            width="16px"
-                            height="16px"
-                            className="absolute right-3 top-3 text-gray-500"
-                        >
-                            <path
-                                d="M 21 3 C 11.621094 3 4 10.621094 4 20 C 4 29.378906 11.621094 37 21 37 C 24.710938 37 28.140625 35.804688 30.9375 33.78125 L 44.09375 46.90625 L 46.90625 44.09375 L 33.90625 31.0625 C 36.460938 28.085938 38 24.222656 38 20 C 38 10.621094 30.378906 3 21 3 Z M 21 5 C 29.296875 5 36 11.703125 36 20 C 36 28.296875 29.296875 35 21 35 C 12.703125 35 6 28.296875 6 20 C 6 11.703125 12.703125 5 21 5 Z"
-                            />
-                        </svg>
-                    </div>
-                </div>
-
                 {/* User Dropdown */}
                 <div className="relative inline-block text-left" ref={dropdownRef}>
                     <button
