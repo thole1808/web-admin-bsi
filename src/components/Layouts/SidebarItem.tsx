@@ -50,7 +50,7 @@ const SidebarItem = ({ item }: any) => {
   };
 
   return (
-    <li className="relative mb-1 text-sm">
+    <li className="relative mb-1">
       {/* Indikator Active */}
       <div
         className={`absolute left-1 top-2 bottom-2 w-1 transition-all duration-300 ease-in-out ${

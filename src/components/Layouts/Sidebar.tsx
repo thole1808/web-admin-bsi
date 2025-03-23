@@ -42,7 +42,6 @@ const menuGroups = [
         route: '/master',
         icon: "DatabaseIcon",
         children: [
-          { label: 'Approval Matrix', route: '/master/approval-matrix' },
           { label: 'Cabin Crew Checks', route: '/master/cabin-crew-checks' },
           { label: 'National Holiday', route: '/master/national-holiday' },
           { label: 'Service Types', route: '/master/service-types' },
@@ -139,7 +138,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div>
             <button
               onClick={handleLogout}
-              className="w-full py-3 px-20 rounded-lg flex items-center justify-center space-x-2 border hover:bg-gray-50 border-gray-300 focus:outline-none text-sm"
+              className="w-full py-3 px-20 rounded-lg flex items-center justify-center space-x-2 border hover:bg-gray-50 border-gray-300 focus:outline-none"
             >
               <FiLogOut size={16} />
               <span>Logout</span>

@@ -111,7 +111,7 @@ const UserList: React.FC = () => {
     }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, role, isEdit, isCreate, isDelete]);
 
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
-        <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
+        <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
     );
 
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
@@ -168,13 +168,13 @@ const UserList: React.FC = () => {
             name: 'Last Login',
             selector: (row: { lastLoginAt: string; }) => formatDateTime(row?.lastLoginAt) || '',
             grow: 2,
-            right: true,
+            right: "true",
             sortable: true,
             sortField: 'lastLoginAt',
         },
         {
             name: '',
-            right: true,
+            right: "true",
             maxWidth: '5px',
             cell: (row: any) => (
                 <ActionGroup
@@ -217,7 +217,7 @@ const UserList: React.FC = () => {
 
     const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
         return (
-            <div className="p-6 bg-gray-50 text-xs">
+            <div className="p-6 bg-gray-50 text-sm">
                 <div className="grid grid-cols-2">
                     <div>
                         <div className="grid grid-cols-3 max-w-sm mb-1">
@@ -287,7 +287,7 @@ const UserList: React.FC = () => {
                             placeholder="Select an option"
                         />
                     </div>
-                    <div className="grid text-xs items-end justify-end col-span-1">
+                    <div className="grid text-sm items-end justify-end col-span-1">
                         <ResetButton onClick={handleResetFilter} />
                     </div>
                 </div>

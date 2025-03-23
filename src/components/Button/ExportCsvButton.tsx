@@ -49,7 +49,7 @@ const ExportCSV: React.FC<ExportCSVProps> = ({ data, filename = 'export.csv' }) 
   return (
     <button
       onClick={() => downloadCSV(data)}
-      className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700"
+      className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700"
     >
       Download CSV
     </button>

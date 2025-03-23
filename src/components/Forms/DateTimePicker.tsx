@@ -85,7 +85,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
           />
         )}
       </div>
-      {(localError || error) && <p className="text-red-500 text-xs mt-1">{localError || error}</p>}
+      {(localError || error) && <p className="text-red-500 text-sm mt-1">{localError || error}</p>}
     </div>
   );
 };

@@ -68,16 +68,16 @@ const DailyChecklist: React.FC = () => {
     if (loading) {
         return (
             <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
-                <div className="text-sm font-bold mb-2">Cabin Crew Check</div>
+                <div className="font-bold mb-2">Cabin Crew Check</div>
                 <ul className='-mx-4 divide-y'>
-                    <li className="flex items-center justify-between text-sm py-2 px-4 cursor-pointer">
+                    <li className="flex items-center justify-between py-2 px-4 cursor-pointer">
                         <div className="flex items-center">
                             <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse mr-2"></div>
                             <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
                         </div>
                         <div className="h-4 w-16 bg-gray-300 rounded animate-pulse"></div>
                     </li>
-                    <li className="flex items-center justify-between text-sm py-2 px-4 cursor-pointer">
+                    <li className="flex items-center justify-between py-2 px-4 cursor-pointer">
                         <div className="flex items-center">
                             <div className="w-6 h-6 bg-gray-300 rounded-full animate-pulse mr-2"></div>
                             <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
@@ -92,15 +92,15 @@ const DailyChecklist: React.FC = () => {
     return (
         <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
             <div className="flex justify-between items-center mb-3">
-                <div className="text-sm font-bold">
+                <div className="font-bold">
                     Cabin Crew Check
                 </div>
-                <div className="text-xs">{activityDate}</div>
+                <div className="text-sm">{activityDate}</div>
             </div>
             <ul className='-mx-4 divide-y'>
                 {/* SOD Checklist */}
                 <li
-                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${sodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                    className={`flex items-center justify-between py-2 px-4 cursor-pointer ${sodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
                         }`}
                     onClick={() => handleChecklistClick({ activityType: 'SOD', content: sodChecklists })}
                 >
@@ -112,13 +112,13 @@ const DailyChecklist: React.FC = () => {
                         )}
                         SOD
                     </div>
-                    <div className='text-xs font-gray-500'>
+                    <div className='text-sm font-gray-500'>
                         {sodChecklists.filter((item: any) => item.checked).length} Checked
                     </div>
                 </li>
 
                 <li
-                    className={`flex items-center justify-between text-sm py-2 px-4 cursor-pointer ${eodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
+                    className={`flex items-center justify-between py-2 px-4 cursor-pointer ${eodChecklists.length > 0 ? 'bg-green-100 hover:bg-green-200' : 'bg-white hover:bg-gray-100'
                         }`}
                     onClick={() => handleChecklistClick({ activityType: 'EOD', content: eodChecklists })}
                 >
@@ -130,7 +130,7 @@ const DailyChecklist: React.FC = () => {
                         )}
                         EOD
                     </div>
-                    <div className='text-xs font-gray-500'>
+                    <div className='text-sm font-gray-500'>
                         {eodChecklists.filter((item: any) => item.checked).length} Checked
                     </div>
                 </li>

@@ -103,7 +103,7 @@ const DoughnutChartCard: React.FC = () => {
                     <div className="relative h-56 flex items-center justify-center">
                         <Doughnut data={chartData} options={chartOptions} />
                         <div className="absolute inset-2 flex items-center justify-center">
-                            <span className="text-gray-600 font-semibold text-sm text-center">
+                            <span className="text-gray-600 font-semibold text-center">
                                 Top 3<br />Services
                             </span>
                         </div>
@@ -112,7 +112,7 @@ const DoughnutChartCard: React.FC = () => {
                         {data.map((item: any, index: number) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between text-xs mb-2"
+                                className="flex items-center justify-between text-sm mb-2"
                             >
                                 <div className="flex items-center">
                                     <div

@@ -102,30 +102,30 @@ const UserProfile: React.FC = () => {
       {/* Informasi Detail */}
       <div className="flex-1">
         <h2 className="text-2xl font-semibold text-gray-800">{profile.name}</h2>
-        <p className="text-sm text-gray-500 mb-4">{profile.email}</p>
+        <p className="text-gray-500 mb-4">{profile.email}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">Username</p>
-            <p className="text-sm font-medium text-gray-800">{profile.username}</p>
+            <p className="text-gray-500">Username</p>
+            <p className="font-medium text-gray-800">{profile.username}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Phone</p>
-            <p className="text-sm font-medium text-gray-800">{profile.phone}</p>
+            <p className="text-gray-500">Phone</p>
+            <p className="font-medium text-gray-800">{profile.phone}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Role</p>
-            <p className="text-sm font-medium text-gray-800">{profile.role.name}</p>
+            <p className="text-gray-500">Role</p>
+            <p className="font-medium text-gray-800">{profile.role.name}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Branch</p>
-            <p className="text-sm font-medium text-gray-800">
+            <p className="text-gray-500">Branch</p>
+            <p className="font-medium text-gray-800">
               {profile.branch.name} ({profile.branch.code})
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Status</p>
+            <p className="text-gray-500">Status</p>
             <p
-              className={`text-sm font-medium ${profile.active ? "text-green-500" : "text-red-500"
+              className={`font-medium ${profile.active ? "text-green-500" : "text-red-500"
                 }`}
             >
               {profile.active ? "Active" : "Inactive"}

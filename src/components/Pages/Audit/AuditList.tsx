@@ -90,7 +90,7 @@ const AuditList: React.FC = () => {
 
     const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
         return (
-            <div className="py-4 px-16 bg-gray-50 text-xs">
+            <div className="py-4 px-16 bg-gray-50 text-sm">
                 <div className="grid grid-cols-10 mb-2">
                     <span className="font-medium">Old Value</span>
                     <span className="col-span-9">:&nbsp;{data.oldValue || '-'}</span>
@@ -131,7 +131,7 @@ const AuditList: React.FC = () => {
     function eventWithStyle(event: string) {
         if (!event) return '';
 
-        let style = 'p-1 rounded text-xs font-medium ';
+        let style = 'p-1 rounded text-sm font-medium ';
 
         switch (event) {
             case 'CREATE':
@@ -209,7 +209,7 @@ const AuditList: React.FC = () => {
                             placeholder="Select an option"
                         />
                     </div>
-                    <div className="grid text-xs items-end justify-end col-span-1">
+                    <div className="grid text-sm items-end justify-end col-span-1">
                         <ResetButton onClick={handleResetFilter} />
                     </div>
                     <div className="grid col-span-2">

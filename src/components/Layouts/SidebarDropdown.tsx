@@ -16,7 +16,7 @@ const SidebarDropdown: React.FC<SidebarDropdownProps> = ({ item }) => {
   const pathname = usePathname();
 
   return (
-    <ul className="flex flex-col text-sm gap-2">
+    <ul className="flex flex-col gap-2">
       {item.map((child, index) => {
         const isActive = child.route === pathname;
 

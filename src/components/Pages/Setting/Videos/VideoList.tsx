@@ -189,7 +189,7 @@ const VideoList: React.FC = () => {
                         },
                         {
                             name: "",
-                            right: true,
+                            right: "true",
                             cell: (row: any) => (
                                 <ActionGroup
                                     options={[
@@ -216,7 +216,7 @@ const VideoList: React.FC = () => {
                     onSubmit={() => handleSubmit(formData)}
                     isProcessing={isProcessing}
                 >
-                    <div className="mb-4 text-sm grid gap-4">
+                    <div className="mb-4 grid gap-4">
                         <TextInput
                             label="Label"
                             value={formData.label}

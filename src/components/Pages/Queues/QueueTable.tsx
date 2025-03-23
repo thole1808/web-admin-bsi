@@ -200,11 +200,11 @@ const QueueTable: React.FC = () => {
     link.click();
   }
 
-  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>;
+  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>;
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
-      <div className="py-4 px-16 bg-gray-50 text-xs">
+      <div className="py-4 px-16 bg-gray-50 text-sm">
         <div className="grid grid-cols-2">
           <div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
@@ -330,7 +330,7 @@ const QueueTable: React.FC = () => {
   function statusWithStyle(status: string) {
     if (!status) return '';
 
-    let style = 'p-1 rounded text-xs font-medium ';
+    let style = 'p-1 rounded text-sm font-medium ';
     let message = '';
 
     switch (status) {
@@ -395,7 +395,7 @@ const QueueTable: React.FC = () => {
       cell: (row: { branchName: string; branchCode: string; }) => (
         <div className="">
           <div>{row.branchName}</div>
-          <div className="text-xs text-gray-500 mt-1">{row.branchCode}</div>
+          <div className="text-sm text-gray-500 mt-1">{row.branchCode}</div>
         </div>
       ),
     },
@@ -501,7 +501,7 @@ const QueueTable: React.FC = () => {
               { value: 'ONLINE', label: 'Online' },
             ]} value={typeField} onChange={(value) => setTypeField(value as string)} />
           </div>
-          <div className="grid text-xs items-end justify-end">
+          <div className="grid text-sm items-end justify-end">
             <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
               <FaRotateLeft className="w-3 h-3" />
               Reset

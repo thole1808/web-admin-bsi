@@ -82,7 +82,7 @@ const BranchStatsOverview: React.FC = () => {
                     <MapIcon className="h-6 w-6 text-red-500" />
                 </div>
                 <div className="ml-4">
-                    <h4 className="text-gray-600 text-xs font-semibold">
+                    <h4 className="text-gray-600 text-sm font-semibold">
                         Regions
                     </h4>
                     <p className="text-gray-800 text-xl font-bold">{stats.totalRegions}</p>
@@ -95,7 +95,7 @@ const BranchStatsOverview: React.FC = () => {
                     <FaMapPin className="h-6 w-6 text-orange-500" />
                 </div>
                 <div className="ml-4">
-                    <h4 className="text-gray-600 text-xs font-semibold">
+                    <h4 className="text-gray-600 text-sm font-semibold">
                         Areas
                     </h4>
                     <p className="text-gray-800 text-xl font-bold">{stats.totalAreas}</p>
@@ -108,7 +108,7 @@ const BranchStatsOverview: React.FC = () => {
                     <FaBuilding className="h-6 w-6 text-green-500" />
                 </div>
                 <div className="ml-4">
-                    <h4 className="text-gray-600 text-xs font-semibold">
+                    <h4 className="text-gray-600 text-sm font-semibold">
                         Branches
                     </h4>
                     <p className="text-gray-800 text-xl font-bold">{stats.totalBranches}</p>
@@ -121,7 +121,7 @@ const BranchStatsOverview: React.FC = () => {
                     <FaInfo className="h-6 w-6 text-blue-500" />
                 </div>
                 <div className="ml-4">
-                    <h4 className="text-gray-600 text-xs font-semibold">
+                    <h4 className="text-gray-600 text-sm font-semibold">
                         Total
                     </h4>
                     <p className="text-gray-800 text-xl font-bold">{stats.totalBranches + stats.totalAreas + stats.totalRegions}</p>

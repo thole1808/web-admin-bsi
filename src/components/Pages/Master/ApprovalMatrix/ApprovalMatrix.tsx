@@ -109,7 +109,7 @@ const ApprovalMatrix: React.FC = () => {
     },
     {
       name: "Actions",
-      right: true,
+      right: "true",
       cell: (row: MatrixItem) => (
         <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
           <button
@@ -120,13 +120,13 @@ const ApprovalMatrix: React.FC = () => {
           </button>
           <button
             onClick={() => handleEdit(row)}
-            className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+            className="text-green-500 hover:underline flex items-center space-x-1 text-sm sm:px-2 py-1 w-full sm:w-auto"
           >
             <PencilSquareIcon className="h-5 w-5" />
           </button>
           <button
             onClick={() => handleDelete(row.id)}
-            className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+            className="text-red-500 hover:underline flex items-center space-x-1 text-sm sm:px-2 py-1 w-full sm:w-auto"
           >
             <TrashIcon className="h-5 w-5" />
           </button>
@@ -251,7 +251,7 @@ const ApprovalMatrix: React.FC = () => {
               setIsCreateModalOpen(true);
               setIsModalOpen(false);
             }}
-            className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
+            className="bg-teal-500 font-medium tracking-wide text-white px-4 py-2 rounded-md"
           >
             Create
           </button>
@@ -388,21 +388,21 @@ const ApprovalMatrix: React.FC = () => {
         {detailData ? (
           <div className="grid gap-4">
             <div>
-              <div className="text-sm text-gray-500">Model Type</div>
+              <div className="text-gray-500">Model Type</div>
               <div className="mt-1 font-medium">{detailData.modelType}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Event</div>
+              <div className="text-gray-500">Event</div>
               <div className="mt-1 font-medium">{detailData.event}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Created At</div>
+              <div className="text-gray-500">Created At</div>
               <div className="mt-1 font-medium">
                 {new Date(detailData.createdAt).toLocaleString()}
               </div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Updated At</div>
+              <div className="text-gray-500">Updated At</div>
               <div className="mt-1 mb-3 font-medium">
                 {detailData.updatedAt
                   ? new Date(detailData.updatedAt).toLocaleString()

@@ -31,7 +31,7 @@ const ToggleInput: React.FC<ToggleInputProps> = ({ label, initialValue = false, 
           }`}
         ></div>
       </div>
-      {label && <span className="text-sm font-medium">{label}</span>}
+      {label && <span className="font-medium">{label}</span>}
     </div>
   );
 };

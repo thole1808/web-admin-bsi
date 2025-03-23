@@ -126,7 +126,7 @@ const RoleList: React.FC = () => {
     };
 
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
-        <button className="text-xs py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
+        <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
     );
     
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
@@ -174,7 +174,7 @@ const RoleList: React.FC = () => {
             sortable: true,
             sortField: 'guardName',
             cell: (row: { guardName: any; }) => (
-                <span className="text-xs bg-gray-100 text-gray-500 py-1 px-2 rounded">{row.guardName === 'api' ? 'Caller' : 'Webadmin'}</span>
+                <span className="text-sm bg-gray-100 text-gray-500 py-1 px-2 rounded">{row.guardName === 'api' ? 'Caller' : 'Webadmin'}</span>
             ),
         },
         {
@@ -183,7 +183,7 @@ const RoleList: React.FC = () => {
             cell: (row: { permissions: any; }) => (
                 <button onClick={() => viewPermissions(row?.permissions)} className={`${row?.permissions?.length > 0 ? 'text-blue-500' : ''} flex items-center gap-1`}>
                     <span>{row?.permissions?.length || '0'}</span>
-                    <span className="text-xs">item</span>
+                    <span className="text-sm">item</span>
                 </button>
             ),
         },
@@ -193,11 +193,11 @@ const RoleList: React.FC = () => {
             sortable: true,
             sortField: 'updatedAt',
             grow: 2,
-            right: true,
+            right: "true",
         },
         {
             name: '',
-            right: true,
+            right: "true",
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -254,10 +254,10 @@ const RoleList: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
-                        <label className="text-xs mb-1">Search</label>
-                        <input className="border border-gray-300 w-full text-sm py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email peran..." />
+                        <label className="text-sm mb-1">Search</label>
+                        <input className="border border-gray-300 w-full py-1 px-2 rounded" type="text" value={search} onChange={handleInputChange} placeholder="Cari berdasarkan id, nama dan email peran..." />
                     </div>
-                    <div className="grid text-xs items-end justify-end">
+                    <div className="grid text-sm items-end justify-end">
                         <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
                             <FaRotateLeft className="w-3 h-3" />
                             Reset
@@ -305,7 +305,7 @@ const RoleList: React.FC = () => {
 
             {isViewPermission && (
                 <ModalView
-                    width="lg"
+                    width="2xl"
                     title="View Permissions"
                     isOpen={isViewPermission}
                     onClose={() => { setIsViewPermission(false); setPermissions([]); }}
@@ -317,7 +317,7 @@ const RoleList: React.FC = () => {
                         {permissions.map((permission: any) => (
                             <div key={permission.id} className="border border-gray-300 hover:bg-teal-400 hover:text-white rounded p-2 text-sm">
                                 <div className="font-medium">{permission.name}</div>
-                                <div className="text-xs">{permission.description}</div>
+                                <div className="text-sm">{permission.description}</div>
                             </div>
                         ))}
                     </div>

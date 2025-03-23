@@ -97,11 +97,11 @@ const BranchProfile: React.FC = () => {
     return (
         <div>
             <h2 className="text-xl font-semibold text-gray-800">
-                {branchData.name} <small className="text-teal-500 text-xs">#{branchData.code || '-'}</small>
+                {branchData.name} <small className="text-teal-500 text-sm">#{branchData.code || '-'}</small>
             </h2>
-            <div className="text-sm text-gray-600 flex items-center">{branchData.address}</div>
+            <div className="text-gray-600 flex items-center">{branchData.address}</div>
             {branchData.phone && (
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-gray-600">
                     <FaPhone className="mr-2" />
                     {branchData.phone}
                 </div>
@@ -109,36 +109,36 @@ const BranchProfile: React.FC = () => {
             <div className="grid grid-cols-2 justify-start items-start max-w-4xl">
                 <div className="grid gap-y-2 mt-4">
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Type</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {branchData.type || '-'}</p>
+                        <p className="text-gray-500">Type</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.type || '-'}</p>
                     </div>
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Room Capacity</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {branchData.maxRoomCapacity || '-'}</p>
+                        <p className="text-gray-500">Room Capacity</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.maxRoomCapacity || '-'}</p>
                     </div>
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Queue Capacity</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {branchData.maxQueueCapacity || '-'}</p>
+                        <p className="text-gray-500">Queue Capacity</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.maxQueueCapacity || '-'}</p>
                     </div>
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Timezone</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {branchData.timezone || '-'}</p>
+                        <p className="text-gray-500">Timezone</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.timezone || '-'}</p>
                     </div>
                 </div>
                 <div className="grid gap-y-2 mt-4">
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Status</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp;&nbsp;
-                            <span className={`text-sm font-medium ${branchData.active ? "text-green-500" : "text-red-500"}`}>{branchData.active ? "Active" : "Inactive"}</span>
+                        <p className="text-gray-500">Status</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp;&nbsp;
+                            <span className={`font-medium ${branchData.active ? "text-green-500" : "text-red-500"}`}>{branchData.active ? "Active" : "Inactive"}</span>
                         </p>
                     </div>
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Created At</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {new Date(branchData.createdAt).toLocaleString("id-ID")}</p>
+                        <p className="text-gray-500">Created At</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {new Date(branchData.createdAt).toLocaleString("id-ID")}</p>
                     </div>
                     <div className="grid grid-cols-3">
-                        <p className="text-sm text-gray-500">Updated At</p>
-                        <p className="text-sm font-medium text-gray-800 col-span-2">:&nbsp; {new Date(branchData.updatedAt).toLocaleString("id-ID")}</p>
+                        <p className="text-gray-500">Updated At</p>
+                        <p className="font-medium text-gray-800 col-span-2">:&nbsp; {new Date(branchData.updatedAt).toLocaleString("id-ID")}</p>
                     </div>
                 </div>
             </div>

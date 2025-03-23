@@ -75,11 +75,11 @@ const BranchVisitor: React.FC = () => {
     if (loading) {
         return (
             <div className="bg-white rounded-lg shadow-lg pb-2">
-                <h2 className="text-gray-600 text-sm font-semibold px-4 pb-2 pt-4">
+                <h2 className="text-gray-600 font-semibold px-4 pb-2 pt-4">
                     <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
                 </h2>
                 <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white rounded-sm shadow-sm text-xs">
+                    <table className="min-w-full bg-white rounded-sm shadow-sm text-sm">
                         <thead>
                             <tr className="border-b">
                                 <th className="py-2 px-4 text-left text-gray-600 font-medium">
@@ -118,11 +118,11 @@ const BranchVisitor: React.FC = () => {
 
     return (
         <div className="bg-white rounded-lg shadow-lg p-4">
-            <h2 className="text-sm font-semibold">
+            <h2 className="font-semibold">
                 Today Visitors
             </h2>
             <div className="overflow-x-auto -mx-4 mt-2">
-                <table className="min-w-full bg-white rounded-sm shadow-sm text-xs">
+                <table className="min-w-full bg-white rounded-sm shadow-sm text-sm">
                     <thead>
                         <tr className="border-b">
                             <th

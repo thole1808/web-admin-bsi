@@ -111,11 +111,11 @@ const QueueStatsOverview: React.FC = () => {
                             {getStatusIcon(stat.status)}
                         </div>
                         <div className="ml-4">
-                            <h4 className="text-gray-600 text-xs font-semibold">
+                            <h4 className="text-gray-600 text-sm font-semibold">
                                 {getStatusLabel(stat.status)}
                             </h4>
                             <p className="text-gray-800 text-xl font-bold">{stat.current}</p>
-                            <p className="text-xs text-gray-500 flex items-center">
+                            <p className="text-sm text-gray-500 flex items-center">
                                 {getTrendIcon(stat.trend)} {getTrendLabel(stat.current, stat.previous)}
                             </p>
                         </div>

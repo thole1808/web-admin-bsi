@@ -63,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({
 
     return (
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
-            <div className="w-full px-6 py-3 flex items-center justify-between border-b">
+            <div className="w-full px-6 py-3 flex items-center justify-end border-b">
                 {/* User Dropdown */}
                 <div className="relative inline-block text-left" ref={dropdownRef}>
                     <button
@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({
                                 height={24}
                                 priority
                             />
-                            <span className="font-medium text-sm text-gray-700">
+                            <span className="font-medium text-gray-700">
                                 {session?.user?.name || 'Admin'}
                             </span>
                         </div>

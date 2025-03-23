@@ -116,7 +116,7 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
                     onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                     className={inputStyles}
                 />
-                {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
+                {errors?.name && <p className="text-red-500 text-sm mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="name" required>Role</Label>
@@ -128,7 +128,7 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={inputStyles}
                 />
-                {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
+                {errors?.name && <p className="text-red-500 text-sm mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Select
@@ -149,7 +149,7 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
                 <div className="grid grid-cols-3 gap-3">
                     {permissionData.map((item: any) => (
                         <div key={item.id} className="flex items-center justify-between gap-2 border p-2 rounded">
-                            <label htmlFor={item.id} className="block text-sm font-medium text-gray-700">
+                            <label htmlFor={item.id} className="block font-medium text-gray-700">
                                 {item.name}
                             </label>
                             <input

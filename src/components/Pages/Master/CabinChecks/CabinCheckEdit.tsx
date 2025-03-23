@@ -129,7 +129,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
                     initialValue={formData.mandatory}
                     onChange={(value) => setFormData({ ...formData, mandatory: value })}
                 />
-                {errors?.mandatory && <p className="text-red-500 text-xs mt-1">{errors?.mandatory}</p>}
+                {errors?.mandatory && <p className="text-red-500 text-sm mt-1">{errors?.mandatory}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <ToggleInput
@@ -137,7 +137,7 @@ const CabinCheckEdit: React.FC<CabinCheckEditProps> = ({ isOpen, onClose, data }
                     initialValue={formData.active}
                     onChange={(value) => setFormData({ ...formData, active: value })}
                 />
-                {errors?.active && <p className="text-red-500 text-xs mt-1">{errors?.active}</p>}
+                {errors?.active && <p className="text-red-500 text-sm mt-1">{errors?.active}</p>}
             </div>
 
         </ModalForm>

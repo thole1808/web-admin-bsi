@@ -96,7 +96,7 @@ const ReportExcel: React.FC<ReportExcelProps> = ({ title, apiUrl }) => {
                 className={`${isExporting
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-green-500 hover:bg-green-600"
-                    } text-white flex items-center px-3 py-2 text-xs rounded`}
+                    } text-white flex items-center px-3 py-2 text-sm rounded`}
             >
                 {isExporting ? (
                     <>

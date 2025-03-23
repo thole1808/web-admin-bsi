@@ -1,9 +1,19 @@
-import { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 
-// Menambahkan properti `accessToken` dan `refreshToken` pada `Session`
 declare module "next-auth" {
   interface Session {
-    accessToken: string;  // Menambahkan akses token
-    refreshToken: string; // Menambahkan refresh token
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      accessToken: string; // 🟡 ← ini wajib, jadi harus disertakan saat assign
+    };
+  }
+
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    accessToken: string;
   }
 }

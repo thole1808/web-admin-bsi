@@ -126,7 +126,7 @@ const BranchCountersList: React.FC = () => {
         },
         {
             name: "",
-            right: true,
+            right: "true",
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -283,7 +283,7 @@ const BranchCountersList: React.FC = () => {
                             isMulti
                             required
                         />
-                        {errors?.serviceTypes && <p className="text-red-500 text-xs mt-1">{errors?.serviceTypes}</p>}
+                        {errors?.serviceTypes && <p className="text-red-500 text-sm mt-1">{errors?.serviceTypes}</p>}
                     </div>
                 </ModalForm>
             )}

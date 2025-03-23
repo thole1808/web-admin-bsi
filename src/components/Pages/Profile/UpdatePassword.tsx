@@ -72,7 +72,7 @@ const UpdatePassword: React.FC = () => {
             disabled={isProcessing}
             className={`${
               isProcessing ? "bg-gray-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-700"
-            } text-white rounded flex gap-1 items-center px-3 py-2 text-sm font-medium`}
+            } text-white rounded flex gap-1 items-center px-3 py-2 font-medium`}
           >
             {isProcessing ? (
               <>

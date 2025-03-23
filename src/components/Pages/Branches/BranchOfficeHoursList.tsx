@@ -90,7 +90,7 @@ const BranchOfficeHourList: React.FC = () => {
         },
         {
             name: "",
-            right: true,
+            right: "true",
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -234,9 +234,9 @@ const BranchOfficeHourList: React.FC = () => {
                             isMulti
                             required
                         />
-                        {errors?.days && <p className="text-red-500 text-xs mt-1">{errors?.days}</p>}
+                        {errors?.days && <p className="text-red-500 text-sm mt-1">{errors?.days}</p>}
                     </div>
-                    <div className="mb-4 text-sm grid grid-cols-2 gap-2">
+                    <div className="mb-4 grid grid-cols-2 gap-2">
                         <TimePicker
                             label="Time Open"
                             value={formData.timeOpen}

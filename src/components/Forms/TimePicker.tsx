@@ -37,7 +37,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block font-medium text-gray-700 mb-1">
           {label}
           {required && <span className="text-red-500">*</span>}
         </label>
@@ -51,7 +51,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
           localError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"
         }`}
       />
-      {(localError || error) && <p className="text-red-500 text-xs mt-1">{localError || error}</p>}
+      {(localError || error) && <p className="text-red-500 text-sm mt-1">{localError || error}</p>}
     </div>
   );
 };

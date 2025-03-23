@@ -137,7 +137,7 @@ const ReportPDF: React.FC<ReportPDFProps> = ({ title, period, apiUrl }) => {
                 isGenerating
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-500 hover:bg-red-600"
-            } text-white flex items-center px-3 py-2 text-xs rounded`}
+            } text-white flex items-center px-3 py-2 text-sm rounded`}
         >
             {isGenerating ? (
                 <>

@@ -83,7 +83,7 @@ const DynamicReportTable = ({ title, apiUrl, period, onLoaded }: DynamicReportTa
                     <h2 className="text-md font-medium text-gray-800">
                         Preview: {title}
                     </h2>
-                    <p className="text-xs text-gray-500 mt-1">Period: {period}</p>
+                    <p className="text-sm text-gray-500 mt-1">Period: {period}</p>
                 </div>
                 <div className="flex items-center space-x-1">
                     {data.length > 0 && (

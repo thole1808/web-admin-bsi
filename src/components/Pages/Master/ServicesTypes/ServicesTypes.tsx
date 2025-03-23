@@ -293,7 +293,7 @@ const ServicesTypes: React.FC = () => {
         },
         {
             name: "Actions",
-            right: true,
+            right: "true",
             cell: (row: ServiceTypeItem) => (
                 <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button
@@ -304,13 +304,13 @@ const ServicesTypes: React.FC = () => {
                     </button>
                     <button
                         onClick={() => handleEditClick(row)}
-                        className="text-green-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                        className="text-green-500 hover:underline flex items-center space-x-1 text-sm sm:px-2 py-1 w-full sm:w-auto"
                     >
                         <PencilSquareIcon className="h-5 w-5" />
                     </button>
                     <button
                         onClick={() => handleDelete(row.id)}
-                        className="text-red-500 hover:underline flex items-center space-x-1 text-xs sm:text-sm px-2 py-1 w-full sm:w-auto"
+                        className="text-red-500 hover:underline flex items-center space-x-1 text-sm sm:px-2 py-1 w-full sm:w-auto"
                     >
                         <TrashIcon className="h-5 w-5" />
                     </button>
@@ -380,7 +380,7 @@ const ServicesTypes: React.FC = () => {
                 <div>
                     <button
                         onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-teal-500 text-sm font-medium tracking-wide text-white px-4 py-2 rounded-md"
+                        className="bg-teal-500 font-medium tracking-wide text-white px-4 py-2 rounded-md"
                     >
                         Create
                     </button>
@@ -421,7 +421,7 @@ const ServicesTypes: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                     {/* Service Name Input */}
                     <div>
-                        <label htmlFor="serviceName" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="serviceName" className="block font-medium text-gray-700 mb-1">
                             Service Type Name
                         </label>
                         <input
@@ -433,13 +433,13 @@ const ServicesTypes: React.FC = () => {
                             className={`border px-4 py-2 rounded-md w-full ${errors.name ? "border-red-500" : "border-gray-300"}`}
                         />
                         {errors.name && (
-                            <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
                         )}
                     </div>
 
                     {/* Service Code Input */}
                     <div>
-                        <label htmlFor="serviceCode" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="serviceCode" className="block font-medium text-gray-700 mb-1">
                             Service Code
                         </label>
                         <input
@@ -451,13 +451,13 @@ const ServicesTypes: React.FC = () => {
                             className={`border px-4 py-2 rounded-md w-full ${errors.code ? "border-red-500" : "border-gray-300"}`}
                         />
                         {errors.code && (
-                            <p className="text-red-500 text-xs mt-1">{errors.code}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.code}</p>
                         )}
                     </div>
 
                     {/* RSV Code Input */}
                     <div>
-                        <label htmlFor="rsvCode" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="rsvCode" className="block font-medium text-gray-700 mb-1">
                             RSV Code
                         </label>
                         <input
@@ -469,13 +469,13 @@ const ServicesTypes: React.FC = () => {
                             className={`border px-4 py-2 rounded-md w-full ${errors.rsvCode ? "border-red-500" : "border-gray-300"}`}
                         />
                         {errors.rsvCode && (
-                            <p className="text-red-500 text-xs mt-1">{errors.rsvCode}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.rsvCode}</p>
                         )}
                     </div>
 
                     {/* Prefix Input */}
                     <div>
-                        <label htmlFor="prefix" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="prefix" className="block font-medium text-gray-700 mb-1">
                             Prefix
                         </label>
                         <input
@@ -486,12 +486,12 @@ const ServicesTypes: React.FC = () => {
                             onChange={(e) => setNewService({ ...newService, prefix: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.prefix ? "border-red-500" : "border-gray-300"}`}
                         />
-                        {errors.prefix && <p className="text-red-500 text-xs mt-1">{errors.prefix}</p>}
+                        {errors.prefix && <p className="text-red-500 text-sm mt-1">{errors.prefix}</p>}
                     </div>
 
                     {/* Product Code Input */}
                     <div>
-                        <label htmlFor="productCode" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="productCode" className="block font-medium text-gray-700 mb-1">
                             Product Code
                         </label>
                         <input
@@ -502,12 +502,12 @@ const ServicesTypes: React.FC = () => {
                             onChange={(e) => setNewService({ ...newService, productCode: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.productCode ? "border-red-500" : "border-gray-300"}`}
                         />
-                        {errors.productCode && <p className="text-red-500 text-xs mt-1">{errors.productCode}</p>}
+                        {errors.productCode && <p className="text-red-500 text-sm mt-1">{errors.productCode}</p>}
                     </div>
 
                     {/* Parent ID Input */}
                     {/* <div>
-                        <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="parentId" className="block font-medium text-gray-700 mb-1">
                             Parent ID
                         </label>
                         <input
@@ -518,12 +518,12 @@ const ServicesTypes: React.FC = () => {
                             onChange={(e) => setNewService({ ...newService, parentId: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.parentId ? "border-red-500" : "border-gray-300"}`}
                         />
-                        {errors.parentId && <p className="text-red-500 text-xs mt-1">{errors.parentId}</p>}
+                        {errors.parentId && <p className="text-red-500 text-sm mt-1">{errors.parentId}</p>}
                     </div> */}
 
                     {/* Parent ID Input */}
                     <div>
-                        <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="parentId" className="block font-medium text-gray-700 mb-1">
                             Parent ID
                         </label>
                         <input
@@ -535,12 +535,12 @@ const ServicesTypes: React.FC = () => {
                             className={`border px-4 py-2 rounded-md w-full ${errors.parentId ? "border-red-500" : "border-gray-300"}`}
                             min="1" // Add min value if applicable
                         />
-                        {errors.parentId && <p className="text-red-500 text-xs mt-1">{errors.parentId}</p>}
+                        {errors.parentId && <p className="text-red-500 text-sm mt-1">{errors.parentId}</p>}
                     </div>
 
                     {/* SLA Min Duration Input */}
                     <div>
-                        <label htmlFor="slaMinDuration" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="slaMinDuration" className="block font-medium text-gray-700 mb-1">
                             SLA Min Duration
                         </label>
                         <input
@@ -553,13 +553,13 @@ const ServicesTypes: React.FC = () => {
                             min="0" // Add min value if applicable
                         />
                         {errors.slaMinDuration && (
-                            <p className="text-red-500 text-xs mt-1">{errors.slaMinDuration}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.slaMinDuration}</p>
                         )}
                     </div>
 
                     {/* SLA Max Duration Input */}
                     <div>
-                        <label htmlFor="slaMaxDuration" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="slaMaxDuration" className="block font-medium text-gray-700 mb-1">
                             SLA Max Duration
                         </label>
                         <input
@@ -572,13 +572,13 @@ const ServicesTypes: React.FC = () => {
                             min="0" // Add min value if applicable
                         />
                         {errors.slaMaxDuration && (
-                            <p className="text-red-500 text-xs mt-1">{errors.slaMaxDuration}</p>
+                            <p className="text-red-500 text-sm mt-1">{errors.slaMaxDuration}</p>
                         )}
                     </div>
 
                     {/* Form Fields Input */}
                     <div>
-                        <label htmlFor="formFields" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="formFields" className="block font-medium text-gray-700 mb-1">
                             Form Fields
                         </label>
                         <textarea
@@ -588,7 +588,7 @@ const ServicesTypes: React.FC = () => {
                             onChange={(e) => setNewService({ ...newService, formFields: e.target.value })}
                             className={`border px-4 py-2 rounded-md w-full ${errors.formFields ? "border-red-500" : "border-gray-300"}`}
                         />
-                        {errors.formFields && <p className="text-red-500 text-xs mt-1">{errors.formFields}</p>}
+                        {errors.formFields && <p className="text-red-500 text-sm mt-1">{errors.formFields}</p>}
                     </div>
 
                 </div>
@@ -671,7 +671,7 @@ const ServicesTypes: React.FC = () => {
                 {currentItem ? (
                     <div className="grid gap-4">
                         <div>
-                            <div className="text-sm text-gray-500">Name</div>
+                            <div className="text-gray-500">Name</div>
                             <div className="mt-1 mb-3 font-medium">{currentItem.name || "N/A"}</div>
                         </div>
                     </div>

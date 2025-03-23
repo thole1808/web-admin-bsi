@@ -125,7 +125,7 @@ const BranchList: React.FC = () => {
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
-      <div className="py-4 px-16 bg-gray-50 text-xs">
+      <div className="py-4 px-16 bg-gray-50 text-sm">
         <div className="grid grid-cols-2">
           <div>
             <div className="grid grid-cols-3 max-w-sm mb-1">
@@ -198,7 +198,7 @@ const BranchList: React.FC = () => {
   function typeWithStyle(type: string) {
     if (!type) return '';
 
-    let style = 'p-1 rounded text-xs font-medium ';
+    let style = 'p-1 rounded text-sm font-medium ';
 
     switch (type) {
       case 'BRANCH':
@@ -257,16 +257,16 @@ const BranchList: React.FC = () => {
     {
       name: 'Last Updated',
       selector: (row: { updatedAt: string; }) => formatDateTime(row?.updatedAt) || '',
-      right: true,
+      right: "true",
       grow: 2,
       sortable: true,
       sortField: 'updatedAt',
     },
     {
       name: "",
-      right: true,
+      right: "true",
       cell: (row: any) => (
-        <Link href={`/branches/${row.id}`} className="text-xs border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-2 flex gap-1 items-center">
+        <Link href={`/branches/${row.id}`} className="text-sm border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-2 flex gap-1 items-center">
           Manage <FaCog className="w-3 h-3" />
         </Link>
       ),
@@ -303,7 +303,7 @@ const BranchList: React.FC = () => {
               placeholder="Select an option"
             />
           </div>
-          <div className="grid text-xs items-end justify-end col-span-1">
+          <div className="grid text-sm items-end justify-end col-span-1">
             <ResetButton onClick={handleResetFilter} />
           </div>
           <div className="grid col-span-2">

@@ -149,7 +149,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
                             <form className='text-sm' onSubmit={handleSubmit}>
                                 {activities.map((checklist: any) => (
                                     <div key={checklist.id} className="flex items-start justify-between gap-3 mb-2">
-                                        <label htmlFor={checklist.id} className="block text-sm font-medium text-gray-700">
+                                        <label htmlFor={checklist.id} className="block font-medium text-gray-700">
                                             {checklist.activityName}
                                         </label>
                                         <input

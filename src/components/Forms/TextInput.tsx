@@ -87,7 +87,7 @@ const TextInput: React.FC<TextInputProps> = ({
       </div>
 
       {/* Error Message */}
-      {(localError || error) && <p className="text-red-500 text-xs mt-1">{localError || error}</p>}
+      {(localError || error) && <p className="text-red-500 text-sm mt-1">{localError || error}</p>}
     </div>
   );
 };

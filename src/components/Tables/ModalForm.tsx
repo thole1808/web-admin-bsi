@@ -51,7 +51,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ width, title, isOpen, onClose, on
                             <BeatLoader size={15} color="#4fa94d" />
                         </div>
                     )}
-                    <div className="text-sm first-line:gap-2 mt-6 flex justify-between relative">
+                    <div className="first-line:gap-2 mt-6 flex justify-between relative">
                         <button
                             type="button"
                             onClick={onClose}

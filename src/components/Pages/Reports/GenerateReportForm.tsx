@@ -184,7 +184,7 @@ const GenerateReportForm: React.FC = () => {
                                 className={`${isProcessing
                                     ? "bg-gray-400 cursor-not-allowed"
                                     : "bg-teal-500 hover:bg-teal-600"
-                                    } text-white rounded flex items-center px-4 py-2 text-sm font-medium w-full justify-center`}
+                                    } text-white rounded flex items-center px-4 py-2 font-medium w-full justify-center`}
                             >
                                 {isProcessing ? (
                                     <>
@@ -202,7 +202,7 @@ const GenerateReportForm: React.FC = () => {
                             <button
                                 onClick={handleReset}
                                 disabled={isProcessing}
-                                className="bg-gray-400 text-white rounded flex items-center px-4 py-2 text-sm font-medium w-full justify-center"
+                                className="bg-gray-400 text-white rounded flex items-center px-4 py-2 font-medium w-full justify-center"
                             >
                                 <FaArrowRotateLeft className="w-3 h-3 mr-2" />
                                 Reset

@@ -139,7 +139,7 @@ const VisitorGraph = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-2">
-        <h4 className="text-gray-600 text-sm font-semibold">
+        <h4 className="text-gray-600 font-semibold">
           {loading ? (
             <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse"></div>
           ) : (
@@ -152,7 +152,7 @@ const VisitorGraph = () => {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-1 text-xs text-gray-700"
+            className="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700"
           >
             <option value="today">Today</option>
             <option value="this week">This Week</option>

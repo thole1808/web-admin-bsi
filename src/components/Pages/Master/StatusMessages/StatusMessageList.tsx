@@ -93,7 +93,7 @@ const StatusMessageList: React.FC = () => {
     },
     {
       name: "",
-      right: true,
+      right: "true",
       cell: (row: any) => (
         <ActionGroup
           options={[
@@ -154,7 +154,7 @@ const StatusMessageList: React.FC = () => {
               suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
             />
           </div>
-          <div className="grid text-xs items-end justify-end col-span-3">
+          <div className="grid text-sm items-end justify-end col-span-3">
             <ResetButton onClick={handleResetFilter} />
           </div>
         </div>

@@ -138,7 +138,7 @@ const Select: React.FC<SelectProps> = ({
           </ul>
         )}
       </div>
-      {(localError || error) && <p className={`text-${size} text-red-500 text-xs mt-1`}>{localError || error}</p>}
+      {(localError || error) && <p className={`text-${size} text-red-500 text-sm mt-1`}>{localError || error}</p>}
     </div>
   );
 };

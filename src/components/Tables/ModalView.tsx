@@ -37,7 +37,7 @@ const ModalView: React.FC<ModalViewProps> = ({ width, title, isOpen, onClose, ch
             >
                 <h2 className="text-lg font-bold mb-4">{title}</h2>
                 {children}
-                <div className="text-sm relative mt-6">
+                <div className="relative mt-6">
                     <button
                         type="button"
                         onClick={onClose}

@@ -43,10 +43,10 @@ const TopBranchesTable = () => {
   if (loading) {
     return (
       <div className="w-full p-4 bg-white rounded-lg shadow overflow-x-auto">
-        <h3 className="text-sm font-semibold mb-4">
+        <h3 className="font-semibold mb-4">
           <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse"></div>
         </h3>
-        <table className="min-w-full text-xs table-auto border-collapse">
+        <table className="min-w-full text-sm table-auto border-collapse">
           <thead>
             <tr className="bg-gradient-to-r from-blue-50 to-green-50 text-left">
               <th className="px-4 py-2">
@@ -108,8 +108,8 @@ const TopBranchesTable = () => {
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow overflow-x-auto">
-      <h3 className="text-sm font-semibold mb-4">Top 5 Most Visited Branches</h3>
-      <table className="min-w-full text-xs table-auto border-collapse">
+      <h3 className="font-semibold mb-4">Top 5 Most Visited Branches</h3>
+      <table className="min-w-full text-sm table-auto border-collapse">
         <thead>
           <tr className="bg-gradient-to-r from-blue-50 to-green-50 text-left">
             <th className="px-4 py-2">Branch</th>

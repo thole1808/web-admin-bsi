@@ -85,7 +85,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                 <div className="mb-4 text-sm">
                     <Label htmlFor="parent" required>Parent</Label>
                     <Select options={layanan?.map((item: any) => ({ value: item.id, label: item.name }))} value={formData.parentId} isDisabled />
-                    {errors?.parentId && <p className="text-red-500 text-xs mt-1">{errors?.parentId}</p>}
+                    {errors?.parentId && <p className="text-red-500 text-sm mt-1">{errors?.parentId}</p>}
                 </div>
             )}
             <div className="mb-4 text-sm">
@@ -99,7 +99,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                     className={inputStyles}
                     required
                 />
-                {errors?.code && <p className="text-red-500 text-xs mt-1">{errors?.code}</p>}
+                {errors?.code && <p className="text-red-500 text-sm mt-1">{errors?.code}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="rsvCode">Kode Reservasi</Label>
@@ -112,7 +112,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                     className={inputStyles}
                     required
                 />
-                {errors?.rsvCode && <p className="text-red-500 text-xs mt-1">{errors?.rsvCode}</p>}
+                {errors?.rsvCode && <p className="text-red-500 text-sm mt-1">{errors?.rsvCode}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="prefix">Prefix</Label>
@@ -125,7 +125,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                     className={inputStyles + ` bg-gray-100`}
                     disabled
                 />
-                {errors?.prefix && <p className="text-red-500 text-xs mt-1">{errors?.prefix}</p>}
+                {errors?.prefix && <p className="text-red-500 text-sm mt-1">{errors?.prefix}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="name" required>Layanan</Label>
@@ -137,7 +137,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={inputStyles}
                 />
-                {errors?.name && <p className="text-red-500 text-xs mt-1">{errors?.name}</p>}
+                {errors?.name && <p className="text-red-500 text-sm mt-1">{errors?.name}</p>}
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="slaMinDuration" required>Durasi SLA</Label>
@@ -151,7 +151,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                             onChange={(e) => setFormData({ ...formData, slaMinDuration: e.target.value })}
                             className={inputStyles}
                         />
-                        {errors?.slaMinDuration && <p className="text-red-500 text-xs mt-1">{errors?.slaMinDuration}</p>}
+                        {errors?.slaMinDuration && <p className="text-red-500 text-sm mt-1">{errors?.slaMinDuration}</p>}
                     </div>
                     <div>
                         <input
@@ -162,7 +162,7 @@ const ServiceTypeAddChild: React.FC<ServiceTypeAddChildProps> = ({ isOpen, onClo
                             onChange={(e) => setFormData({ ...formData, slaMaxDuration: e.target.value })}
                             className={inputStyles}
                         />
-                        {errors?.slaMaxDuration && <p className="text-red-500 text-xs mt-1">{errors?.slaMaxDuration}</p>}
+                        {errors?.slaMaxDuration && <p className="text-red-500 text-sm mt-1">{errors?.slaMaxDuration}</p>}
                     </div>
                 </div>
             </div>

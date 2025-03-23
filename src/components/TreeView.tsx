@@ -64,13 +64,13 @@ const TreeView: React.FC<Props> = ({
 
   const renderTree = (nodes: TreeNode[]) => {
     return (
-      <ul className="space-y-2 text-sm divide-y">
+      <ul className="space-y-2 divide-y">
         {nodes.map((node) => (
           <li key={node.id} className="pl-1 pt-2">
             <div className="flex justify-between items-center">
               <span className="font-medium text-gray-700">
                 {node.name}{" "}
-                <span className="text-xs text-red-700 bg-red-100 px-1 rounded-full">
+                <span className="text-sm text-red-700 bg-red-100 px-1 rounded-full">
                   {node.prefix}
                 </span>
               </span>
