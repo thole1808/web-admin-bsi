@@ -98,7 +98,7 @@ const SignIn: React.FC = () => {
           </div>
 
           {/* Email/Password Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4 mb-8">
             <input
               type="email"
               required

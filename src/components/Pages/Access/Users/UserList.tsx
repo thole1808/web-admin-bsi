@@ -168,13 +168,13 @@ const UserList: React.FC = () => {
             name: 'Last Login',
             selector: (row: { lastLoginAt: string; }) => formatDateTime(row?.lastLoginAt) || '',
             grow: 2,
-            right: "true",
+            right: true,
             sortable: true,
             sortField: 'lastLoginAt',
         },
         {
             name: '',
-            right: "true",
+            right: true,
             maxWidth: '5px',
             cell: (row: any) => (
                 <ActionGroup

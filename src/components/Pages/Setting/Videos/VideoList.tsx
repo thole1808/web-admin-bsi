@@ -189,7 +189,7 @@ const VideoList: React.FC = () => {
                         },
                         {
                             name: "",
-                            right: "true",
+                            right: true,
                             cell: (row: any) => (
                                 <ActionGroup
                                     options={[

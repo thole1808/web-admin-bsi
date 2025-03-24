@@ -42,6 +42,8 @@ const handler = NextAuth({
       
           const data = await res.json();
           const accessToken = data.access_token;
+
+          console.log(data);
       
           // Decode token untuk dapatkan info user
           const decoded: any = jwtDecode(accessToken);

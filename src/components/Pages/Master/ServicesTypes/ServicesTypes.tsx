@@ -293,7 +293,7 @@ const ServicesTypes: React.FC = () => {
         },
         {
             name: "Actions",
-            right: "true",
+            right: true,
             cell: (row: ServiceTypeItem) => (
                 <div className="flex border border-gray-400 rounded divide-x divide-gray-400">
                     <button

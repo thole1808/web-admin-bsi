@@ -330,7 +330,7 @@ const QueueTable: React.FC = () => {
   function statusWithStyle(status: string) {
     if (!status) return '';
 
-    let style = 'p-1 rounded text-sm font-medium ';
+    let style = 'py-1 px-2 rounded text-xs font-medium ';
     let message = '';
 
     switch (status) {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { FaFingerprint } from "react-icons/fa";
+import { FaExclamation, FaFingerprint } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import Label from "@/components/Forms/Label";
 
@@ -16,6 +16,7 @@ const SignIn: React.FC = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -26,6 +27,7 @@ const SignIn: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+    setIsLoading(true);
 
     const res = await signIn("credentials", {
       redirect: false,
@@ -36,8 +38,11 @@ const SignIn: React.FC = () => {
     if (res?.ok) {
       router.push("/dashboard");
     } else {
-      setErrorMsg("Account not found. Please check your email and password.");
+      setErrorMsg("Login failed. Please check your email and password.");
     }
+
+    setIsLoading(false);
+
   };
 
   return (
@@ -65,14 +70,14 @@ const SignIn: React.FC = () => {
 
       {/* Login Form Layer */}
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full">
-        <div className="relative z-20 rounded-lg border border-gray-200 bg-white shadow max-w-lg w-full p-6">
+        <div className="relative z-20 rounded-lg border border-gray-200 bg-white shadow max-w-lg w-full p-8">
           <div className="flex justify-between bg-transparent">
             <div>
               <Image
                 src="/images/logo/bsi.svg"
                 alt="Logo"
-                width={160}
-                height={160}
+                width={130}
+                height={130}
                 style={{ backgroundColor: "transparent" }}
               />
               <div className="text-teal-600 font-semibold mt-1">
@@ -83,49 +88,80 @@ const SignIn: React.FC = () => {
           </div>
 
           {/* Form Login Email & Password */}
-          <form onSubmit={handleLogin} className="space-y-4 mt-6">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <input
-                type="email"
-                required
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded outline-0 ring-0 focus:ring-1 ring-gray-300 focus:ring-teal-500"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
+          <form onSubmit={handleLogin} className="space-y-6 mt-4 mb-8">
+            <div className="space-y-4">
+              {errorMsg && (
+                <p className="text-white bg-red-400 py-1 px-2 rounded flex items-center gap-2">
+                  <FaExclamation /> {errorMsg}
+                </p>
+              )}
+              <div>
+                <Label htmlFor="email">Email</Label>
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type="email"
                   required
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded outline-0 ring-0 focus:ring-1 ring-gray-300 focus:ring-teal-500 pr-10"
+                  placeholder="Email"
+                  value={email}
+                  disabled={isLoading}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded outline-0 ring-0 focus:ring-1 ring-gray-300 focus:ring-teal-500"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-2.5 right-3 text-gray-500 hover:text-teal-600 focus:outline-none"
-                >
-                  {showPassword ? <FiEyeOff /> : <FiEye />}
-                </button>
+              </div>
+
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="Password"
+                    value={password}
+                    disabled={isLoading}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded outline-0 ring-0 focus:ring-1 ring-gray-300 focus:ring-teal-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-2.5 right-3 text-gray-500 hover:text-teal-600 focus:outline-none"
+                  >
+                    {showPassword ? <FiEyeOff /> : <FiEye />}
+                  </button>
+                </div>
               </div>
             </div>
 
-            {errorMsg && (
-              <p className="text-red-600">{errorMsg}</p>
-            )}
-
             <button
               type="submit"
-              className="mt-8 w-full bg-teal-500 text-white py-2 px-4 rounded hover:bg-teal-600 flex items-center justify-center gap-2 text-lg font-semibold"
+              disabled={isLoading}
+              className={`w-full py-2 px-4 rounded flex items-center justify-center gap-2 text-lg font-semibold 
+    ${isLoading ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600 text-white'}`}
             >
-              <FaFingerprint className="w-5 h-5" /> Login
+              {isLoading ? (
+                <div className="flex items-center gap-2 text-white font-normal">
+                  <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                  <span>Please wait...</span>
+                </div>
+              ) : (
+                <>
+                  <FaFingerprint className="w-5 h-5" /> Login
+                </>
+              )}
             </button>
           </form>
         </div>

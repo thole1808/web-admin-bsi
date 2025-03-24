@@ -26,13 +26,24 @@ const ModalView: React.FC<ModalViewProps> = ({ width, title, isOpen, onClose, ch
         }
     };
 
+    const getMaxWidthClass = (width: string = 'sm') => {
+        const sizeMap: { [key: string]: string } = {
+            sm: 'max-w-sm',
+            md: 'max-w-md',
+            lg: 'max-w-lg',
+            xl: 'max-w-xl',
+            '2xl': 'max-w-2xl',
+        };
+        return sizeMap[width] || 'max-w-sm';
+    };
+
     return (
         <div
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
             onClick={onClose}
         >
             <div
-                className={`bg-white p-6 rounded-lg shadow-lg max-w-${width || 'md'} w-full z-50`}
+                className={`bg-white p-6 rounded-lg shadow-lg ${getMaxWidthClass(width)} w-full z-50 relative`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-lg font-bold mb-4">{title}</h2>

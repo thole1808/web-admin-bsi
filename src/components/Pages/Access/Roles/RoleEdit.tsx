@@ -99,7 +99,7 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
 
     return (
         <ModalForm
-            width="lg"
+            width="2xl"
             title="Edit Role"
             isOpen={isOpen}
             onClose={onClose}
@@ -146,20 +146,34 @@ const RoleEdit: React.FC<RoleEditProps> = ({ isOpen, onClose, data }) => {
             </div>
             <div className="mb-4 text-sm">
                 <Label htmlFor="permissions" required>Permissions</Label>
-                <div className="grid grid-cols-3 gap-3">
-                    {permissionData.map((item: any) => (
-                        <div key={item.id} className="flex items-center justify-between gap-2 border p-2 rounded">
-                            <label htmlFor={item.id} className="block font-medium text-gray-700">
-                                {item.name}
-                            </label>
-                            <input
-                                type="checkbox"
-                                id={item.id}
-                                name={item.id}
-                                checked={formData.permissions.includes(item.name)} // Check the state for the current checkbox
-                                onChange={() => handleCheckboxChange(item.name)} // Toggle the checkbox state on change
-                                className="w-4 h-4 text-blue-500 border border-gray-300 rounded-md"
-                            />
+                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    {Object.entries(
+                        permissionData.reduce((acc: any, perm: any) => {
+                            const [prefix] = perm.name.split(":");
+                            if (!acc[prefix]) acc[prefix] = [];
+                            acc[prefix].push(perm);
+                            return acc;
+                        }, {})
+                    ).map(([group, items]: [string, any[]]) => (
+                        <div key={group}>
+                            <h3 className="text-teal-700 font-semibold mb-2 capitalize">{group} permissions</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {items.map((item) => (
+                                    <div key={item.id} className="flex items-center justify-between gap-2 border p-2 rounded shadow-sm bg-gray-50">
+                                        <label htmlFor={item.id} className="text-gray-800 text-sm truncate w-full">
+                                            {item.name}
+                                        </label>
+                                        <input
+                                            type="checkbox"
+                                            id={item.id}
+                                            name={item.id}
+                                            checked={formData.permissions.includes(item.name)}
+                                            onChange={() => handleCheckboxChange(item.name)}
+                                            className="w-4 h-4 text-teal-600 border-gray-300 rounded"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -116,11 +116,11 @@ const CabinCheckList: React.FC = () => {
       sortable: true,
       sortField: "updatedAt",
       grow: 2,
-      right: "true",
+      right: true,
     },
     {
       name: "",
-      right: "true",
+      right: true,
       cell: (row: any) => (
         <ActionGroup
           options={[

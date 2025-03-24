@@ -128,7 +128,7 @@ const RoleList: React.FC = () => {
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
         <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
     );
-    
+
     const handlePerRowsChange = async (newPerPage: number, page: number) => {
         setPerPage(newPerPage);
         setCurrentPage(page);
@@ -193,11 +193,11 @@ const RoleList: React.FC = () => {
             sortable: true,
             sortField: 'updatedAt',
             grow: 2,
-            right: "true",
+            right: true,
         },
         {
             name: '',
-            right: "true",
+            right: true,
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -305,22 +305,44 @@ const RoleList: React.FC = () => {
 
             {isViewPermission && (
                 <ModalView
-                    width="2xl"
-                    title="View Permissions"
+                    width="xl"
+                    title="Permissions"
                     isOpen={isViewPermission}
-                    onClose={() => { setIsViewPermission(false); setPermissions([]); }}
+                    onClose={() => {
+                        setIsViewPermission(false);
+                        setPermissions([]);
+                    }}
                 >
                     {permissions.length === 0 ? (
                         <div className="text-center text-gray-500">No permissions found</div>
                     ) : (
-                    <div className="grid grid-cols-3 gap-2">
-                        {permissions.map((permission: any) => (
-                            <div key={permission.id} className="border border-gray-300 hover:bg-teal-400 hover:text-white rounded p-2 text-sm">
-                                <div className="font-medium">{permission.name}</div>
-                                <div className="text-sm">{permission.description}</div>
-                            </div>
-                        ))}
-                    </div>
+                        <div className="space-y-4 max-h-96 overflow-y-auto pr-2 text-sm">
+                            {Object.entries(
+                                permissions.reduce((acc: any, perm: any) => {
+                                    const [prefix] = perm.name.split(":");
+                                    if (!acc[prefix]) acc[prefix] = [];
+                                    acc[prefix].push(perm);
+                                    return acc;
+                                }, {})
+                            ).map(([group, items]: [string, any[]]) => (
+                                <div key={group}>
+                                    <h3 className="text-teal-700 font-semibold mb-2 capitalize">{group} permissions</h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                        {items.map((permission) => (
+                                            <div
+                                                key={permission.id}
+                                                className="border border-gray-300 rounded p-2 hover:bg-teal-400 hover:text-white transition"
+                                            >
+                                                <div className="font-medium truncate">{permission.name}</div>
+                                                {permission.description && (
+                                                    <div className="text-xs opacity-80">{permission.description}</div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     )}
                 </ModalView>
             )}
