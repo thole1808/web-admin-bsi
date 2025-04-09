@@ -12,7 +12,7 @@ export default function useAutoLogout() {
     if (status === 'unauthenticated') {
       // Optional: bisa langsung signOut atau redirect ke login
       signOut({ redirect: false });
-      router.push('/auth/login');
+      router.push('/');
     }
   }, [status, router]);
 }
