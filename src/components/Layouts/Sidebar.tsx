@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/components/Layouts/SidebarItem";
@@ -17,35 +17,19 @@ const menuGroups = [
   {
     name: 'Main Menu',
     menuItems: [
-      {
-        label: 'Dashboard',
-        route: '/dashboard',
-        icon: 'DashboardIcon',
-      },
-      {
-        label: 'Queues',
-        route: '/queues',
-        icon: "QueuesIcon",
-      },
-      {
-        label: 'Branches',
-        route: '/branches',
-        icon: "BranchesIcon",
-      },
-      {
-        label: 'Reports',
-        route: '/reports',
-        icon: "ReportingIcon",
-      },
+      { label: 'Dashboard', route: '/dashboard', icon: 'DashboardIcon' },
+      { label: 'Queues', route: '/queues', icon: "QueuesIcon", permission: "view:queue" },
+      { label: 'Branches', route: '/branches', icon: "BranchesIcon", permission: "view:branch" },
+      { label: 'Reports', route: '/reports', icon: "ReportingIcon", permission: "view:report" },
       {
         label: 'Master',
         route: '/master',
         icon: "DatabaseIcon",
         children: [
-          { label: 'Cabin Crew Checks', route: '/master/cabin-crew-checks' },
-          { label: 'National Holiday', route: '/master/national-holiday' },
-          { label: 'Service Types', route: '/master/service-types' },
-          { label: 'Status Messages', route: '/master/status-messages' },
+          { label: 'Cabin Crew Checks', route: '/master/cabin-crew-checks', permission: "view:cabin-crew-check" },
+          { label: 'National Holiday', route: '/master/national-holiday', permission: "view:national-holiday" },
+          { label: 'Service Types', route: '/master/service-types', permission: "view:service-type" },
+          { label: 'Status Messages', route: '/master/status-messages', permission: "view:status-message" },
         ],
       },
       {
@@ -53,23 +37,23 @@ const menuGroups = [
         route: '/access',
         icon: "AccessIcon",
         children: [
-          { label: 'Users', route: '/access/users' },
-          { label: 'Roles', route: '/access/roles' },
+          { label: 'Users', route: '/access/users', permission: "view:user" },
+          { label: 'Roles', route: '/access/roles', permission: "view:role" },
         ],
       },
       {
         label: 'Audit Trails',
         route: '/audit',
         icon: "AuditIcon",
+        permission: "view:audit-trail",
       },
       {
         label: 'Setting',
         route: '/setting',
         icon: "AppsIcon",
         children: [
-          // { label: 'Sounds', route: '/setting/sounds' },
-          { label: 'Banner', route: '/setting/banners' },
-          { label: 'Video', route: '/setting/videos' },
+          { label: 'Banner', route: '/setting/banners', permission: "view:banner" },
+          { label: 'Video', route: '/setting/videos', permission: "view:video" },
         ],
       },
     ],
@@ -77,9 +61,37 @@ const menuGroups = [
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-  const handleLogout = () => {
-    signOut();
+  const [userPermissions, setUserPermissions] = useState<string[] | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("user-role");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const permissions = parsed?.permissions?.map((p: any) => p.name) || [];
+          setUserPermissions(permissions);
+        } catch (err) {
+          console.error("Invalid user-role format", err);
+          setUserPermissions([]);
+        }
+      } else {
+        setUserPermissions([]);
+      }
+    }
+  }, []);
+
+  const hasPermission = (permission?: string): boolean => {
+    if (!permission) return true;
+    return userPermissions?.includes(permission) ?? false;
   };
+
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/login' });
+  };
+
+  // Jangan render apapun jika permissions belum dimuat
+  if (userPermissions === null) return null;
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
@@ -125,9 +137,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex}>
                 <ul>
-                  {group.menuItems.map((item, idx) => (
-                    <SidebarItem key={idx} item={item} />
-                  ))}
+                  {group.menuItems.map((item, idx) => {
+                    if (item.children) {
+                      const permittedChildren = item.children.filter(child => hasPermission(child.permission));
+                      if (permittedChildren.length === 0) return null;
+                      return <SidebarItem key={idx} item={{ ...item, children: permittedChildren }} />;
+                    } else {
+                      if (!hasPermission(item.permission)) return null;
+                      return <SidebarItem key={idx} item={item} />;
+                    }
+                  })}
                 </ul>
               </div>
             ))}
@@ -135,16 +154,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         </div>
 
         <div className="mt-auto p-4 flex justify-between items-center">
-          <div>
-            <button
-              onClick={handleLogout}
-              className="w-full py-3 px-20 rounded-lg flex items-center justify-center space-x-2 border hover:bg-gray-50 border-gray-300 focus:outline-none"
-            >
-              <FiLogOut size={16} />
-              <span>Logout</span>
-            </button>
-          </div>
-
+          <button
+            onClick={handleLogout}
+            className="w-full py-3 px-20 rounded-lg flex items-center justify-center space-x-2 border hover:bg-gray-50 border-gray-300 focus:outline-none"
+          >
+            <FiLogOut size={16} />
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
     </ClickOutside>

@@ -4,28 +4,10 @@ import React, { useState, useEffect } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { FaRotateLeft } from "react-icons/fa6";
 import CustomLoader from "../../Tables/CustomLoader";
-import Label from "@/components/Forms/Label";
-import AsyncSelectComponent from "@/components/Forms/AsycSelect";
-import debounce from 'lodash.debounce';
 import Select from "@/components/Forms/Select";
 import { FaSearch } from "react-icons/fa";
 import TextInput from "@/components/Forms/TextInput";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
-
-interface Option {
-  code: string;
-  name: string;
-}
-
-interface Area {
-  code: string;
-  name: string;
-}
-
-interface Region {
-  code: string;
-  name: string;
-}
 
 const QueueTable: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
@@ -33,8 +15,8 @@ const QueueTable: React.FC = () => {
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortField, setSortField] = useState<string | null>("id");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const today = new Date().toISOString().split("T")[0];
   const [typeField, setTypeField] = useState("");
   const [statusField, setStatusField] = useState("");
@@ -44,6 +26,28 @@ const QueueTable: React.FC = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
+  const [branchId, setBranchId] = useState<string | null>(null);
+  const [branchType, setBranchType] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Ambil branchId dan branchType dari localStorage user-profile
+    if (typeof window !== 'undefined') {
+      const userProfile = localStorage.getItem("user-profile");
+      if (userProfile) {
+        try {
+          const parsed = JSON.parse(userProfile);
+          if (parsed?.branch?.id) {
+            setBranchId(parsed.branch.id.toString());
+          }
+          if (parsed?.branch?.type) {
+            setBranchType(parsed.branch.type); // contoh: "BRANCH", "AREA", "REGION"
+          }
+        } catch (e) {
+          console.error("Failed to parse user-profile", e);
+        }
+      }
+    }
+  }, []);
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
@@ -91,7 +95,9 @@ const QueueTable: React.FC = () => {
       }
     };
 
-    loadAreas();
+    if (region) {
+      loadAreas();
+    }
   }, [region]);
 
   useEffect(() => {
@@ -105,14 +111,15 @@ const QueueTable: React.FC = () => {
   }, [search]);
 
   useEffect(() => {
+    if (!branchId && !region && !area) return;
     const fetchQueues = async () => {
       try {
         const start = fromDate;
         const end = toDate;
         const size = perPage.toString();
         const page = (currentPage - 1).toString();
-        const sortBy = sortField ? sortField : "id";
-        const direction = sortDirection.toString();
+        const sortBy = sortField ? sortField : "createdAt";
+        const direction = sortDirection.toString() || "DESC";
         const status = statusField.toString();
         const search = debouncedSearch;
         const type = typeField;
@@ -130,13 +137,14 @@ const QueueTable: React.FC = () => {
           areaCode,
           regionCode,
           status,
-          search
+          search,
         });
 
-        const response = await fetch(
-          `/api/antrian?${queryParams.toString()}`
-        );
+        if (branchId && !region && !area) {
+          queryParams.append("branchId", branchId);
+        }
 
+        const response = await fetch(`/api/antrian?${queryParams.toString()}`);
         const result = await response.json();
 
         if (result.success) {
@@ -153,8 +161,7 @@ const QueueTable: React.FC = () => {
     };
 
     fetchQueues();
-  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField, region, area]);
-
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField, region, area, branchId]);
 
   function convertArrayOfObjectsToCSV(array: any[]) {
     let result: string;
@@ -533,12 +540,16 @@ const QueueTable: React.FC = () => {
               { value: 'STOPPED,CANCELED,TRANSFERRED', label: 'Done' },
             ]} value={statusField} onChange={(value) => setStatusField(value as string)} />
           </div>
-          <div className="grid col-span-2">
-            <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-          </div>
-          <div className="grid col-span-2">
-            <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
-          </div>
+          {branchType !== 'BRANCH' && (
+            <>
+              <div className="grid col-span-2">
+                <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+              </div>
+              <div className="grid col-span-2">
+                <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
+              </div>
+            </>
+          )}
         </div>
 
         <DataTable

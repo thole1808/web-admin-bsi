@@ -1,8 +1,12 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link'; // Import Link from Next.js
+import Link from 'next/link';
 import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { IdentificationIcon } from '@heroicons/react/24/solid';
+import { FaBuildingShield } from 'react-icons/fa6';
 
 interface DropdownItem {
     id: number;
@@ -25,10 +29,28 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isClient, setIsClient] = useState(false);
+    const [branchInfo, setBranchInfo] = useState<{ name: string; code: string } | null>(null);
+    const [roleInfo, setRoleInfo] = useState<{ name: string, code: string } | null>(null);
     const { data: session } = useSession();
 
     useEffect(() => {
         setIsClient(true);
+
+        // Ambil data dari localStorage
+        const stored = localStorage.getItem("user-profile");
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed.branch && parsed.branch.name && parsed.branch.code) {
+                setBranchInfo({
+                    name: parsed.branch.name,
+                    code: parsed.branch.code,
+                });
+            }
+
+            if (parsed.role && parsed.role.name) {
+                setRoleInfo({ name: parsed.role.name, code: parsed.role.code });
+            }
+        }
     }, []);
 
     useEffect(() => {
@@ -50,20 +72,40 @@ const Header: React.FC<HeaderProps> = ({
     }, [isClient, dropdownOpen]);
 
     const navigateToProfile = () => {
-        setDropdownOpen(false); // Close dropdown before navigating
+        setDropdownOpen(false);
     };
 
     const handleLogout = () => {
-        setDropdownOpen(false); // Close dropdown before logout
-        signOut(); // Use next-auth's signOut function
+        setDropdownOpen(false);
+        signOut();
     };
 
-    // Make sure component is rendered on the client-side
     if (!isClient) return null;
 
     return (
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
             <div className="w-full px-6 py-3 flex items-center justify-end border-b">
+                <div className="text-sm text-gray-600 mr-auto flex space-x-8">
+                    {branchInfo && (
+                        <span className='flex items-center gap-2'>
+                            <FaBuildingShield className='h-6 w-6' />
+                            <div>
+                                <p className='text-xs'>{branchInfo.code}</p>
+                                <p className='font-medium'>{branchInfo.name}</p>
+                            </div>
+                        </span>
+                    )}
+                    {roleInfo && (
+                        <span className='flex items-center gap-2'>
+                            <IdentificationIcon className='h-6 w-6' />
+                            <div>
+                                <p className='text-xs'>{roleInfo.code}</p>
+                                <p className='font-medium'>{roleInfo.name}</p>
+                            </div>
+                        </span>
+                    )}
+                </div>
+
                 {/* User Dropdown */}
                 <div className="relative inline-block text-left" ref={dropdownRef}>
                     <button
@@ -97,7 +139,6 @@ const Header: React.FC<HeaderProps> = ({
                     {/* Dropdown Menu */}
                     {dropdownOpen && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10 text-sm">
-                            {/* Use Link without <a> */}
                             <Link href="/profile">
                                 <span
                                     className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"

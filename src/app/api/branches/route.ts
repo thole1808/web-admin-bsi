@@ -47,10 +47,11 @@ export async function GET(req: NextRequest) {
     const search = req.nextUrl.searchParams.get('search');
     const isActive = req.nextUrl.searchParams.get('isActive');
     const type = req.nextUrl.searchParams.get('type');
+    const branchCode = req.nextUrl.searchParams.get('branchCode');
     const areaCode = req.nextUrl.searchParams.get('areaCode');
     const regionCode = req.nextUrl.searchParams.get('regionCode');
-    const sortBy = req.nextUrl.searchParams.get('sortBy');
-    const direction = req.nextUrl.searchParams.get('direction');
+    const sortBy = req.nextUrl.searchParams.get('sortBy') || 'createdAt';
+    const direction = req.nextUrl.searchParams.get('direction') || 'DESC';
     const size = req.nextUrl.searchParams.get('size');
     const page = req.nextUrl.searchParams.get('page');
 
@@ -60,6 +61,7 @@ export async function GET(req: NextRequest) {
     if (search) params.append('search', search);
     if (isActive) params.append('isActive', isActive);
     if (type) params.append('type', type);
+    if (branchCode) params.append('branchCode', branchCode);
     if (areaCode) params.append('areaCode', areaCode);
     if (regionCode) params.append('regionCode', regionCode);
     if (sortBy) params.append('sortBy', sortBy);

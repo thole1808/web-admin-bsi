@@ -90,7 +90,7 @@ const QueueStatsOverview: React.FC = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-100 rounded-xl">
             {stats
                 .sort((a, b) => {
                     const priority = {
@@ -99,24 +99,27 @@ const QueueStatsOverview: React.FC = () => {
                         COMPLETED: 3,
                         EXPIRE: 4,
                     };
-
                     return priority[a.status] - priority[b.status];
                 })
                 .map((stat, index) => (
                     <div
                         key={index}
-                        className="flex items-center bg-white rounded-lg shadow-md p-4"
+                        className="flex items-center bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow duration-200 p-4"
                     >
-                        <div className="flex-shrink-0 bg-gray-100 rounded-full p-4">
+                        <div className="flex items-center justify-center rounded-full bg-gray-100 p-3">
                             {getStatusIcon(stat.status)}
                         </div>
-                        <div className="ml-4">
-                            <h4 className="text-gray-600 text-sm font-semibold">
+
+                        <div className="ml-4 flex-1">
+                            <h4 className="text-sm font-medium text-gray-500 mb-1">
                                 {getStatusLabel(stat.status)}
                             </h4>
-                            <p className="text-gray-800 text-xl font-bold">{stat.current}</p>
-                            <p className="text-sm text-gray-500 flex items-center">
-                                {getTrendIcon(stat.trend)} {getTrendLabel(stat.current, stat.previous)}
+                            <p className="text-2xl font-bold text-gray-800 leading-tight">
+                                {stat.current}
+                            </p>
+                            <p className="text-xs text-gray-500 flex items-center mt-1">
+                                {getTrendIcon(stat.trend)}
+                                <span className="ml-1">{getTrendLabel(stat.current, stat.previous)}</span>
                             </p>
                         </div>
                     </div>

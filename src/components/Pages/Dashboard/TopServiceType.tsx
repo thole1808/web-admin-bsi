@@ -68,61 +68,65 @@ const DoughnutChartCard: React.FC = () => {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-4 sm:p-6">
             {loading ? (
-                <div>
+                <>
+                    {/* Loading Donut */}
                     <div className="relative h-56 flex items-center justify-center">
                         <div className="w-40 h-40 rounded-full bg-gray-200 animate-pulse"></div>
                     </div>
+
+                    {/* Loading Legends */}
                     <div className="mt-4 space-y-2">
                         {[1, 2, 3].map((_, index) => (
-                            <div
-                                key={index}
-                                className="flex items-center justify-between text-sm"
-                            >
-                                <div className="flex items-center">
-                                    <div className="w-4 h-4 rounded-full bg-gray-200 mr-2 animate-pulse"></div>
+                            <div key={index} className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-full bg-gray-200 animate-pulse"></div>
                                     <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
                                 </div>
                                 <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </>
             ) : error ? (
                 <div className="flex justify-center items-center h-56">
-                    <p className="text-red-500">{error}</p>
+                    <p className="text-red-500 text-sm">{error}</p>
                 </div>
             ) : data.length === 0 ? (
-                // Display "No data available" if there is no data
                 <div className="flex justify-center items-center h-56">
-                    <p className="text-gray-500">No data available</p>
+                    <p className="text-gray-500 text-sm italic">No data available</p>
                 </div>
             ) : (
-                <div>
+                <>
+                    {/* Chart */}
                     <div className="relative h-56 flex items-center justify-center">
                         <Doughnut data={chartData} options={chartOptions} />
-                        <div className="absolute inset-2 flex items-center justify-center">
-                            <span className="text-gray-600 font-semibold text-center">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-center text-sm sm:text-base font-semibold text-gray-600 leading-tight">
                                 Top 3<br />Services
                             </span>
                         </div>
                     </div>
-                    <div className="mt-4">
+
+                    {/* Legends */}
+                    <div className="mt-4 space-y-2">
                         {data.map((item: any, index: number) => (
                             <div
                                 key={index}
-                                className="flex items-center justify-between text-sm mb-2"
+                                className="flex items-center justify-between text-sm sm:text-base"
                             >
-                                <div className="flex items-center">
+                                <div className="flex items-center gap-2">
                                     <div
-                                        className="w-4 h-4 rounded-full mr-2"
+                                        className="w-4 h-4 rounded-full"
                                         style={{
                                             backgroundColor: ["#FBBF24", "#60A5FA", "#34D399"][index],
                                         }}
                                     ></div>
-                                    <span className="text-gray-600">
-                                    {item.serviceType.length > 30 ? `${item.serviceType.slice(0, 25)}...` : item.serviceType}
+                                    <span className="text-gray-600 truncate max-w-[140px] sm:max-w-[180px]">
+                                        {item.serviceType.length > 30
+                                            ? `${item.serviceType.slice(0, 25)}...`
+                                            : item.serviceType}
                                     </span>
                                 </div>
                                 <span className="text-gray-800 font-semibold">
@@ -131,7 +135,7 @@ const DoughnutChartCard: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </>
             )}
         </div>
     );

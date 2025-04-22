@@ -9,7 +9,6 @@ import useAutoLogout from "@/hooks/useAutoLogout";
 export default function Home() {
   const { data: session, status } = useSession(); 
   const router = useRouter(); 
-  useAutoLogout();
 
   useEffect(() => {
     if (session) {

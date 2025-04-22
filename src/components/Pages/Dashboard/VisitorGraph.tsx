@@ -137,22 +137,24 @@ const VisitorGraph = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-2">
-        <h4 className="text-gray-600 font-semibold">
+    <div className="p-4 sm:p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+        <h4 className="text-gray-700 text-lg font-semibold">
           {loading ? (
-            <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
           ) : (
             "Visitor Statistics"
           )}
         </h4>
+
         {loading ? (
-          <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-8 w-28 bg-gray-200 rounded animate-pulse" />
         ) : (
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700"
+            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
           >
             <option value="today">Today</option>
             <option value="this week">This Week</option>
@@ -160,17 +162,20 @@ const VisitorGraph = () => {
           </select>
         )}
       </div>
-      <div className="h-80 flex items-center justify-center">
+
+      {/* Chart Area */}
+      <div className="relative h-[20rem] sm:h-[22rem]">
         {loading ? (
-          <div className="w-full h-full bg-gray-200 rounded animate-pulse"></div>
+          <div className="absolute inset-0 bg-gray-200 rounded-lg animate-pulse" />
         ) : data.length === 0 ? (
-          <p className="text-gray-500 italic">No data available</p>
+          <div className="h-full flex items-center justify-center">
+            <p className="text-gray-500 italic text-sm">No data available</p>
+          </div>
         ) : (
           <Bar data={chartData} options={chartOptions} />
         )}
       </div>
     </div>
-
   );
 };
 

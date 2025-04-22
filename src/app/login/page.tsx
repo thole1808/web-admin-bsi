@@ -36,20 +36,58 @@ const SignIn: React.FC = () => {
     });
 
     if (res?.ok) {
+      const response = await fetch(`/api/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    
+      const result = await response.json();
+    
+      if (result.success) {
+        // 💥 Clear semua localStorage sebelum simpan ulang
+        localStorage.clear();
+    
+        localStorage.setItem("user-profile", JSON.stringify(result.data));
+    
+        const roleResponse = await fetch(`/api/roles/${result.data.role.id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        const resultRole = await roleResponse.json();
+    
+        if (resultRole.success) {
+          localStorage.setItem("user-role", JSON.stringify(resultRole.data));
+        }
+      }
+    
       router.push("/dashboard");
     } else {
-      setErrorMsg("Login gagal. Periksa email dan kata sandi Anda.");
+      setErrorMsg("Login gagal");
     }
 
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    if (errorMsg) {
+      const timeout = setTimeout(() => {
+        setErrorMsg("");
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [errorMsg]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-700 to-teal-400 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-yellow-200 px-4 py-10">
       <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row w-full max-w-5xl">
 
         {/* Ilustrasi */}
-        <div className="md:w-1/2 bg-teal-50 flex items-center justify-center">
+        <div className="md:w-1/2 bg-gradient-to-br from-yellow-100 to-teal-200 flex items-center justify-center">
           <Image
             src="/images/illustration/illustration.png"
             alt="Ilustrasi Sistem Antrian"
@@ -73,11 +111,11 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
               <Image
-                  src="/images/logo/bsi.svg"
-                  alt="Logo"
-                  width={120}
-                  height={120}
-                />
+                src="/images/logo/bsi.svg"
+                alt="Logo"
+                width={120}
+                height={120}
+              />
             </div>
 
             <h1 className="text-2xl font-bold text-gray-800 mb-4">
@@ -87,9 +125,21 @@ const SignIn: React.FC = () => {
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-4">
                 {errorMsg && (
-                  <p className="text-white bg-red-400 py-1 px-2 rounded flex items-center gap-2">
-                    <FaExclamation /> {errorMsg}
-                  </p>
+                  <div className="relative flex items-start gap-3 p-3 rounded-lg bg-red-50 border border-red-300 text-red-700 shadow-md animate-fade-in transition-opacity duration-500">
+                    <div className="pt-1">
+                      <FaExclamation className="w-5 h-5 text-red-500" />
+                    </div>
+                    <div className="flex-1 text-sm leading-snug">
+                      <p className="font-semibold">{errorMsg}</p>
+                      <p className="text-xs text-red-600">Periksa email dan password Anda.</p>
+                    </div>
+                    <button
+                      onClick={() => setErrorMsg("")}
+                      className="absolute top-2 right-2 text-red-400 hover:text-red-600 transition"
+                    >
+                      &times;
+                    </button>
+                  </div>
                 )}
                 <div>
                   <Label htmlFor="email">Email</Label>
@@ -134,8 +184,13 @@ const SignIn: React.FC = () => {
           ${isLoading ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600 text-white'}`}
               >
                 {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <svg
+                      className="animate-spin h-6 w-6 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
                       <circle
                         className="opacity-25"
                         cx="12"
@@ -143,7 +198,6 @@ const SignIn: React.FC = () => {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                        fill="none"
                       />
                       <path
                         className="opacity-75"
@@ -151,7 +205,7 @@ const SignIn: React.FC = () => {
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                       />
                     </svg>
-                    <span>Mohon tunggu...</span>
+                    <span className="text-sm font-medium text-white">Mohon tunggu...</span>
                   </div>
                 ) : (
                   <>

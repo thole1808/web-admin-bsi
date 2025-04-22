@@ -16,7 +16,7 @@ const BranchList: React.FC = () => {
   const [totalRows, setTotalRows] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortField, setSortField] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<string | null>("id");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [typeField, setTypeField] = useState("");
   const [search, setSearch] = useState("");
@@ -25,6 +25,25 @@ const BranchList: React.FC = () => {
   const [region, setRegion] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
+  const [branchCode, setbranchCode] = useState<string | null>(null);
+  const [branchType, setBranchType] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userProfile = localStorage.getItem("user-profile");
+      if (userProfile) {
+        try {
+          const parsed = JSON.parse(userProfile);
+          if (parsed?.branch?.id) {
+            setbranchCode(parsed.branch.code.toString());
+            setBranchType(parsed.branch.type || null);
+          }
+        } catch (e) {
+          console.error("Failed to parse user-profile", e);
+        }
+      }
+    }
+  }, []);
 
   const typeOptions = [
     { value: 'REGION', label: 'Region' },
@@ -79,7 +98,7 @@ const BranchList: React.FC = () => {
   }, [search]);
 
   useEffect(() => {
-    const fetchQueues = async () => {
+    const fetchDatas = async () => {
       try {
         const size = perPage.toString();
         const page = (currentPage - 1).toString();
@@ -101,9 +120,11 @@ const BranchList: React.FC = () => {
           regionCode,
         });
 
-        const response = await fetch(
-          `/api/branches?${queryParams.toString()}`
-        );
+        if (branchCode && !region && !area) {
+          queryParams.append("branchCode", branchCode);
+        }
+
+        const response = await fetch(`/api/branches?${queryParams.toString()}`);
 
         const result = await response.json();
 
@@ -120,8 +141,8 @@ const BranchList: React.FC = () => {
       }
     };
 
-    fetchQueues();
-  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region]);
+    fetchDatas();
+  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region, branchCode]);
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
     return (
@@ -306,12 +327,16 @@ const BranchList: React.FC = () => {
           <div className="grid text-sm items-end justify-end col-span-1">
             <ResetButton onClick={handleResetFilter} />
           </div>
-          <div className="grid col-span-2">
-            <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-          </div>
-          <div className="grid col-span-2">
-            <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
-          </div>
+          {branchType !== "BRANCH" && (
+            <>
+              <div className="grid col-span-2">
+                <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+              </div>
+              <div className="grid col-span-2">
+                <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
+              </div>
+            </>
+          )}
         </div>
 
         <DataTable

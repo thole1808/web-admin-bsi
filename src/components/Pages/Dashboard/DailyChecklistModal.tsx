@@ -41,8 +41,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
     
                 const result = await response.json();
     
-                console.log(result);
-    
                 if (result.success) {
                     const sortedActivities = result.data
                         .filter((item: any) => item.activityType === data.activityType)

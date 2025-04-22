@@ -17,7 +17,7 @@ const AuditList: React.FC = () => {
     const [totalRows, setTotalRows] = useState(0);
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const [sortField, setSortField] = useState<string | null>(null);
+    const [sortField, setSortField] = useState<string | null>("id");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
     const [eventField, setEventField] = useState("");
     const [search, setSearch] = useState("");

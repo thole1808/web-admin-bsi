@@ -74,59 +74,46 @@ const BranchStatsOverview: React.FC = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-100">
-            <div
-                className="flex items-center bg-white rounded-lg shadow-md p-4"
-            >
-                <div className="flex-shrink-0 bg-gray-100 rounded-full p-4">
-                    <MapIcon className="h-6 w-6 text-red-500" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 rounded-lg">
+            {[
+                {
+                    title: 'Regions',
+                    value: stats.totalRegions,
+                    icon: <MapIcon className="h-6 w-6 text-red-500" />,
+                    color: 'bg-red-100',
+                },
+                {
+                    title: 'Areas',
+                    value: stats.totalAreas,
+                    icon: <FaMapPin className="h-6 w-6 text-orange-500" />,
+                    color: 'bg-orange-100',
+                },
+                {
+                    title: 'Branches',
+                    value: stats.totalBranches,
+                    icon: <FaBuilding className="h-6 w-6 text-green-500" />,
+                    color: 'bg-green-100',
+                },
+                {
+                    title: 'Total',
+                    value: stats.totalBranches + stats.totalAreas + stats.totalRegions,
+                    icon: <FaInfo className="h-6 w-6 text-blue-500" />,
+                    color: 'bg-blue-100',
+                },
+            ].map((item, i) => (
+                <div
+                    key={i}
+                    className="flex items-center bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition-shadow duration-200"
+                >
+                    <div className={`flex items-center justify-center rounded-full ${item.color} p-3`}>
+                        {item.icon}
+                    </div>
+                    <div className="ml-4">
+                        <p className="text-sm text-gray-500 font-medium">{item.title}</p>
+                        <p className="text-2xl font-bold text-gray-800">{item.value}</p>
+                    </div>
                 </div>
-                <div className="ml-4">
-                    <h4 className="text-gray-600 text-sm font-semibold">
-                        Regions
-                    </h4>
-                    <p className="text-gray-800 text-xl font-bold">{stats.totalRegions}</p>
-                </div>
-            </div>
-            <div
-                className="flex items-center bg-white rounded-lg shadow-md p-4"
-            >
-                <div className="flex-shrink-0 bg-gray-100 rounded-full p-4">
-                    <FaMapPin className="h-6 w-6 text-orange-500" />
-                </div>
-                <div className="ml-4">
-                    <h4 className="text-gray-600 text-sm font-semibold">
-                        Areas
-                    </h4>
-                    <p className="text-gray-800 text-xl font-bold">{stats.totalAreas}</p>
-                </div>
-            </div>
-            <div
-                className="flex items-center bg-white rounded-lg shadow-md p-4"
-            >
-                <div className="flex-shrink-0 bg-gray-100 rounded-full p-4">
-                    <FaBuilding className="h-6 w-6 text-green-500" />
-                </div>
-                <div className="ml-4">
-                    <h4 className="text-gray-600 text-sm font-semibold">
-                        Branches
-                    </h4>
-                    <p className="text-gray-800 text-xl font-bold">{stats.totalBranches}</p>
-                </div>
-            </div>
-            <div
-                className="flex items-center bg-white rounded-lg shadow-md p-4"
-            >
-                <div className="flex-shrink-0 bg-gray-100 rounded-full p-4">
-                    <FaInfo className="h-6 w-6 text-blue-500" />
-                </div>
-                <div className="ml-4">
-                    <h4 className="text-gray-600 text-sm font-semibold">
-                        Total
-                    </h4>
-                    <p className="text-gray-800 text-xl font-bold">{stats.totalBranches + stats.totalAreas + stats.totalRegions}</p>
-                </div>
-            </div>
+            ))}
         </div>
     );
 };

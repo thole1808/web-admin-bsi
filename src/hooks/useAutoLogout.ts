@@ -9,10 +9,26 @@ export default function useAutoLogout() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      // Optional: bisa langsung signOut atau redirect ke login
-      signOut({ redirect: false });
-      router.push('/');
+    if (!session?.expiresAt) return;
+
+    const now = Date.now();
+    const expireAt = session.expiresAt;
+
+    // console.log('Backend expiresAt:', new Date(expireAt).toISOString());
+    // console.log('Current time:', new Date(now).toISOString());
+
+    if (now >= new Date(expireAt).getTime()) {
+      console.log('Session expired from backend, logging out...');
+      localStorage.clear();
+      signOut({ callbackUrl: '/login' });
+    } else {
+      const timeout = setTimeout(() => {
+        console.log('Session auto-expired, logging out...');
+        localStorage.clear();
+        signOut({ callbackUrl: '/login' });
+      }, new Date(expireAt).getTime() - now);
+
+      return () => clearTimeout(timeout); // cleanup
     }
-  }, [status, router]);
+  }, [session]);
 }

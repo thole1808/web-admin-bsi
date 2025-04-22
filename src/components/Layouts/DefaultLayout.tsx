@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { ToastContainer } from "react-toastify";
+import useAutoLogout from '@/hooks/useAutoLogout';
 
 export default function DefaultLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // ✅ tambahkan ini
+  useAutoLogout();
 
   return (
     <>
@@ -27,8 +29,7 @@ export default function DefaultLayout({
           />
 
           <main>
-            <ToastContainer className="text-sm"/>
-
+            <ToastContainer className="text-sm" />
             <div className="mx-auto max-w-screen-2xl md:px-6 md:py-6 2xl:p-10">
               {children}
             </div>

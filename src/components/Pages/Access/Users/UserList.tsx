@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
-import { FaRotateLeft } from "react-icons/fa6";
 import ActionGroup from "@/components/Tables/ActionGroup";
 import CustomLoader from "@/components/Tables/CustomLoader";
 import CreateButton from "@/components/Button/CreateButton";
@@ -24,7 +23,6 @@ const UserList: React.FC = () => {
     const [sortField, setSortField] = useState<string | null>("id");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
     const [role, setRole] = useState("");
-    const [statusField, setStatusField] = useState("");
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [roles, setRoles] = useState<any[]>([]);
@@ -32,6 +30,23 @@ const UserList: React.FC = () => {
     const [isDelete, setIsDelete] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [branchId, setbranchId] = useState<string | null>("");
+  
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+          const userProfile = localStorage.getItem("user-profile");
+          if (userProfile) {
+            try {
+              const parsed = JSON.parse(userProfile);
+              if (parsed?.branch?.id) {
+                setbranchId(parsed.branch.id.toString());
+              }
+            } catch (e) {
+              console.error("Failed to parse user-profile", e);
+            }
+          }
+        }
+      }, []);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -72,17 +87,16 @@ const UserList: React.FC = () => {
                 const page = (currentPage - 1).toString();
                 const sortBy = sortField ? sortField : "id";
                 const direction = sortDirection.toString();
-                const status = statusField.toString();
                 const search = debouncedSearch;
                 const roleName = role;
 
                 const queryParams = new URLSearchParams({
+                    branchId: branchId?.toString() || "",
                     size,
                     page,
                     sortBy,
                     direction,
                     roleName,
-                    status,
                     search
                 });
 
@@ -108,7 +122,7 @@ const UserList: React.FC = () => {
         if (isEdit || isCreate || isDelete) return;
 
         fetchData();
-    }, [perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, role, isEdit, isCreate, isDelete]);
+    }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, role, isEdit, isCreate, isDelete, branchId]);
 
     const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
         <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>
@@ -129,7 +143,6 @@ const UserList: React.FC = () => {
     };
 
     const handleResetFilter = () => {
-        setStatusField("");
         setSearch("");
     };
 
@@ -175,7 +188,6 @@ const UserList: React.FC = () => {
         {
             name: '',
             right: true,
-            maxWidth: '5px',
             cell: (row: any) => (
                 <ActionGroup
                     options={[

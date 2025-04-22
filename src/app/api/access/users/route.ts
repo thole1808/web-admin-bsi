@@ -64,8 +64,6 @@ export async function GET(req: NextRequest) {
 
     const url = `${API_URL}/users/paginate?${params.toString()}`;
 
-    console.log('CONSUME GET ' + url);
-
     return url;
   }
 }
