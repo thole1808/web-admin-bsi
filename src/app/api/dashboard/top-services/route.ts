@@ -21,20 +21,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Extract query parameters
-    const start = req.nextUrl.searchParams.get('start');
-    const end = req.nextUrl.searchParams.get('end');
-    const limit = req.nextUrl.searchParams.get('limit');
-
-    if (!start || !end || !limit) {
-      return NextResponse.json({ error: 'Missing required query parameters' }, { status: 400 });
-    }
-
-    // Construct the API URL
-    const url = `${API_URL}/reports/admin/top-service-types?start=${start}&end=${end}&limit=${limit}`;
-
     // Fetch data from external API
-    const response = await fetch(url, {
+    const response = await fetch(buildUrl(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -53,5 +41,21 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+
+  // Helper function to build the URL with query parameters
+  function buildUrl() {
+    const start = req.nextUrl.searchParams.get('start');
+    const end = req.nextUrl.searchParams.get('end');
+    const limit = req.nextUrl.searchParams.get('limit');
+    const branchId = req.nextUrl.searchParams.get('branchId');
+
+    const params = new URLSearchParams();
+    if (start) params.append('start', start);
+    if (end) params.append('end', end);
+    if (limit) params.append('limit', limit);
+    if (branchId) params.append('branchId', branchId);
+
+    return `${API_URL}/reports/admin/top-service-types?${params.toString()}`;
   }
 }

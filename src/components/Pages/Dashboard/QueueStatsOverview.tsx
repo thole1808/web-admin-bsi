@@ -13,6 +13,23 @@ const QueueStatsOverview: React.FC = () => {
     const [stats, setStats] = useState<Stat[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [branchId, setbranchId] = useState<string | null>("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+          const userProfile = localStorage.getItem("user-profile");
+          if (userProfile) {
+            try {
+              const parsed = JSON.parse(userProfile);
+              if (parsed?.branch?.id) {
+                setbranchId(parsed.branch.id.toString());
+              }
+            } catch (e) {
+              console.error("Failed to parse user-profile", e);
+            }
+          }
+        }
+      }, []);
 
     useEffect(() => {
         const fetchQueueStats = async () => {
@@ -32,6 +49,7 @@ const QueueStatsOverview: React.FC = () => {
 
 
                 const queryParams = new URLSearchParams({
+                    branchId: branchId?.toString() || "",
                     start,
                     end,
                     prevStart,
@@ -55,7 +73,7 @@ const QueueStatsOverview: React.FC = () => {
         };
 
         fetchQueueStats();
-    }, []);
+    }, [branchId]);
 
     if (loading) {
         return (

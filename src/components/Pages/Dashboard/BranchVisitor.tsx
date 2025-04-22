@@ -12,6 +12,23 @@ const BranchVisitor: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [branchId, setbranchId] = useState<string | null>("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+          const userProfile = localStorage.getItem("user-profile");
+          if (userProfile) {
+            try {
+              const parsed = JSON.parse(userProfile);
+              if (parsed?.branch?.id) {
+                setbranchId(parsed.branch.id.toString());
+              }
+            } catch (e) {
+              console.error("Failed to parse user-profile", e);
+            }
+          }
+        }
+      }, []);
 
     useEffect(() => {
         const fetchBranchVisitors = async () => {
@@ -25,6 +42,7 @@ const BranchVisitor: React.FC = () => {
                 const limit = 10;
 
                 const queryParams = new URLSearchParams({
+                    branchId: branchId?.toString() || "",
                     start,
                     end,
                     limit: limit.toString(),

@@ -13,6 +13,24 @@ const DoughnutChartCard: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [branchId, setbranchId] = useState<string | null>("");
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+          const userProfile = localStorage.getItem("user-profile");
+          if (userProfile) {
+            try {
+              const parsed = JSON.parse(userProfile);
+              if (parsed?.branch?.id) {
+                setbranchId(parsed.branch.id.toString());
+              }
+            } catch (e) {
+              console.error("Failed to parse user-profile", e);
+            }
+          }
+        }
+      }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,8 +43,15 @@ const DoughnutChartCard: React.FC = () => {
                 const end = localTime.toISOString().split("T")[0] + "T23:59:59";
                 const limit = 3;
 
+                const queryParams = new URLSearchParams({
+                    branchId: branchId?.toString() || "",
+                    start,
+                    end,
+                    limit: limit.toString(),
+                });
+
                 const response = await fetch(
-                    `/api/dashboard/top-services?start=${start}&end=${end}&limit=${limit}`
+                    `/api/dashboard/top-services?${queryParams.toString()}`
                 );
                 const result = await response.json();
 

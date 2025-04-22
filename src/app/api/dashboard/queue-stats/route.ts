@@ -26,16 +26,14 @@ export async function GET(req: NextRequest) {
     const end = req.nextUrl.searchParams.get('end');
     const prevStart = req.nextUrl.searchParams.get('prevStart');
     const prevEnd = req.nextUrl.searchParams.get('prevEnd');
+    const branchId = req.nextUrl.searchParams.get('branchId');
 
     if (!start || !end || !prevStart || !prevEnd) {
       return NextResponse.json({ error: 'Missing required query parameters' }, { status: 400 });
     }
 
-    // Construct the API URL
-    const url = `${API_URL}/reports/admin/queue-stats?start=${start}&end=${end}&prevStart=${prevStart}&prevEnd=${prevEnd}`;
-
     // Fetch data from external API
-    const response = await fetch(url, {
+    const response = await fetch(buildUrl(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -54,5 +52,23 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+
+  // Helper function to build the URL with query parameters
+  function buildUrl() {
+    const start = req.nextUrl.searchParams.get('start');
+    const end = req.nextUrl.searchParams.get('end');
+    const prevStart = req.nextUrl.searchParams.get('prevStart');
+    const prevEnd = req.nextUrl.searchParams.get('prevEnd');
+    const branchId = req.nextUrl.searchParams.get('branchId');
+
+    const params = new URLSearchParams();
+    if (start) params.append('start', start);
+    if (end) params.append('end', end);
+    if (prevStart) params.append('prevStart', prevStart);
+    if (prevEnd) params.append('prevEnd', prevEnd);
+    if (branchId) params.append('branchId', branchId);
+
+    return `${API_URL}/reports/admin/queue-stats?${params.toString()}`;
   }
 }

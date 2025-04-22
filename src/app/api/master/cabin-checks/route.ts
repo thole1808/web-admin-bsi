@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
 
     // Return the fetched data
     const data = await response.json();
-    console.log(data);
+    
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);
