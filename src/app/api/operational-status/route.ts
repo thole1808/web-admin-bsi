@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET,
     });
 
-    if (!session || !session.accessToken) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
     // Return the fetched data
     const data = await response.json();
-    console.log(data);
+    
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('Error processing request:', error);

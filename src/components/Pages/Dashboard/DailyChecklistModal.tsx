@@ -100,7 +100,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, data, onClose }) => {
             const result = await response.json();
 
             if (result.success) {
-                toast.success('Cabin crew check successfully saved');
+                toast.success('Pemeriksaan Awak Cabin successfully saved');
             } else {
                 console.error('Failed to submit data:', result);
             }

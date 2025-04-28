@@ -9,8 +9,11 @@ import { FaCog, FaSearch } from "react-icons/fa";
 import ResetButton from "../../Button/ResetButton";
 import Select from "../../Forms/Select";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const BranchList: React.FC = () => {
+  const { data: session, status } = useSession();
+
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalRows, setTotalRows] = useState(0);
@@ -25,65 +28,51 @@ const BranchList: React.FC = () => {
   const [region, setRegion] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
-  const [branchCode, setbranchCode] = useState<string | null>(null);
-  const [branchType, setBranchType] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userProfile = localStorage.getItem("user-profile");
-      if (userProfile) {
-        try {
-          const parsed = JSON.parse(userProfile);
-          if (parsed?.branch?.id) {
-            setbranchCode(parsed.branch.code.toString());
-            setBranchType(parsed.branch.type || null);
-          }
-        } catch (e) {
-          console.error("Failed to parse user-profile", e);
-        }
-      }
-    }
-  }, []);
+  const branchCode = (session?.user as any)?.branch?.code ?? null;
+  const branchType = (session?.user as any)?.branch?.type ?? null;
 
   const typeOptions = [
     { value: 'REGION', label: 'Region' },
     { value: 'AREA', label: 'Area' },
-    { value: 'BRANCH', label: 'Branch' },
+    { value: 'BRANCH', label: 'Cabang' },
   ];
 
   useEffect(() => {
     const loadRegions = async () => {
       setArea('');
-
       try {
         const response = await fetch(`/api/branches?type=REGION&size=100`);
         const result = await response.json();
-
         if (result.success) {
-          setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+          setRegionOptions(result.data.content.map((branch: any) => ({
+            value: branch.code,
+            label: branch.name,
+          })));
         }
       } catch (err) {
-        console.error('Error fetching regions:', err);
+        console.error('Gagal mengambil data region:', err);
       }
     };
-
     loadRegions();
   }, []);
 
   useEffect(() => {
     const loadAreas = async () => {
+      if (!region) return;
       try {
         const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
         const result = await response.json();
-
         if (result.success) {
-          setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+          setAreaOptions(result.data.content.map((branch: any) => ({
+            value: branch.code,
+            label: branch.name,
+          })));
         }
       } catch (err) {
-        console.error('Error fetching areas:', err);
+        console.error('Gagal mengambil data area:', err);
       }
     };
-
     loadAreas();
   }, [region]);
 
@@ -91,20 +80,39 @@ const BranchList: React.FC = () => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
     }, 500);
-
     return () => {
       clearTimeout(handler);
     };
   }, [search]);
 
   useEffect(() => {
-    const fetchDatas = async () => {
+    const userType = (session?.user as any)?.branch?.type;
+    const userFilters = [
+      {
+        type: "HO",
+        filters: [],
+      },
+      {
+        type: "REGION",
+        filters: [
+          {
+            fields: ["regionId", "regionCode"]
+          }
+        ],
+      },
+    ]
+
+    if (userType === "BRANCH") {
+      
+    }
+
+    const fetchData = async () => {
       try {
         const size = perPage.toString();
         const page = (currentPage - 1).toString();
-        const sortBy = sortField ? sortField : "id";
-        const direction = sortDirection.toString();
-        const search = debouncedSearch;
+        const sortBy = sortField ?? "id";
+        const direction = sortDirection;
+        const searchQuery = debouncedSearch;
         const type = typeField;
         const areaCode = area;
         const regionCode = region;
@@ -115,7 +123,7 @@ const BranchList: React.FC = () => {
           sortBy,
           direction,
           type,
-          search,
+          search: searchQuery,
           areaCode,
           regionCode,
         });
@@ -125,14 +133,13 @@ const BranchList: React.FC = () => {
         }
 
         const response = await fetch(`/api/branches?${queryParams.toString()}`);
-
         const result = await response.json();
 
         if (result.success) {
           setData(result.data.content);
           setTotalRows(result.data.totalElements);
         } else {
-          throw new Error(result.message || "Failed to fetch queues");
+          throw new Error(result.message || "Gagal mengambil data cabang");
         }
       } catch (err: any) {
         console.error(err.message);
@@ -141,55 +148,72 @@ const BranchList: React.FC = () => {
       }
     };
 
-    fetchDatas();
-  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region, branchCode]);
+    if (status !== "authenticated") return;
 
-  const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
-    return (
-      <div className="py-4 px-16 bg-gray-50 text-sm">
-        <div className="grid grid-cols-2">
-          <div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Area</span>
-              <span className="col-span-2">:&nbsp;{data.areaName || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Region</span>
-              <span className="col-span-2">:&nbsp;{data.regionName}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Address</span>
-              <span className="col-span-2">:&nbsp;{data.address || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Phone</span>
-              <span className="col-span-2">:&nbsp;{data.phone || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Timezone</span>
-              <span className="col-span-2">:&nbsp;{data.timezone || ''}</span>
-            </div>
-          </div>
-          <div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Is Active</span>
-              <span className="col-span-2">:&nbsp;{data.active ? 'Yes' : 'No'}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Created at</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt) || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Updated at</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.updatedAt) || ''}</span>
-            </div>
-          </div>
+    fetchData();
+  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region, branchCode, status]);
+
+  const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => (
+    <div className="py-4 px-16 bg-gray-50 text-sm">
+      <div className="grid grid-cols-2">
+        <div>
+          <InfoRow label="Area" value={data.areaName} />
+          <InfoRow label="Region" value={data.regionName} />
+          <InfoRow label="Alamat" value={data.address} />
+          <InfoRow label="Telepon" value={data.phone} />
+          <InfoRow label="Zona Waktu" value={data.timezone} />
+        </div>
+        <div>
+          <InfoRow label="Aktif" value={data.active ? 'Ya' : 'Tidak'} />
+          <InfoRow label="Dibuat Pada" value={formatDateTime(data.createdAt)} />
+          <InfoRow label="Diperbarui Pada" value={formatDateTime(data.updatedAt)} />
         </div>
       </div>
-    )
+    </div>
+  );
+
+  const InfoRow = ({ label, value }: { label: string; value: string }) => (
+    <div className="grid grid-cols-3 max-w-sm mb-1">
+      <span className="font-medium">{label}</span>
+      <span className="col-span-2">:&nbsp;{value || '-'}</span>
+    </div>
+  );
+
+  const formatDateTime = (date: string) => {
+    if (!date) return '-';
+    return new Date(date).toLocaleString('id-ID');
   };
 
-  const handlePerRowsChange = async (newPerPage: number, page: number) => {
+  const typeWithStyle = (type: string) => {
+    if (!type) return '';
+    let style = 'px-2 py-1 rounded text-xs font-medium ';
+    switch (type) {
+      case 'BRANCH': style += 'bg-yellow-100 text-yellow-700'; break;
+      case 'AREA': style += 'bg-blue-100 text-blue-700'; break;
+      case 'REGION': style += 'bg-green-100 text-green-700'; break;
+      default: break;
+    }
+    return (<div className={style}>{type}</div>);
+  };
+
+  const columns = [
+    { name: 'Kode', selector: (row: any) => row.code || '', sortable: true, sortField: 'code' },
+    { name: 'Nama', selector: (row: any) => row.name || '', grow: 2, sortable: true, sortField: 'name' },
+    { name: 'Tipe', selector: (row: any) => row.type || '', sortable: true, sortField: 'type', cell: (row: any) => typeWithStyle(row.type) },
+    { name: 'Unit', selector: (row: any) => row.unit || '', sortable: true, sortField: 'unit' },
+    { name: 'Kapasitas Ruangan', selector: (row: any) => row.maxRoomCapacity || '', sortable: true, sortField: 'maxRoomCapacity' },
+    { name: 'Kuota Antrian', selector: (row: any) => row.maxQueueCapacity || '', sortable: true, sortField: 'maxQueueCapacity' },
+    { name: 'Terakhir Diperbarui', selector: (row: any) => formatDateTime(row.updatedAt), grow: 2, right: true, sortable: true, sortField: 'updatedAt' },
+    {
+      name: "", right: true, cell: (row: any) => (
+        <Link href={`/branches/${row.id}`} className="text-sm border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-2 flex gap-1 items-center">
+          Kelola <FaCog className="w-3 h-3" />
+        </Link>
+      )
+    },
+  ];
+
+  const handlePerRowsChange = (newPerPage: number, page: number) => {
     setPerPage(newPerPage);
     setCurrentPage(page);
   };
@@ -198,7 +222,7 @@ const BranchList: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handleSort = async (column: any, sortDirection: "asc" | "desc") => {
+  const handleSort = (column: any, sortDirection: "asc" | "desc") => {
     setSortField(column.selector);
     setSortDirection(sortDirection);
   };
@@ -208,106 +232,23 @@ const BranchList: React.FC = () => {
     setSearch("");
     setRegion("");
     setArea("");
-  }
+  };
 
-  function formatDateTime(date: string) {
-    if (!date) return '-';
-
-    return new Date(date).toLocaleString('id-ID');
-  }
-
-  function typeWithStyle(type: string) {
-    if (!type) return '';
-
-    let style = 'px-2 py-1 rounded text-xs font-medium ';
-
-    switch (type) {
-      case 'BRANCH':
-        style += 'bg-yellow-100 text-yellow-700';
-        break;
-      case 'AREA':
-        style += 'bg-blue-100 text-blue-700';
-        break;
-      case 'REGION':
-        style += 'bg-green-100 text-green-700';
-        break;
-    }
-
-    return (<div className={style}>{type}</div>);
-  }
-
-  const columns = [
-    {
-      name: 'Code',
-      selector: (row: { code: string; }) => row.code || '',
-      sortable: true,
-      sortField: 'code',
-    },
-    {
-      name: 'Name',
-      selector: (row: { name: string; }) => row.name || '',
-      grow: 2,
-      sortable: true,
-      sortField: 'name',
-    },
-    {
-      name: 'Type',
-      selector: (row: { type: string; }) => row.type || '',
-      sortable: true,
-      sortField: 'type',
-      cell: (row: { type: string; }) => typeWithStyle(row.type),
-    },
-    {
-      name: 'Unit',
-      selector: (row: { unit: string; }) => row.unit || '',
-      sortable: true,
-      sortField: 'unit',
-    },
-    {
-      name: 'Room Capacity',
-      selector: (row: { maxRoomCapacity: number; }) => row.maxRoomCapacity || '',
-      sortable: true,
-      sortField: 'maxRoomCapacity',
-    },
-    {
-      name: 'Queue Quota',
-      selector: (row: { maxQueueCapacity: number; }) => row.maxQueueCapacity || '',
-      sortable: true,
-      sortField: 'maxQueueCapacity',
-    },
-    {
-      name: 'Last Updated',
-      selector: (row: { updatedAt: string; }) => formatDateTime(row?.updatedAt) || '',
-      right: true,
-      grow: 2,
-      sortable: true,
-      sortField: 'updatedAt',
-    },
-    {
-      name: "",
-      right: true,
-      cell: (row: any) => (
-        <Link href={`/branches/${row.id}`} className="text-sm border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-2 flex gap-1 items-center">
-          Manage <FaCog className="w-3 h-3" />
-        </Link>
-      ),
-    },
-  ];
+  if (status === "loading") return null;
 
   return (
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Queues</h2>
-          <div>
-            <ExportCSV data={data} filename="branches.csv" />
-          </div>
+          <h2 className="text-lg font-semibold ml-2">Cabang</h2>
+          <ExportCSV data={data} filename="cabang.csv" />
         </div>
+
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
             <TextInput
-              label="Search"
-              placeholder="Search by code or name..."
+              label="Cari"
+              placeholder="Cari berdasarkan kode atau nama..."
               value={search}
               size="xs"
               onChange={(value) => setSearch(value)}
@@ -316,24 +257,25 @@ const BranchList: React.FC = () => {
           </div>
           <div className="grid col-span-2">
             <Select
-              label="Type"
+              label="Tipe"
               options={typeOptions}
               size="xs"
               value={typeField}
               onChange={(value) => setTypeField(value as string)}
-              placeholder="Select an option"
+              placeholder="Pilih tipe"
             />
           </div>
           <div className="grid text-sm items-end justify-end col-span-1">
-            <ResetButton onClick={handleResetFilter} />
+            <ResetButton onClick={handleResetFilter} label="Atur Ulang" />
           </div>
+
           {branchType !== "BRANCH" && (
             <>
               <div className="grid col-span-2">
-                <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+                <Select label="Region" size="xs" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
               </div>
               <div className="grid col-span-2">
-                <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
+                <Select label="Area" size="xs" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={!region} />
               </div>
             </>
           )}

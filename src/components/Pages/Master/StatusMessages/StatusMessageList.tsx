@@ -13,26 +13,26 @@ import ExportCSV from "@/components/Button/ExportCsvButton";
 import TextInput from "@/components/Forms/TextInput";
 import ResetButton from "@/components/Button/ResetButton";
 
-const StatusMessageList: React.FC = () => {
-  const [originalData, setOriginalData] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
+const DaftarPesanStatus: React.FC = () => {
+  const [dataAsli, setDataAsli] = useState<any[]>([]);
+  const [dataTersaring, setDataTersaring] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [isCreate, setIsCreate] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<any | null>(null);
+  const [cari, setCari] = useState("");
+  const [cariDebounce, setCariDebounce] = useState("");
+  const [buatBaru, setBuatBaru] = useState(false);
+  const [hapus, setHapus] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [barisTerpilih, setBarisTerpilih] = useState<any | null>(null);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearch(search);
+      setCariDebounce(cari);
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [search]);
+  }, [cari]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,10 +41,10 @@ const StatusMessageList: React.FC = () => {
         const result = await response.json();
 
         if (result.success) {
-          setOriginalData(result.data);
-          setFilteredData(result.data);
+          setDataAsli(result.data);
+          setDataTersaring(result.data);
         } else {
-          throw new Error(result.message || "Failed to fetch data");
+          throw new Error(result.message || "Gagal memuat data");
         }
       } catch (err: any) {
         console.error(err.message);
@@ -53,31 +53,31 @@ const StatusMessageList: React.FC = () => {
       }
     };
 
-    if (!isEdit && !isCreate && !isDelete) {
+    if (!edit && !buatBaru && !hapus) {
       fetchData();
     }
-  }, [isEdit, isCreate, isDelete]);
+  }, [edit, buatBaru, hapus]);
 
   useEffect(() => {
-    if (!debouncedSearch) {
-      setFilteredData(originalData);
+    if (!cariDebounce) {
+      setDataTersaring(dataAsli);
       return;
     }
 
-    const filtered = originalData.filter((item) =>
-      item.message.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      item.status.toLowerCase().includes(debouncedSearch.toLowerCase())
+    const hasilFilter = dataAsli.filter((item) =>
+      item.message.toLowerCase().includes(cariDebounce.toLowerCase()) ||
+      item.status.toLowerCase().includes(cariDebounce.toLowerCase())
     );
 
-    setFilteredData(filtered);
-  }, [debouncedSearch, originalData]);
+    setDataTersaring(hasilFilter);
+  }, [cariDebounce, dataAsli]);
 
   const handleResetFilter = () => {
-    setSearch("");
-    setFilteredData(originalData);
+    setCari("");
+    setDataTersaring(dataAsli);
   };
 
-  const columns = [
+  const kolom = [
     {
       name: "Status",
       selector: (row: { status: string }) => row?.status || "",
@@ -85,7 +85,7 @@ const StatusMessageList: React.FC = () => {
       sortField: "status",
     },
     {
-      name: "Message",
+      name: "Pesan",
       selector: (row: { message: string }) => row?.message || "",
       grow: 3,
       sortable: true,
@@ -97,94 +97,92 @@ const StatusMessageList: React.FC = () => {
       cell: (row: any) => (
         <ActionGroup
           options={[
-            { label: "Edit", icon: "edit", action: () => openEdit(row) },
-            { label: "Delete", icon: "trash", action: () => handleDelete(row) },
+            { label: "Edit", icon: "edit", action: () => bukaEdit(row) },
+            { label: "Hapus", icon: "trash", action: () => handleHapus(row) },
           ]}
         />
       ),
     },
   ];
 
-  const openCreate = () => {
-    setIsCreate(true);
+  const bukaBuatBaru = () => setBuatBaru(true);
+  const tutupBuatBaru = () => setBuatBaru(false);
+
+  const bukaEdit = (row: any) => {
+    setBarisTerpilih(row);
+    setEdit(true);
   };
 
-  const closeCreate = () => {
-    setIsCreate(false);
+  const tutupEdit = () => {
+    setEdit(false);
+    setBarisTerpilih(null);
   };
 
-  const openEdit = (row: any) => {
-    setSelectedRow(row);
-    setIsEdit(true);
+  const handleHapus = (row: any) => {
+    setBarisTerpilih(row);
+    setHapus(true);
   };
 
-  const closeEdit = () => {
-    setIsEdit(false);
-    setSelectedRow(null);
-  };
-
-  const handleDelete = (row: any) => {
-    setSelectedRow(row);
-    setIsDelete(true);
-  };
-
-  const closeDelete = () => {
-    setIsDelete(false);
-    setSelectedRow(null);
+  const tutupHapus = () => {
+    setHapus(false);
+    setBarisTerpilih(null);
   };
 
   return (
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Status Messages</h2>
+          <h2 className="text-lg font-semibold ml-2">Daftar Pesan Status</h2>
           <div className="flex gap-2">
-            <CreateButton onClick={openCreate} />
-            <ExportCSV data={filteredData} filename="status-messages.csv" />
+            <CreateButton onClick={bukaBuatBaru} />
+            <ExportCSV data={dataTersaring} filename="status-messages.csv" />
           </div>
         </div>
+
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
             <TextInput
-              label="Search"
-              placeholder="Search by status or message..."
-              value={search}
+              label="Pencarian"
+              placeholder="Cari berdasarkan status atau pesan..."
+              value={cari}
               size="xs"
-              onChange={(value) => setSearch(value)}
+              onChange={(value) => setCari(value)}
               suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
             />
           </div>
-          <div className="grid text-sm items-end justify-end col-span-3">
-            <ResetButton onClick={handleResetFilter} />
+          <div className="grid col-span-3 flex items-end justify-end">
+            <div>
+              <ResetButton onClick={handleResetFilter} label="Atur Ulang" />
+            </div>
           </div>
         </div>
 
         <DataTable
-          columns={columns}
-          data={filteredData}
+          columns={kolom}
+          data={dataTersaring}
           progressPending={loading}
           progressComponent={<CustomLoader />}
           pagination
         />
       </div>
 
-      {isCreate && <StatusMessageCreate isOpen={isCreate} onClose={closeCreate} />}
-      {isDelete && (
+      {buatBaru && <StatusMessageCreate isOpen={buatBaru} onClose={tutupBuatBaru} />}
+      {hapus && (
         <StatusMessageDelete
-          isOpen={isDelete}
-          onClose={closeDelete}
-          data={selectedRow}
+          isOpen={hapus}
+          onClose={tutupHapus}
+          data={barisTerpilih}
         />
       )}
-      {isEdit && (
+      {edit && (
         <StatusMessageEdit
-          isOpen={isEdit}
-          onClose={closeEdit}
-          data={selectedRow}
+          isOpen={edit}
+          onClose={tutupEdit}
+          data={barisTerpilih}
         />
       )}
     </div>
   );
 };
 
-export default StatusMessageList;
+export default DaftarPesanStatus;

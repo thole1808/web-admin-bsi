@@ -92,11 +92,11 @@ const AuditList: React.FC = () => {
         return (
             <div className="py-4 px-16 bg-gray-50 text-sm">
                 <div className="grid grid-cols-10 mb-2">
-                    <span className="font-medium">Old Value</span>
+                    <span className="font-medium">Nilai Lama</span>
                     <span className="col-span-9">:&nbsp;{data.oldValue || '-'}</span>
                 </div>
                 <div className="grid grid-cols-10 mb-2">
-                    <span className="font-medium">New Value</span>
+                    <span className="font-medium">Nilai Baru</span>
                     <span className="col-span-9">:&nbsp;{data.newValue || '-'}</span>
                 </div>
             </div>
@@ -124,7 +124,6 @@ const AuditList: React.FC = () => {
 
     function formatDateTime(date: string) {
         if (!date) return '-';
-
         return new Date(date).toLocaleString('id-ID');
     }
 
@@ -150,7 +149,7 @@ const AuditList: React.FC = () => {
 
     const columns = [
         {
-            name: 'Datetime',
+            name: 'Tanggal & Waktu',
             selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
         },
         {
@@ -167,7 +166,7 @@ const AuditList: React.FC = () => {
             cell: (row: { eventType: string; }) => eventWithStyle(row?.eventType),
         },
         {
-            name: 'Entity',
+            name: 'Entitas',
             selector: (row: { entity: string; }) => row?.entity || '',
             sortable: true,
             sortField: 'entity',
@@ -178,7 +177,7 @@ const AuditList: React.FC = () => {
         <div className="grid gap-y-4">
             <div className="py-1 border rounded-lg bg-white">
                 <div className="p-4 border-b flex justify-between items-center">
-                    <h2 className="text-lg font-semibold ml-2">Audit Trails</h2>
+                    <h2 className="text-lg font-semibold ml-2">Jejak Audit</h2>
                     <div>
                         <ExportCSV data={data} filename="audit-trails.csv" />
                     </div>
@@ -186,8 +185,8 @@ const AuditList: React.FC = () => {
                 <div className="grid grid-cols-7 py-4 px-6 gap-3">
                     <div className="grid col-span-4">
                         <TextInput
-                            label="Search"
-                            placeholder="Search by username..."
+                            label="Pencarian"
+                            placeholder="Cari berdasarkan username..."
                             value={search}
                             size="xs"
                             onChange={(value) => setSearch(value)}
@@ -196,17 +195,17 @@ const AuditList: React.FC = () => {
                     </div>
                     <div className="grid col-span-2">
                         <Select
-                            label="Event"
+                            label="Jenis Event"
                             options={[
-                                { value: '', label: 'All' },
-                                { value: 'CREATE', label: 'Create' },
-                                { value: 'UPDATE', label: 'Update' },
-                                { value: 'DELETE', label: 'Delete' },
+                                { value: '', label: 'Semua' },
+                                { value: 'CREATE', label: 'Buat' },
+                                { value: 'UPDATE', label: 'Perbarui' },
+                                { value: 'DELETE', label: 'Hapus' },
                             ]}
                             size="xs"
                             value={eventField}
                             onChange={(value) => setEventField(value.toString())}
-                            placeholder="Select an option"
+                            placeholder="Pilih opsi"
                         />
                     </div>
                     <div className="grid text-sm items-end justify-end col-span-1">
@@ -214,7 +213,7 @@ const AuditList: React.FC = () => {
                     </div>
                     <div className="grid col-span-2">
                         <DateTimePicker
-                            label="From Date"
+                            label="Dari Tanggal"
                             value={fromDate}
                             onChange={(value) => setFromDate(value)}
                             size="xs"
@@ -223,7 +222,7 @@ const AuditList: React.FC = () => {
                     </div>
                     <div className="grid col-span-2">
                         <DateTimePicker
-                            label="To Date"
+                            label="Sampai Tanggal"
                             value={toDate}
                             onChange={(value) => setToDate(value)}
                             size="xs"

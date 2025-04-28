@@ -1,3 +1,5 @@
+"use client";
+
 import { MapIcon } from '@heroicons/react/24/solid';
 import React, { useEffect, useState } from 'react';
 import { FaBuilding, FaInfo, FaMapPin } from 'react-icons/fa';
@@ -23,7 +25,7 @@ const BranchStatsOverview: React.FC = () => {
                 if (result.success) {
                     setStats(result.data);
                 } else {
-                    throw new Error(result.message || 'Failed to fetch branch stats');
+                    throw new Error(result.message || 'Gagal mengambil statistik cabang');
                 }
             } catch (err: any) {
                 setError(err.message);
@@ -43,10 +45,7 @@ const BranchStatsOverview: React.FC = () => {
                         key={index}
                         className="flex items-center bg-white rounded-lg shadow-md p-4"
                     >
-                        {/* Skeleton untuk ikon */}
                         <div className="w-14 h-14 bg-gray-200 rounded-full animate-pulse mr-4"></div>
-
-                        {/* Skeleton untuk konten */}
                         <div className="flex-1">
                             <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse mb-2"></div>
                             <div className="h-6 w-1/2 bg-gray-200 rounded animate-pulse mb-2"></div>
@@ -59,37 +58,30 @@ const BranchStatsOverview: React.FC = () => {
     }
 
     if (error) {
-        return <p className="text-center text-red-500">Error: {error}</p>;
+        return <p className="text-center text-red-500">Kesalahan: {error}</p>;
     }
 
     if (!stats) {
-        return <p className="text-center text-gray-500">No data available</p>;
-    }
-    if (error) {
-        return <p className="text-center text-red-500">Error: {error}</p>;
-    }
-
-    if (!stats) {
-        return <p className="text-center text-gray-500">No data available</p>;
+        return <p className="text-center text-gray-500">Data tidak tersedia</p>;
     }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 rounded-lg">
             {[
                 {
-                    title: 'Regions',
+                    title: 'Regional',
                     value: stats.totalRegions,
                     icon: <MapIcon className="h-6 w-6 text-red-500" />,
                     color: 'bg-red-100',
                 },
                 {
-                    title: 'Areas',
+                    title: 'Area',
                     value: stats.totalAreas,
                     icon: <FaMapPin className="h-6 w-6 text-orange-500" />,
                     color: 'bg-orange-100',
                 },
                 {
-                    title: 'Branches',
+                    title: 'Cabang',
                     value: stats.totalBranches,
                     icon: <FaBuilding className="h-6 w-6 text-green-500" />,
                     color: 'bg-green-100',
@@ -121,13 +113,13 @@ const BranchStatsOverview: React.FC = () => {
 const getStatusLabel = (status: string) => {
     switch (status) {
         case 'EXPIRE':
-            return 'Missed';
+            return 'Lewat Batas';
         case 'COMPLETED':
-            return 'Completed';
+            return 'Selesai';
         case 'ALL':
-            return 'Total Visitors';
+            return 'Total Pengunjung';
         case 'ACTIVE':
-            return 'Active';
+            return 'Aktif';
         default:
             return status;
     }

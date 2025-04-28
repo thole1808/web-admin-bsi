@@ -15,7 +15,7 @@ export async function PUT(req: NextRequest) {
             secret: process.env.NEXTAUTH_SECRET,
         });
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -38,9 +38,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ error: errorMessage || 'Failed to update resource' }, { status: response.status });
         }
 
-        const data = await response.json();
-        console.log(data);
-        return NextResponse.json(data, { status: 200 });
+        const data = await response.json();return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -59,7 +57,7 @@ export async function DELETE(req: NextRequest) {
             secret: process.env.NEXTAUTH_SECRET,
         });
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -80,9 +78,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: errorMessage || 'Failed to delete resource' }, { status: response.status });
         }
 
-        const data = await response.json();
-        console.log(data);
-        return NextResponse.json(data, { status: 200 });
+        const data = await response.json();return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error('Error processing request:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

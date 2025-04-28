@@ -6,8 +6,26 @@ declare module "next-auth" {
       id: string;
       name: string;
       email: string;
-      accessToken: string; // 🟡 ← ini wajib, jadi harus disertakan saat assign
+      accessToken: string;
+      role?: {
+        id: string;
+        name: string;
+        code?: string;
+      };
+      branch?: {
+        id: string;
+        code: string;
+        name: string;
+        type: string;
+        areaId?: string;
+        areaCode?: string;
+        areaName?: string;
+        regionId?: string;
+        regionCode?: string;
+        regionName?: string;
+      };
     };
+    expiresAt?: string;
   }
 
   interface User {
@@ -15,5 +33,48 @@ declare module "next-auth" {
     name: string;
     email: string;
     accessToken: string;
+    role?: {
+      id: string;
+      name: string;
+      code?: string;
+    };
+    branch?: {
+      id: string;
+      code: string;
+      name: string;
+      type: string;
+      areaId?: string;
+      areaCode?: string;
+      areaName?: string;
+      regionId?: string;
+      regionCode?: string;
+      regionName?: string;
+    };
+    expiresAt: string;
+  }
+
+  interface JWT {
+    id: string;
+    name: string;
+    email: string;
+    accessToken: string;
+    role?: {
+      id: string;
+      name: string;
+      code?: string;
+    };
+    branch?: {
+      id: string;
+      code: string;
+      name: string;
+      type: string;
+      areaId?: string;
+      areaCode?: string;
+      areaName?: string;
+      regionId?: string;
+      regionCode?: string;
+      regionName?: string;
+    };
+    expiresAt?: string;
   }
 }

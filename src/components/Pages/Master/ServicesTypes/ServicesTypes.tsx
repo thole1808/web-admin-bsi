@@ -92,8 +92,7 @@ const ServicesTypes: React.FC = () => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch data: ${response.statusText}`);
             }
-            const data = await response.json();
-            if (data.success && Array.isArray(data.data)) {
+            const data = await response.json();    if (data.success && Array.isArray(data.data)) {
                 setServicesData(data.data);
             } else {
                 setError("Invalid data format or failed to fetch data.");
@@ -166,8 +165,7 @@ const ServicesTypes: React.FC = () => {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                console.log("Service type created:", data);
+                const data = await response.json();        console.log("Service type created:", data);
 
                 setIsCreateModalOpen(false);
                 setNewService({

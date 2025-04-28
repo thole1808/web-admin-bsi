@@ -127,8 +127,7 @@ export async function GET(req: NextRequest) {
         }
 
         // Parse and return the successful response
-        const data = await response.json();
-        return NextResponse.json(data, { status: 200 });
+        const data = await response.json();return NextResponse.json(data, { status: 200 });
     } catch (error) {
         // General error handling with more detailed logging
         console.error("Error fetching reservations data:", error);

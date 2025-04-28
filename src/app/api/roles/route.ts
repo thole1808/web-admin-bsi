@@ -22,8 +22,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: errorData.error || 'Failed to fetch roles API' }, { status: response.status });
         }
 
-        const data = await response.json();
-        return NextResponse.json(data, { status: 200 });
+        const data = await response.json();return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error("Error fetching roles :", error);
         return NextResponse.json({ error: 'Failed to fetch roles API' }, { status: 500 });

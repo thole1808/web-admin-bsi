@@ -9,6 +9,8 @@ interface BranchData {
     type: string;
     code: string;
     name: string;
+    regionName: string | null;
+    areaName: string | null;
     address: string;
     city: string;
     phone: string;
@@ -112,6 +114,18 @@ const BranchProfile: React.FC = () => {
                         <p className="text-gray-500">Type</p>
                         <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.type || '-'}</p>
                     </div>
+                    {branchData.areaName && (
+                        <div className="grid grid-cols-3">
+                            <p className="text-gray-500">Area</p>
+                            <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.areaName || '-'}</p>
+                        </div>
+                    )}
+                    {branchData.regionName && (
+                        <div className="grid grid-cols-3">
+                            <p className="text-gray-500">Region</p>
+                            <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.regionName || '-'}</p>
+                        </div>
+                    )}
                     <div className="grid grid-cols-3">
                         <p className="text-gray-500">Room Capacity</p>
                         <p className="font-medium text-gray-800 col-span-2">:&nbsp; {branchData.maxRoomCapacity || '-'}</p>

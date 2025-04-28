@@ -23,8 +23,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: errorData.error || 'Failed to fetch approval matrix API' }, { status: response.status });
         }
 
-        const data = await response.json();
-        return NextResponse.json(data, { status: 200 });
+        const data = await response.json();return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error("Error fetching approval matrix:", error);
         return NextResponse.json({ error: 'Failed to fetch approval matrix API' }, { status: 500 });
@@ -87,8 +86,7 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json({ error: errorData.message || 'Failed to create approval matrix' }, { status: response.status });
         }
-        const data = await response.json();
-        const { id, ...filteredData } = data;
+        const data = await response.json();const { id, ...filteredData } = data;
         return NextResponse.json({ success: true, data: filteredData }, { status: 201 });
 
     } catch (error) {

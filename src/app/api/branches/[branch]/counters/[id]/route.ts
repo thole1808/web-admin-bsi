@@ -15,7 +15,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ bran
             secret: process.env.NEXTAUTH_SECRET,
         });
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -39,7 +39,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ bran
         }
 
         const data = await response.json();
-        console.log(data);
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error('Error processing request:', error);
@@ -59,7 +58,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ b
             secret: process.env.NEXTAUTH_SECRET,
         });
 
-        if (!session || !session.accessToken) {
+        if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -82,7 +81,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ b
         }
 
         const data = await response.json();
-        console.log(data);
         return NextResponse.json(data, { status: 200 });
     } catch (error) {
         console.error('Error processing request:', error);

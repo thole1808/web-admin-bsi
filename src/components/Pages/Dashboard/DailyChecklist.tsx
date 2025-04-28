@@ -68,7 +68,7 @@ const DailyChecklist: React.FC = () => {
     if (loading) {
         return (
             <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
-                <div className="font-bold mb-2">Cabin Crew Check</div>
+                <div className="font-bold mb-2">Pemeriksaan Awak Cabin</div>
                 <ul className='-mx-4 divide-y'>
                     <li className="flex items-center justify-between py-2 px-4 cursor-pointer">
                         <div className="flex items-center">
@@ -93,7 +93,7 @@ const DailyChecklist: React.FC = () => {
         <div className={`bg-white mb-4 rounded-lg shadow-md p-4 overflow-hidden`}>
             <div className="flex justify-between items-center mb-3">
                 <div className="font-bold">
-                    Cabin Crew Check
+                    Pemeriksaan Awak Cabin
                 </div>
                 <div className="text-sm">{activityDate}</div>
             </div>

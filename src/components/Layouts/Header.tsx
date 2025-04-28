@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,30 +28,7 @@ const Header: React.FC<HeaderProps> = ({
     setDropdownOpen,
 }) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [isClient, setIsClient] = useState(false);
-    const [branchInfo, setBranchInfo] = useState<{ name: string; code: string } | null>(null);
-    const [roleInfo, setRoleInfo] = useState<{ name: string, code: string } | null>(null);
     const { data: session } = useSession();
-
-    useEffect(() => {
-        setIsClient(true);
-
-        // Ambil data dari localStorage
-        const stored = localStorage.getItem("user-profile");
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed.branch && parsed.branch.name && parsed.branch.code) {
-                setBranchInfo({
-                    name: parsed.branch.name,
-                    code: parsed.branch.code,
-                });
-            }
-
-            if (parsed.role && parsed.role.name) {
-                setRoleInfo({ name: parsed.role.name, code: parsed.role.code });
-            }
-        }
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -60,16 +37,11 @@ const Header: React.FC<HeaderProps> = ({
             }
         };
 
-        if (isClient) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            if (isClient) {
-                document.removeEventListener('mousedown', handleClickOutside);
-            }
+            document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isClient, dropdownOpen]);
+    }, [setDropdownOpen]);
 
     const navigateToProfile = () => {
         setDropdownOpen(false);
@@ -80,7 +52,9 @@ const Header: React.FC<HeaderProps> = ({
         signOut();
     };
 
-    if (!isClient) return null;
+    // Ambil branch dan role info dari session
+    const branchInfo = session?.user?.branch ?? null;
+    const roleInfo = session?.user?.role ?? null;
 
     return (
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
@@ -144,7 +118,7 @@ const Header: React.FC<HeaderProps> = ({
                                     className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
                                     onClick={navigateToProfile}
                                 >
-                                    <FaUserCircle className="inline-block mr-2 text-gray-500 h-4 w-4" />Profil
+                                    <FaUserCircle className="inline-block mr-2 text-gray-500 h-4 w-4" /> Profil
                                 </span>
                             </Link>
                             <div className="border-t border-gray-200" />
@@ -152,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({
                                 className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
                                 onClick={handleLogout}
                             >
-                                <FaSignOutAlt className="inline-block mr-2 text-gray-500 h-4 w-4" />Logout
+                                <FaSignOutAlt className="inline-block mr-2 text-gray-500 h-4 w-4" /> Logout
                             </span>
                         </div>
                     )}

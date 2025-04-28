@@ -8,8 +8,11 @@ import Select from "@/components/Forms/Select";
 import { FaSearch } from "react-icons/fa";
 import TextInput from "@/components/Forms/TextInput";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
+import { useSession } from "next-auth/react";
 
 const QueueTable: React.FC = () => {
+  const { data: session, status } = useSession();
+
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalRows, setTotalRows] = useState(0);
@@ -26,28 +29,10 @@ const QueueTable: React.FC = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
-  const [branchId, setBranchId] = useState<string | null>(null);
-  const [branchType, setBranchType] = useState<string | null>(null);
+  
 
-  useEffect(() => {
-    // Ambil branchId dan branchType dari localStorage user-profile
-    if (typeof window !== 'undefined') {
-      const userProfile = localStorage.getItem("user-profile");
-      if (userProfile) {
-        try {
-          const parsed = JSON.parse(userProfile);
-          if (parsed?.branch?.id) {
-            setBranchId(parsed.branch.id.toString());
-          }
-          if (parsed?.branch?.type) {
-            setBranchType(parsed.branch.type); // contoh: "BRANCH", "AREA", "REGION"
-          }
-        } catch (e) {
-          console.error("Failed to parse user-profile", e);
-        }
-      }
-    }
-  }, []);
+  const branchId = (session?.user as any)?.branch?.id?.toString() || "";
+  const branchType = (session?.user as any)?.branch?.type?.toString() || "";
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
@@ -111,7 +96,6 @@ const QueueTable: React.FC = () => {
   }, [search]);
 
   useEffect(() => {
-    if (!branchId && !region && !area) return;
     const fetchQueues = async () => {
       try {
         const start = fromDate;
@@ -140,7 +124,7 @@ const QueueTable: React.FC = () => {
           search,
         });
 
-        if (branchId && !region && !area) {
+        if (branchId) {
           queryParams.append("branchId", branchId);
         }
 
@@ -207,104 +191,47 @@ const QueueTable: React.FC = () => {
     link.click();
   }
 
-  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => <button className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2" onClick={() => onExport()}>Download CSV</button>;
+  const Export: React.FC<{ onExport: () => void }> = ({ onExport }) => (
+    <button
+      className="text-sm py-2 px-4 font-medium bg-gray-100 hover:bg-gray-200 rounded border border-gray-300 text-gray-700 mr-2"
+      onClick={() => onExport()}
+    >
+      Unduh CSV
+    </button>
+  );
 
-  const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => {
-    return (
-      <div className="py-4 px-16 bg-gray-50 text-sm">
-        <div className="grid grid-cols-2">
-          <div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Counter</span>
-              <span className="col-span-2">:&nbsp;{data.counterName || ''} #{data.counterNum}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Officer</span>
-              <span className="col-span-2">:&nbsp;{data.userName || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Branch</span>
-              <span className="col-span-2">:&nbsp;{data.branchName || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Area</span>
-              <span className="col-span-2">:&nbsp;{data.areaName || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Region</span>
-              <span className="col-span-2">:&nbsp;{data.regionName || ''}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Reservation Type</span>
-              <span className="col-span-2">:&nbsp;{data.type}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Reservation Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.createdAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Called Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.calledAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Served Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.startedAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Paused Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.pausedAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Continued Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.continuedAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Canceled Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.canceledAt)}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Transferred Time</span>
-              <span className="col-span-2">:&nbsp;{formatDateTime(data.transferredAt)}</span>
-            </div>
-          </div>
-          <div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Is Priority</span>
-              <span className="col-span-2">:&nbsp;{data.priority ? 'Yes' : 'No'}</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">SLA Min. Duration</span>
-              <span className="col-span-2">:&nbsp;{data.slaMinDuration || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">SLA Maks. Duration</span>
-              <span className="col-span-2">:&nbsp;{data.slaMaxDuration || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Waiting Duration</span>
-              <span className="col-span-2">:&nbsp;{(data.waitingDuration / 60).toFixed(0) || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Service Duration</span>
-              <span className="col-span-2">:&nbsp;{(data.serviceDuration / 60).toFixed(0) || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Pause Duration</span>
-              <span className="col-span-2">:&nbsp;{(data.pauseDuration / 60).toFixed(0) || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Total Duration</span>
-              <span className="col-span-2">:&nbsp;{(data.overallDuration / 60).toFixed(0) || 0} menit</span>
-            </div>
-            <div className="grid grid-cols-3 max-w-sm mb-1">
-              <span className="font-medium">Status Message</span>
-              <span className="col-span-2">:&nbsp;{data.statusMessage || ''}</span>
-            </div>
-          </div>
+  const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => (
+    <div className="py-4 px-16 bg-gray-50 text-sm">
+      <div className="grid grid-cols-2">
+        <div>
+          {/** Semua label diubah ke bahasa Indonesia */}
+          <InfoRow label="Loket" value={`${data.counterName || ''} #${data.counterNum}`} />
+          <InfoRow label="Petugas" value={data.userName} />
+          <InfoRow label="Cabang" value={data.branchName} />
+          <InfoRow label="Area" value={data.areaName} />
+          <InfoRow label="Region" value={data.regionName} />
+          <InfoRow label="Tipe Reservasi" value={data.type} />
+          <InfoRow label="Waktu Reservasi" value={formatDateTime(data.createdAt)} />
+          <InfoRow label="Waktu Dipanggil" value={formatDateTime(data.calledAt)} />
+          <InfoRow label="Waktu Dilayani" value={formatDateTime(data.startedAt)} />
+          <InfoRow label="Waktu Dijeda" value={formatDateTime(data.pausedAt)} />
+          <InfoRow label="Waktu Dilanjutkan" value={formatDateTime(data.continuedAt)} />
+          <InfoRow label="Waktu Dibatalkan" value={formatDateTime(data.canceledAt)} />
+          <InfoRow label="Waktu Ditransfer" value={formatDateTime(data.transferredAt)} />
+        </div>
+        <div>
+          <InfoRow label="Prioritas" value={data.priority ? 'Ya' : 'Tidak'} />
+          <InfoRow label="Durasi SLA Minimum" value={`${data.slaMinDuration || 0} menit`} />
+          <InfoRow label="Durasi SLA Maksimum" value={`${data.slaMaxDuration || 0} menit`} />
+          <InfoRow label="Waktu Menunggu" value={`${(data.waitingDuration / 60).toFixed(0)} menit`} />
+          <InfoRow label="Waktu Layanan" value={`${(data.serviceDuration / 60).toFixed(0)} menit`} />
+          <InfoRow label="Durasi Jeda" value={`${(data.pauseDuration / 60).toFixed(0)} menit`} />
+          <InfoRow label="Total Durasi" value={`${(data.overallDuration / 60).toFixed(0)} menit`} />
+          <InfoRow label="Pesan Status" value={data.statusMessage} />
         </div>
       </div>
-    )
-  };
+    </div>
+  );
 
   const handlePerRowsChange = async (newPerPage: number, page: number) => {
     setPerPage(newPerPage);
@@ -394,47 +321,47 @@ const QueueTable: React.FC = () => {
 
   const columns = [
     {
-      name: 'Branch',
+      name: 'Cabang',
       selector: (row: { branchName: any; }) => row.branchName || '',
       grow: 2,
       sortable: true,
       sortField: 'branchName',
       cell: (row: { branchName: string; branchCode: string; }) => (
-        <div className="">
+        <div>
           <div>{row.branchName}</div>
           <div className="text-sm text-gray-500 mt-1">{row.branchCode}</div>
         </div>
       ),
     },
     {
-      name: 'Date',
+      name: 'Tanggal',
       selector: (row: { createdAt: string; }) => formatDateTime(row?.createdAt) || '',
       grow: 2,
       sortable: true,
       sortField: 'createdAt',
     },
     {
-      name: 'Resv. Code',
+      name: 'Kode Reservasi',
       selector: (row: { reservationCode: string; }) => row?.reservationCode || '',
       grow: 2,
       sortable: true,
       sortField: 'reservationCode',
     },
     {
-      name: 'Service Type',
+      name: 'Jenis Layanan',
       selector: (row: { serviceTypeName: string; }) => row?.serviceTypeName || '',
       grow: 2,
       sortable: true,
       sortField: 'serviceTypeName',
     },
     {
-      name: 'Queue No.',
+      name: 'No Antrian',
       selector: (row: { displayNo: string; }) => row?.displayNo || '',
       sortable: true,
       sortField: 'displayNo',
     },
     {
-      name: 'Officer',
+      name: 'Petugas',
       selector: (row: { userName: string; }) => row?.userName || '',
       sortable: true,
       sortField: 'userName',
@@ -448,33 +375,11 @@ const QueueTable: React.FC = () => {
       cell: (row: { status: string; }) => statusWithStyle(row.status),
     },
     {
-      name: 'SLA Criteria',
+      name: 'Kriteria SLA',
       selector: (row: { status: string; }) => slaCriteria(row) || '',
       grow: 2,
       sortable: true,
       sortField: 'status',
-      conditionalCellStyles: [
-        {
-          when: (row: { serviceDuration: number; slaMinDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 < row.slaMinDuration,
-          style: {
-            backgroundColor: '#3daea4',
-            color: 'white',
-            '&:hover': {
-              cursor: 'pointer',
-            },
-          },
-        },
-        {
-          when: (row: { serviceDuration: number; slaMaxDuration: number; status: string }) => isCompleted(row.status) && row.serviceDuration / 60 > row.slaMaxDuration,
-          style: {
-            backgroundColor: '#ed553b',
-            color: 'white',
-            '&:hover': {
-              cursor: 'not-allowed',
-            },
-          },
-        },
-      ],
     },
   ];
 
@@ -486,16 +391,17 @@ const QueueTable: React.FC = () => {
     <div className="grid gap-y-4">
       <div className="py-1 border rounded-lg bg-white">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Queues</h2>
+          <h2 className="text-lg font-semibold ml-2">Data Antrian</h2>
           <div>
             <Export onExport={() => downloadCSV(data)} />
           </div>
         </div>
+
         <div className="grid grid-cols-7 py-4 px-6 gap-3">
           <div className="grid col-span-4">
             <TextInput
-              label="Search"
-              placeholder="Search by resv. code, queue number, service type or branch..."
+              label="Pencarian"
+              placeholder="Cari berdasarkan kode reservasi, no antrian, layanan atau cabang..."
               value={search}
               size="xs"
               onChange={(value) => setSearch(value)}
@@ -503,20 +409,30 @@ const QueueTable: React.FC = () => {
             />
           </div>
           <div className="grid col-span-2">
-            <Select size="xs" label="Type" options={[
-              { value: 'ONSITE', label: 'Onsite' },
-              { value: 'ONLINE', label: 'Online' },
-            ]} value={typeField} onChange={(value) => setTypeField(value as string)} />
+            <Select
+              size="xs"
+              label="Tipe Reservasi"
+              options={[
+                { value: 'ONSITE', label: 'Langsung' },
+                { value: 'ONLINE', label: 'Online' },
+              ]}
+              value={typeField}
+              onChange={(value) => setTypeField(value as string)}
+            />
           </div>
           <div className="grid text-sm items-end justify-end">
-            <button className="border border-gray-300 flex items-center gap-1 py-2 px-4 rounded hover:bg-gray-50" onClick={handleResetFilter}>
+            <button
+              className="flex items-center gap-2 py-2 px-4 border rounded bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 border-gray-300 transition-colors"
+              onClick={handleResetFilter}
+            >
               <FaRotateLeft className="w-3 h-3" />
-              Reset
+              Atur Ulang
             </button>
           </div>
+
           <div className="grid col-span-2">
             <DateTimePicker
-              label="From Date"
+              label="Tanggal Awal"
               value={fromDate}
               onChange={(value) => setFromDate(value)}
               size="xs"
@@ -525,7 +441,7 @@ const QueueTable: React.FC = () => {
           </div>
           <div className="grid col-span-2">
             <DateTimePicker
-              label="To Date"
+              label="Tanggal Akhir"
               value={toDate}
               onChange={(value) => setToDate(value)}
               size="xs"
@@ -533,13 +449,20 @@ const QueueTable: React.FC = () => {
             />
           </div>
           <div className="grid col-span-2">
-            <Select size="xs" label="Status" options={[
-              { value: '', label: 'All' },
-              { value: 'WAITING', label: 'Waiting' },
-              { value: 'STARTED,PAUSED,CONTINUED', label: 'Serving' },
-              { value: 'STOPPED,CANCELED,TRANSFERRED', label: 'Done' },
-            ]} value={statusField} onChange={(value) => setStatusField(value as string)} />
+            <Select
+              size="xs"
+              label="Status Antrian"
+              options={[
+                { value: '', label: 'Semua' },
+                { value: 'WAITING', label: 'Menunggu' },
+                { value: 'STARTED,PAUSED,CONTINUED', label: 'Sedang Dilayani' },
+                { value: 'STOPPED,CANCELED,TRANSFERRED', label: 'Selesai' },
+              ]}
+              value={statusField}
+              onChange={(value) => setStatusField(value as string)}
+            />
           </div>
+
           {branchType !== 'BRANCH' && (
             <>
               <div className="grid col-span-2">
@@ -571,5 +494,13 @@ const QueueTable: React.FC = () => {
     </div>
   );
 };
+
+// Komponen kecil untuk mempercantik InfoRow
+const InfoRow: React.FC<{ label: string; value: any }> = ({ label, value }) => (
+  <div className="grid grid-cols-3 max-w-sm mb-1">
+    <span className="font-medium">{label}</span>
+    <span className="col-span-2">:&nbsp;{value || '-'}</span>
+  </div>
+);
 
 export default QueueTable;

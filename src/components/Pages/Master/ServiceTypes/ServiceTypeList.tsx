@@ -9,7 +9,7 @@ import TreeView from "@/components/TreeView";
 // import EditLayanan from "./ServiceTypeEdit";
 // import AddSubLayanan from "./ServiceTypeAddChild";
 
-const ServicesTypeList: React.FC = () => {
+const DaftarJenisLayanan: React.FC = () => {
     const [data, setData] = useState<any[]>([]);
     const [isCreate, setIsCreate] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
@@ -20,16 +20,13 @@ const ServicesTypeList: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(
-                    `/api/master/service-types`
-                );
-
+                const response = await fetch(`/api/master/service-types`);
                 const result = await response.json();
 
                 if (result.success) {
                     setData(result.data);
                 } else {
-                    throw new Error(result.message || "Failed to fetch service types");
+                    throw new Error(result.message || "Gagal memuat daftar jenis layanan");
                 }
             } catch (err: any) {
                 console.log(err.message);
@@ -41,13 +38,8 @@ const ServicesTypeList: React.FC = () => {
         fetchData();
     }, [isEdit, isCreate, isDelete, isAdd]);
 
-    const openCreate = () => {
-        setIsCreate(true);
-    }
-
-    const closeCreate = () => {
-        setIsCreate(false);
-    }
+    const openCreate = () => setIsCreate(true);
+    const closeCreate = () => setIsCreate(false);
 
     const openAdd = (obj: any) => {
         setSelectedObject(obj);
@@ -57,7 +49,7 @@ const ServicesTypeList: React.FC = () => {
     const closeAdd = () => {
         setIsAdd(false);
         setSelectedObject(null);
-    }
+    };
 
     const openEdit = (obj: any) => {
         setSelectedObject(obj);
@@ -67,7 +59,7 @@ const ServicesTypeList: React.FC = () => {
     const closeEdit = () => {
         setIsEdit(false);
         setSelectedObject(null);
-    }
+    };
 
     const openDelete = (obj: any) => {
         setSelectedObject(obj);
@@ -77,17 +69,20 @@ const ServicesTypeList: React.FC = () => {
     const closeDelete = () => {
         setIsDelete(false);
         setSelectedObject(null);
-    }
+    };
 
     return (
         <div className="grid gap-y-4">
             <div className="py-1 border rounded-lg bg-white">
+                {/* Header */}
                 <div className="p-4 border-b flex justify-between items-center">
-                    <h2 className="text-lg font-semibold ml-2">Service Types</h2>
+                    <h2 className="text-lg font-bold ml-2">Daftar Jenis Layanan</h2>
                     <div className="flex gap-2">
                         {/* <CreateButton onClick={openCreate} /> */}
                     </div>
                 </div>
+
+                {/* Konten TreeView */}
                 <div className="p-6">
                     <TreeView
                         data={data}
@@ -97,15 +92,16 @@ const ServicesTypeList: React.FC = () => {
                         disableAdd
                         disableEdit
                         disableDelete
-
                     />
                 </div>
             </div>
 
-            {/* {isCreate && (
+            {/* Modal Create/Edit/Delete */}
+            {/* 
+            {isCreate && (
                 <CreateLayanan
                     isOpen={isCreate}
-                    onClose={() => closeCreate()}
+                    onClose={closeCreate}
                     layanan={data}
                 />
             )}
@@ -113,7 +109,7 @@ const ServicesTypeList: React.FC = () => {
             {isAdd && (
                 <AddSubLayanan
                     isOpen={isAdd}
-                    onClose={() => closeAdd()}
+                    onClose={closeAdd}
                     data={selectedObject}
                     layanan={data}
                 />
@@ -122,7 +118,7 @@ const ServicesTypeList: React.FC = () => {
             {isDelete && (
                 <DeleteLayanan
                     isOpen={isDelete}
-                    onClose={() => closeDelete()}
+                    onClose={closeDelete}
                     data={selectedObject}
                 />
             )}
@@ -130,13 +126,14 @@ const ServicesTypeList: React.FC = () => {
             {isEdit && (
                 <EditLayanan
                     isOpen={isEdit}
-                    onClose={() => closeEdit()}
+                    onClose={closeEdit}
                     data={selectedObject}
                     layanan={data}
                 />
-            )} */}
+            )}
+            */}
         </div>
     );
 };
 
-export default ServicesTypeList;
+export default DaftarJenisLayanan;
