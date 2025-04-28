@@ -24,9 +24,11 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/*",
+        "./lib/*"
       ]
     },
     "target": "ES2017"

@@ -1,3 +1,4 @@
+import { buildUrl } from '@/utils/buildUrl';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -10,18 +11,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 
-    const session = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    const session = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('Session filter:', session);
+    const url = await buildUrl(req, "/branches/paginate");
 
-    const response = await fetch(buildUrl(), {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -41,38 +39,5 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-
-  function buildUrl() {
-
-    const name = req.nextUrl.searchParams.get('name');
-    const search = req.nextUrl.searchParams.get('search');
-    const isActive = req.nextUrl.searchParams.get('isActive');
-    const type = req.nextUrl.searchParams.get('type');
-    const branchCode = req.nextUrl.searchParams.get('branchCode');
-    const areaCode = req.nextUrl.searchParams.get('areaCode');
-    const regionCode = req.nextUrl.searchParams.get('regionCode');
-    const sortBy = req.nextUrl.searchParams.get('sortBy') || 'createdAt';
-    const direction = req.nextUrl.searchParams.get('direction') || 'DESC';
-    const size = req.nextUrl.searchParams.get('size');
-    const page = req.nextUrl.searchParams.get('page');
-
-    const params = new URLSearchParams();
-
-    if (name) params.append('name', name);
-    if (search) params.append('search', search);
-    if (isActive) params.append('isActive', isActive);
-    if (type) params.append('type', type);
-    if (branchCode) params.append('branchCode', branchCode);
-    if (areaCode) params.append('areaCode', areaCode);
-    if (regionCode) params.append('regionCode', regionCode);
-    if (sortBy) params.append('sortBy', sortBy);
-    if (direction) params.append('direction', direction);
-    if (size) params.append('size', size);
-    if (page) params.append('page', page);
-
-    const url = `${API_URL}/branches/paginate?${params.toString()}`;
-
-    return url;
   }
 }

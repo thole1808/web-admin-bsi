@@ -3,7 +3,6 @@ import { getToken } from 'next-auth/jwt';
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req });
-    console.log("Token yang didapat: ", token);
 
     if (!token) {
         console.log("Token tidak ditemukan, mengarahkan ke halaman login...");

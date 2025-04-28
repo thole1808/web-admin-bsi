@@ -25,12 +25,12 @@ const BranchList: React.FC = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [area, setArea] = useState("");
-  const [region, setRegion] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
 
-  const branchCode = (session?.user as any)?.branch?.code ?? null;
   const branchType = (session?.user as any)?.branch?.type ?? null;
+
+  const [region, setRegion] = useState(session?.user?.branch?.regionId || "");
 
   const typeOptions = [
     { value: 'REGION', label: 'Region' },
@@ -46,7 +46,7 @@ const BranchList: React.FC = () => {
         const result = await response.json();
         if (result.success) {
           setRegionOptions(result.data.content.map((branch: any) => ({
-            value: branch.code,
+            value: branch.id,
             label: branch.name,
           })));
         }
@@ -60,12 +60,13 @@ const BranchList: React.FC = () => {
   useEffect(() => {
     const loadAreas = async () => {
       if (!region) return;
+
       try {
-        const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+        const response = await fetch(`/api/branches?type=AREA&regionId=${region}`);
         const result = await response.json();
         if (result.success) {
           setAreaOptions(result.data.content.map((branch: any) => ({
-            value: branch.code,
+            value: branch.id,
             label: branch.name,
           })));
         }
@@ -73,6 +74,7 @@ const BranchList: React.FC = () => {
         console.error('Gagal mengambil data area:', err);
       }
     };
+
     loadAreas();
   }, [region]);
 
@@ -86,26 +88,6 @@ const BranchList: React.FC = () => {
   }, [search]);
 
   useEffect(() => {
-    const userType = (session?.user as any)?.branch?.type;
-    const userFilters = [
-      {
-        type: "HO",
-        filters: [],
-      },
-      {
-        type: "REGION",
-        filters: [
-          {
-            fields: ["regionId", "regionCode"]
-          }
-        ],
-      },
-    ]
-
-    if (userType === "BRANCH") {
-      
-    }
-
     const fetchData = async () => {
       try {
         const size = perPage.toString();
@@ -114,8 +96,8 @@ const BranchList: React.FC = () => {
         const direction = sortDirection;
         const searchQuery = debouncedSearch;
         const type = typeField;
-        const areaCode = area;
-        const regionCode = region;
+        const areaId = area;
+        const regionId = region;
 
         const queryParams = new URLSearchParams({
           size,
@@ -124,13 +106,9 @@ const BranchList: React.FC = () => {
           direction,
           type,
           search: searchQuery,
-          areaCode,
-          regionCode,
+          areaId,
+          regionId,
         });
-
-        if (branchCode && !region && !area) {
-          queryParams.append("branchCode", branchCode);
-        }
 
         const response = await fetch(`/api/branches?${queryParams.toString()}`);
         const result = await response.json();
@@ -151,7 +129,7 @@ const BranchList: React.FC = () => {
     if (status !== "authenticated") return;
 
     fetchData();
-  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region, branchCode, status]);
+  }, [perPage, currentPage, sortField, sortDirection, debouncedSearch, typeField, area, region, status]);
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => (
     <div className="py-4 px-16 bg-gray-50 text-sm">
@@ -269,15 +247,16 @@ const BranchList: React.FC = () => {
             <ResetButton onClick={handleResetFilter} label="Atur Ulang" />
           </div>
 
-          {branchType !== "BRANCH" && (
-            <>
-              <div className="grid col-span-2">
-                <Select label="Region" size="xs" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-              </div>
-              <div className="grid col-span-2">
-                <Select label="Area" size="xs" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={!region} />
-              </div>
-            </>
+          {['HO'].includes(branchType) && (
+            <div className="grid col-span-2">
+              <Select label="Region" size="xs" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+            </div>
+          )}
+
+          {['HO'].includes(branchType) && (
+            <div className="grid col-span-2">
+              <Select label="Area" size="xs" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} />
+            </div>
           )}
         </div>
 

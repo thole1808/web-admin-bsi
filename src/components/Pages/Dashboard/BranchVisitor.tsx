@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { FaSort } from "react-icons/fa";
 
 interface BranchVisitorItem {
@@ -10,20 +9,14 @@ interface BranchVisitorItem {
 }
 
 const BranchVisitor: React.FC = () => {
-  const { data: session, status } = useSession();
-  
   const [data, setData] = useState<BranchVisitorItem[]>([]);
   const [sortBy, setSortBy] = useState<"branch" | "visitors">("visitors");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const branchId = (session?.user as any)?.branch?.id?.toString() || "";
-
   useEffect(() => {
     const fetchBranchVisitors = async () => {
-      if (!branchId) return;
-
       try {
         const today = new Date();
         const timezoneOffset = today.getTimezoneOffset() * 60000;
@@ -34,7 +27,6 @@ const BranchVisitor: React.FC = () => {
         const limit = 10;
 
         const queryParams = new URLSearchParams({
-          branchId,
           start,
           end,
           limit: limit.toString(),
@@ -58,7 +50,7 @@ const BranchVisitor: React.FC = () => {
     if (status === "authenticated") {
       fetchBranchVisitors();
     }
-  }, [branchId, status]);
+  }, [status]);
 
   const handleSort = (key: "branch" | "visitors") => {
     const newSortOrder = key === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc";

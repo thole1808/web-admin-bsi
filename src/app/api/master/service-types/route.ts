@@ -10,10 +10,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 
-    const session = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    const session = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -48,10 +45,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 
-    const session = await getToken({
-      req,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    const session = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

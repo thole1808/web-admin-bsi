@@ -1,10 +1,13 @@
 "use client";
 
 import { MapIcon } from '@heroicons/react/24/solid';
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
-import { FaBuilding, FaInfo, FaMapPin } from 'react-icons/fa';
+import { FaBuilding, FaMapPin } from 'react-icons/fa';
 
 const BranchStatsOverview: React.FC = () => {
+      const { data: session } = useSession();
+    
     interface Stats {
         totalBranches: number;
         totalAreas: number;
@@ -73,29 +76,27 @@ const BranchStatsOverview: React.FC = () => {
                     value: stats.totalRegions,
                     icon: <MapIcon className="h-6 w-6 text-red-500" />,
                     color: 'bg-red-100',
+                    visible: session?.user?.branch?.type === 'HO',
                 },
                 {
                     title: 'Area',
                     value: stats.totalAreas,
                     icon: <FaMapPin className="h-6 w-6 text-orange-500" />,
                     color: 'bg-orange-100',
+                    visible: ['HO', 'REGION'].includes(session?.user?.branch?.type ?? ''),
                 },
                 {
                     title: 'Cabang',
                     value: stats.totalBranches,
                     icon: <FaBuilding className="h-6 w-6 text-green-500" />,
                     color: 'bg-green-100',
-                },
-                {
-                    title: 'Total',
-                    value: stats.totalBranches + stats.totalAreas + stats.totalRegions,
-                    icon: <FaInfo className="h-6 w-6 text-blue-500" />,
-                    color: 'bg-blue-100',
+                    visible: ['HO', 'REGION', 'AREA'].includes(session?.user?.branch?.type ?? ''),
                 },
             ].map((item, i) => (
                 <div
                     key={i}
                     className="flex items-center bg-white rounded-xl border shadow-sm p-4 hover:shadow-md transition-shadow duration-200"
+                    style={{ display: item.visible ? 'flex' : 'none' }}
                 >
                     <div className={`flex items-center justify-center rounded-full ${item.color} p-3`}>
                         {item.icon}
@@ -108,21 +109,6 @@ const BranchStatsOverview: React.FC = () => {
             ))}
         </div>
     );
-};
-
-const getStatusLabel = (status: string) => {
-    switch (status) {
-        case 'EXPIRE':
-            return 'Lewat Batas';
-        case 'COMPLETED':
-            return 'Selesai';
-        case 'ALL':
-            return 'Total Pengunjung';
-        case 'ACTIVE':
-            return 'Aktif';
-        default:
-            return status;
-    }
 };
 
 export default BranchStatsOverview;

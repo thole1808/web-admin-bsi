@@ -55,6 +55,19 @@ const Header: React.FC<HeaderProps> = ({
     // Ambil branch dan role info dari session
     const branchInfo = session?.user?.branch ?? null;
     const roleInfo = session?.user?.role ?? null;
+    let branchName = null;
+    let branchCode = null;
+
+    if (branchInfo?.type === 'BRANCH') {
+        branchCode = branchInfo.code;
+        branchName = branchInfo.name;
+    } else if (branchInfo?.type === 'AREA') {
+        branchCode = branchInfo.areaCode;
+        branchName = branchInfo.areaName;
+    } else if (branchInfo?.type === 'REGION') {
+        branchCode = branchInfo.regionCode;
+        branchName = branchInfo.regionName;
+    }
 
     return (
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
@@ -64,8 +77,8 @@ const Header: React.FC<HeaderProps> = ({
                         <span className='flex items-center gap-2'>
                             <FaBuildingShield className='h-6 w-6' />
                             <div>
-                                <p className='text-xs'>{branchInfo.code}</p>
-                                <p className='font-medium'>{branchInfo.name}</p>
+                                <p className='text-xs'>{branchCode}</p>
+                                <p className='font-medium'>{branchName}</p>
                             </div>
                         </span>
                     )}

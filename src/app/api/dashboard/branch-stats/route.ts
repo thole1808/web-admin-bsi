@@ -1,5 +1,6 @@
-import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+import { buildUrl } from '@/utils/buildUrl';
 
 const API_URL = process.env.API_URL;
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
@@ -11,13 +12,16 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const session = await getToken({ req, secret: NEXTAUTH_SECRET });
 
-    if (!session?.accessToken) {
+    const session = await getToken({req, secret: process.env.NEXTAUTH_SECRET});
+
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const response = await fetch(`${API_URL}/reports/admin/branch-stats`, {
+    const url = await buildUrl(req, "/reports/admin/branch-stats");
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
