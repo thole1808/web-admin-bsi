@@ -60,9 +60,11 @@ const BranchCountersList: React.FC = () => {
                 const response = await fetch(`/api/access/roles`);
                 const result = await response.json();
 
+                console.log(result);
+
                 if (result.success) {
                     setRoles(result.data.content
-                        .filter((item: any) => item.guardName === 'api')
+                        .filter((item: any) => item.guardName === 'operator')
                         .map((item: any) => ({ value: item.name, label: item.name }))
                     );
                 } else {

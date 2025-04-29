@@ -54,7 +54,7 @@ const QueueTable: React.FC = () => {
         const result = await response.json();
 
         if (result.success) {
-          setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+          setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
         }
       } catch (err) {
         console.error('Error fetching regions:', err);
@@ -69,11 +69,11 @@ const QueueTable: React.FC = () => {
       setArea('');
 
       try {
-        const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
+        const response = await fetch(`/api/branches?type=AREA&aa=${region}`);
         const result = await response.json();
 
         if (result.success) {
-          setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
+          setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
         }
       } catch (err) {
         console.error('Error fetching areas:', err);
@@ -107,8 +107,8 @@ const QueueTable: React.FC = () => {
         const status = statusField.toString();
         const search = debouncedSearch;
         const type = typeField;
-        const areaCode = area;
-        const regionCode = region;
+        const areaId = area;
+        const aa = region;
 
         const queryParams = new URLSearchParams({
           start,
@@ -118,8 +118,8 @@ const QueueTable: React.FC = () => {
           sortBy,
           direction,
           type,
-          areaCode,
-          regionCode,
+          areaId,
+          aa,
           status,
           search,
         });

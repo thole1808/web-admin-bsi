@@ -1,3 +1,4 @@
+import { buildUrl } from '@/utils/buildUrl';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -18,8 +19,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const url = await buildUrl(req, "/queues/paginate");
+    console.log("URL", url);
     // Fetch data from external API
-    const response = await fetch(buildUrl(), {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -38,43 +41,5 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-
-  function buildUrl() {
-    const branchId = req.nextUrl.searchParams.get('branchId');
-    const serviceTypeId = req.nextUrl.searchParams.get('serviceTypeId');
-    const status = req.nextUrl.searchParams.get('status');
-    const type = req.nextUrl.searchParams.get('type');
-    const areaCode = req.nextUrl.searchParams.get('areaCode');
-    const regionCode = req.nextUrl.searchParams.get('regionCode');
-    const priority = req.nextUrl.searchParams.get('priority');
-    const sortBy = req.nextUrl.searchParams.get('sortBy');
-    const direction = req.nextUrl.searchParams.get('direction');
-    const size = req.nextUrl.searchParams.get('size');
-    const page = req.nextUrl.searchParams.get('page');
-    const start = req.nextUrl.searchParams.get('start');
-    const end = req.nextUrl.searchParams.get('end');
-    const search = req.nextUrl.searchParams.get('search');
-
-    const params = new URLSearchParams();
-
-    if (branchId) params.append('branchId', branchId);
-    if (serviceTypeId) params.append('serviceTypeId', serviceTypeId);
-    if (status) params.append('status', status);
-    if (type) params.append('type', type);
-    if (areaCode) params.append('areaCode', areaCode);
-    if (regionCode) params.append('regionCode', regionCode);
-    if (priority) params.append('priority', priority);
-    if (start) params.append('startOfDay', start + 'T00:00:00');
-    if (end) params.append('endOfDay', end + 'T23:59:59');
-    params.append('sortBy', sortBy || 'createdAt');
-    params.append('direction', direction || 'DESC');
-    if (size) params.append('size', size);
-    if (page) params.append('page', page);
-    if (search) params.append('search', search);
-
-    const url = `${API_URL}/queues/paginate?${params.toString()}`;
-
-    return url;
   }
 }

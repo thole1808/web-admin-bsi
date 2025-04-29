@@ -21,7 +21,7 @@ export async function getDefaultFilter(): Promise<DefaultFilter> {
 
   const branch = (session as any).user.branch as Branch;
 
-  console.log("Default filter berdasarkan session:", branch);
+//   console.log("Default filter berdasarkan session:", branch);
 
   switch (branch.type) {
     case "HO":
