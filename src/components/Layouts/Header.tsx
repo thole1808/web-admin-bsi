@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
 
     const handleLogout = () => {
         setDropdownOpen(false);
-        signOut();
+        signOut({ callbackUrl: '/login' });
     };
 
     // Ambil branch dan role info dari session
@@ -125,23 +125,28 @@ const Header: React.FC<HeaderProps> = ({
 
                     {/* Dropdown Menu */}
                     {dropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10 text-sm">
-                            <Link href="/profile">
-                                <span
-                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
-                                    onClick={navigateToProfile}
-                                >
-                                    <FaUserCircle className="inline-block mr-2 text-gray-500 h-4 w-4" /> Profil
-                                </span>
-                            </Link>
-                            <div className="border-t border-gray-200" />
-                            <span
-                                className="px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center cursor-pointer"
-                                onClick={handleLogout}
-                            >
-                                <FaSignOutAlt className="inline-block mr-2 text-gray-500 h-4 w-4" /> Logout
-                            </span>
-                        </div>
+                        <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-xl py-2 z-50 text-sm border border-gray-200 dark:border-gray-700">
+                        <Link href="/profile">
+                          <span
+                            className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer"
+                            onClick={navigateToProfile}
+                          >
+                            <FaUserCircle className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                            Profil Saya
+                          </span>
+                        </Link>
+                      
+                        <div className="my-1 border-t border-gray-200 dark:border-gray-700" />
+                      
+                        <span
+                          className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400 transition-colors duration-200 cursor-pointer"
+                          onClick={handleLogout}
+                        >
+                          <FaSignOutAlt className="h-4 w-4 text-red-500 dark:text-red-400" />
+                          Keluar
+                        </span>
+                      </div>
+                      
                     )}
                 </div>
             </div>
