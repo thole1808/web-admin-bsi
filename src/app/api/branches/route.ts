@@ -19,6 +19,8 @@ export async function GET(req: NextRequest) {
 
     const url = await buildUrl(req, "/branches/paginate");
 
+    console.log('URL', url)
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {

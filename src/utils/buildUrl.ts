@@ -12,11 +12,6 @@ export async function buildUrl(req: Request, basePath: string): Promise<string> 
 
   const today = new Date().toISOString().split('T')[0];
 
-  combinedParams.start ??= today;
-  combinedParams.end ??= today;
-  combinedParams.page ??= 1;
-  combinedParams.perPage ??= 10;
-
   const queryString = buildQueryString(combinedParams);
 
   return `${API_URL}${basePath}?${queryString}`;

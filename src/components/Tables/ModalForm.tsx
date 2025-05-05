@@ -1,5 +1,6 @@
 'use client';
 
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import { FaSave, FaTrash } from "react-icons/fa";
 import { BeatLoader } from 'react-spinners';
@@ -42,15 +43,17 @@ const ModalForm: React.FC<ModalFormProps> = ({
     onSubmit(formData);
   };
 
-  const getMaxWidthClass = (width: string = 'sm') => {
+  const getMaxWidthClass = (width: string = 'xl') => {
     const sizeMap: { [key: string]: string } = {
       sm: 'max-w-sm',
       md: 'max-w-md',
       lg: 'max-w-lg',
       xl: 'max-w-xl',
       '2xl': 'max-w-2xl',
+      '4xl': 'max-w-4xl',
+      '6xl': 'max-w-6xl',
     };
-    return sizeMap[width] || 'max-w-sm';
+    return sizeMap[width] || 'max-w-xl';
   };
 
   return (
@@ -59,11 +62,16 @@ const ModalForm: React.FC<ModalFormProps> = ({
       onClick={onClose}
     >
       <div
-        className={`bg-white p-6 rounded-lg shadow-lg ${getMaxWidthClass(width)} w-full z-50 relative`}
+        className={`bg-white rounded-lg shadow-lg ${getMaxWidthClass(width)} w-full z-50 relative overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-bold mb-4">{title}</h2>
-        <form onSubmit={handleSubmit}>
+        <div className="border border-b px-6 py-5 flex justify-between items-center">
+          <h2 className="text-lg font-bold">{title}</h2>
+          <div className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full cursor-pointer" onClick={onClose}>
+            <XMarkIcon className="h-5 w-5 text-gray-400" />
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6">
           {children}
 
           {isProcessing && (

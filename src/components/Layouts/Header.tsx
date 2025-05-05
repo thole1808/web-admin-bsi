@@ -73,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className="sticky top-0 z-50 bg-white shadow-md w-full">
             <div className="w-full px-6 py-3 flex items-center justify-end border-b">
                 <div className="text-sm text-gray-600 mr-auto flex space-x-8">
-                    {branchInfo && (
+                    {branchCode && (
                         <span className='flex items-center gap-2'>
                             <FaBuildingShield className='h-6 w-6' />
                             <div>

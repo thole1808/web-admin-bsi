@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     }
 
     const url = await buildUrl(req, "/queues/paginate");
-    console.log("URL", url);
+
     // Fetch data from external API
     const response = await fetch(url, {
       method: 'GET',

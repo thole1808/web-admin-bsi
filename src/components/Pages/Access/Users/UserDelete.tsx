@@ -57,9 +57,9 @@ const UserDelete: React.FC<UserDeleteProps> = ({ isOpen, onClose, data }) => {
             isProcessing={isProcessing}
             isDestructive
         >
-            <div className="text-sm">
+            <p>
                 Are you sure you want to delete <strong className="underline">{data.name}</strong> from users list?
-            </div>
+            </p>
         </ModalForm>
     );
 };

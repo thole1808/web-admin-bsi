@@ -31,12 +31,6 @@ interface FormData {
 }
 
 const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
-
-    interface Branch {
-        id: string;
-        name: string;
-    }
-
     const [formData, setFormData] = useState<FormData>({
         type: "",
         username: "",
@@ -58,7 +52,55 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
     const [regionOptions, setRegionOptions] = useState<any[]>([]);
 
     useEffect(() => {
+        const loadRegions = async () => {
+            setBranch('');
+            setArea('');
+            const type = 'REGION';
+
+            const queryParams = new URLSearchParams({
+                type
+            });
+
+            try {
+                const response = await fetch(`/api/branches?${queryParams.toString()}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching regions:', err);
+            }
+        };
+
+        loadRegions();
+    }, []);
+
+    useEffect(() => {
+        const loadAreas = async () => {
+            if (!region) return;
+
+            setBranch('');
+
+            try {
+                const response = await fetch(`/api/branches?type=AREA&regionId=${region}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        loadAreas();
+    }, [region]);
+
+    useEffect(() => {
         const loadBranches = async () => {
+            if (!region && !area) return;
+
             try {
                 const response = await fetch(`/api/branches?type=BRANCH&areaCode=${area}&size=500`);
                 const result = await response.json();
@@ -73,45 +115,6 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
 
         loadBranches();
     }, [area]);
-
-    useEffect(() => {
-        const loadAreas = async () => {
-            setBranch('');
-
-            try {
-                const response = await fetch(`/api/branches?type=AREA&regionCode=${region}`);
-                const result = await response.json();
-
-                if (result.success) {
-                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
-                }
-            } catch (err) {
-                console.error('Error fetching areas:', err);
-            }
-        };
-
-        loadAreas();
-    }, [region]);
-
-    useEffect(() => {
-        const loadRegions = async () => {
-            setBranch('');
-            setArea('');
-
-            try {
-                const response = await fetch(`/api/branches?type=REGION&size=100`);
-                const result = await response.json();
-
-                if (result.success) {
-                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
-                }
-            } catch (err) {
-                console.error('Error fetching regions:', err);
-            }
-        };
-
-        loadRegions();
-    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -142,6 +145,7 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
     const handleSubmit = async (formData: FormData) => {
         try {
             setIsProcessing(true);
+            setFormData({ ...formData, username: formData.email });
 
             const response = await fetch(`/api/access/users`, {
                 method: 'POST',
@@ -170,92 +174,102 @@ const UserCreate: React.FC<UserCreateProps> = ({ isOpen, onClose }) => {
 
     return (
         <ModalForm
-            width="lg"
-            title="Create User"
+            width="4xl"
+            title="Buat Pengguna Baru"
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={() => handleSubmit(formData)}
             isProcessing={isProcessing}
         >
-            <div className="mb-4 text-sm">
-                <Select
-                    label="User Type"
-                    options={[
-                        { value: 'REGION', label: 'Region' },
-                        { value: 'AREA', label: 'Area' },
-                        { value: 'BRANCH', label: 'Branch' },
-                    ]}
-                    value={formData.type}
-                    onChange={(value) => setFormData({ ...formData, type: String(value) })}
-                    placeholder="Select an option"
-                    required
-                />
+            {/* Informasi Akun */}
+            <div className="mb-6">
+                <h3 className="text-base font-semibold mb-4 text-gray-700 dark:text-white">Informasi Akun</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select
+                        label="Jenis Pengguna"
+                        options={[
+                            { value: 'REGION', label: 'Region' },
+                            { value: 'AREA', label: 'Area' },
+                            { value: 'BRANCH', label: 'Cabang' },
+                        ]}
+                        value={formData.type}
+                        onChange={(value) => setFormData({ ...formData, type: String(value) })}
+                        placeholder="Pilih jenis pengguna"
+                        required
+                    />
+                    <Select
+                        label="Peran"
+                        options={roles}
+                        value={formData.roleId}
+                        onChange={(value) => setFormData({ ...formData, roleId: String(value) })}
+                        placeholder="Pilih peran pengguna"
+                        required
+                    />
+                    <TextInput
+                        label="Nama Lengkap"
+                        placeholder="Masukkan nama lengkap pengguna"
+                        value={formData.name}
+                        onChange={(value) => setFormData({ ...formData, name: value })}
+                        required
+                        error={errors?.name}
+                    />
+                    <TextInput
+                        label="Email"
+                        placeholder="contoh: pengguna@email.com"
+                        value={formData.email}
+                        onChange={(value) => setFormData({ ...formData, email: value })}
+                        required
+                        error={errors?.email}
+                        prefixIcon={<FaEnvelope />}
+                    />
+                    <TextInput
+                        label="No. Telepon"
+                        placeholder="Masukkan nomor telepon aktif"
+                        value={formData.phone}
+                        onChange={(value) => setFormData({ ...formData, phone: value })}
+                        required
+                        error={errors?.phone}
+                        prefixIcon={<FaPhone />}
+                    />
+                </div>
             </div>
-            <div className="mb-4 text-sm">
-                <TextInput
-                    label="Username"
-                    placeholder="Username"
-                    value={formData.username}
-                    onChange={(value) => setFormData({ ...formData, username: value })}
-                    required
-                    error={errors?.username}
-                />
+
+            {/* Penempatan */}
+            <div className="mb-2">
+                <h3 className="text-base font-semibold mb-4 text-gray-700 dark:text-white">Penempatan</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select
+                        size="sm"
+                        label="Region"
+                        options={regionOptions}
+                        value={region}
+                        onChange={(value) => setRegion(value as string)}
+                        placeholder="Pilih wilayah penempatan"
+                    />
+                    {(region && formData.type != 'REGION') && (
+                        <Select
+                            size="sm"
+                            label="Area"
+                            options={areaOptions}
+                            value={area}
+                            onChange={(value) => setArea(value as string)}
+                            disabled={region === ''}
+                            placeholder="Pilih area sesuai wilayah"
+                        />
+                    )}
+                    {(area && formData.type != 'AREA' && formData.type != 'REGION') && (
+                        <Select
+                            size="sm"
+                            label="Cabang"
+                            options={branchOptions}
+                            value={branch}
+                            onChange={(value) => setBranch(value as string)}
+                            disabled={area === ''}
+                            placeholder="Pilih cabang sesuai area"
+                        />
+                    )}
+                </div>
             </div>
-            <div className="mb-4 text-sm">
-                <TextInput
-                    label="Name"
-                    placeholder="Name"
-                    value={formData.name}
-                    onChange={(value) => setFormData({ ...formData, name: value })}
-                    required
-                    error={errors?.name}
-                />
-            </div>
-            <div className="mb-4 text-sm">
-                <TextInput
-                    label="Email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={(value) => setFormData({ ...formData, email: value })}
-                    required
-                    error={errors?.email}
-                    prefixIcon={<FaEnvelope />}
-                />
-            </div>
-            <div className="mb-4 text-sm">
-                <TextInput
-                    label="Phone"
-                    placeholder="Phone"
-                    value={formData.phone}
-                    onChange={(value) => setFormData({ ...formData, phone: value })}
-                    required
-                    error={errors?.phone}
-                    prefixIcon={<FaPhone />}
-                />
-            </div>
-            <div className="mb-4 text-sm">
-                <Select
-                    label="Role"
-                    options={roles}
-                    value={formData.roleId}
-                    onChange={(value) => setFormData({ ...formData, roleId: String(value) })}
-                    placeholder="Select an option"
-                    required
-                />
-            </div>
-            <div className="mb-4 text-sm">
-                <Select size="sm" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-            </div>
-            {formData.type === 'AREA' || formData.type === 'BRANCH' && (
-            <div className="mb-4 text-sm">
-                <Select size="sm" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
-            </div>
-            )}
-            {formData.type === 'BRANCH' && (
-            <div className="mb-4 text-sm">
-                <Select size="sm" label="Branch" options={branchOptions} value={branch} onChange={(value) => setBranch(value as string)} disabled={area === ''} />
-            </div>
-            )}
         </ModalForm>
     );
 };

@@ -6,8 +6,14 @@ import { FaArrowRotateLeft } from "react-icons/fa6";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
 import Select from "@/components/Forms/Select";
 import DynamicReportTable from "./DynamicReportTable";
+import { useSession } from "next-auth/react";
 
 const GenerateReportForm: React.FC = () => {
+    const { data: session } = useSession();
+    const branchType = (session?.user as any)?.branch?.type ?? 'HO';
+
+    console.log(session);
+
     const [formData, setFormData] = useState({
         reportType: "",
         startDate: "",
@@ -61,7 +67,7 @@ const GenerateReportForm: React.FC = () => {
             setArea('');
             setBranch('');
             try {
-                const response = await fetch(`/api/branches?type=REGION&size=100`);
+                const response = await fetch(`/api/branches?type=REGION`);
                 const result = await response.json();
                 if (result.success) {
                     setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.code, label: branch.name })));
@@ -123,18 +129,26 @@ const GenerateReportForm: React.FC = () => {
             {/* Form */}
             <div>
                 <div className="p-6 bg-white rounded-xl shadow-sm">
-                    <h2 className="text-xl font-bold text-gray-800 mb-6">Buat Laporan</h2>
+                    <h2 className="text-lg font-bold text-gray-800 mb-4">Laporan</h2>
                     <div className="space-y-4">
-                        <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-                        <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={!region} />
-                        <Select size="xs" label="Cabang" options={branchOptions} value={branch} onChange={(value) => setBranch(value as string)} disabled={!area} />
+                        {['HO'].includes(branchType) && (
+                            <Select label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
+                        )}
+
+                        {['HO', 'REGION'].includes(branchType) && (
+                            <Select label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} />
+                        )}
+
+                        {['HO', 'REGION', 'AREA'].includes(branchType) && (
+                            <Select label="Cabang" options={branchOptions} value={branch} onChange={(value) => setBranch(value as string)} />
+                        )}
+
                         <Select
                             label="Jenis Laporan"
                             options={reportTypes}
                             value={formData.reportType}
                             placeholder="Pilih jenis laporan"
                             required
-                            size="xs"
                             onChange={(value) => setFormData({ ...formData, reportType: value.toString() })}
                             disabled={!!apiUrl}
                         />
@@ -144,7 +158,7 @@ const GenerateReportForm: React.FC = () => {
                                 value={formData.startDate}
                                 onChange={(value) => setFormData({ ...formData, startDate: value })}
                                 disableTime
-                                size="xs"
+                                size="sm"
                                 required
                             />
                             <DateTimePicker
@@ -152,7 +166,7 @@ const GenerateReportForm: React.FC = () => {
                                 value={formData.endDate}
                                 onChange={(value) => setFormData({ ...formData, endDate: value })}
                                 disableTime
-                                size="xs"
+                                size="sm"
                                 required
                             />
                         </div>
@@ -166,12 +180,12 @@ const GenerateReportForm: React.FC = () => {
                                 {isProcessing ? (
                                     <>
                                         <span className="animate-spin border-t-2 border-white rounded-full w-4 h-4 mr-2"></span>
-                                        Mengambil...
+                                        Mohon tunggu...
                                     </>
                                 ) : (
                                     <>
-                                        <FaPlay className="w-4 h-4 mr-2" />
-                                        Ambil Laporan
+                                        <FaPlay className="w-3 h-3 mr-2" />
+                                        Proses Laporan
                                     </>
                                 )}
                             </button>

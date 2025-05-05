@@ -1,5 +1,6 @@
-import { XCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import React, { useState, useRef, useEffect, use } from 'react';
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
 interface SelectOption {
   value: string | number;
@@ -106,13 +107,23 @@ const Select: React.FC<SelectProps> = ({
             ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}`}
           disabled={disabled}
         />
+        
+        {/* Chevron Icon */}
+        {!selectedLabel && (
+          <span
+          className={`absolute right-4 top-1/2 transform -translate-y-1/2 transition-transform ${isOpen ? 'rotate-180' : 'rotate-0'
+            } pointer-events-none`}
+        >
+          <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+        </span>
+        )}
 
         {/* Tombol Clear */}
         {selectedLabel && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800 transition"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-800 transition"
             aria-label="Clear selection"
           >
             <XMarkIcon className="w-4 h-4 text-gray-400" />
@@ -121,8 +132,8 @@ const Select: React.FC<SelectProps> = ({
 
         {/* Dropdown untuk opsi */}
         {isOpen && (
-          <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-            {filteredOptions.length > 0 ? (
+          <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          {filteredOptions.length > 0 ? (
               filteredOptions.map((option) => (
                 <li
                   key={option.value}

@@ -169,7 +169,7 @@ const BranchList: React.FC = () => {
       case 'BRANCH': style += 'bg-yellow-100 text-yellow-700'; break;
       case 'AREA': style += 'bg-blue-100 text-blue-700'; break;
       case 'REGION': style += 'bg-green-100 text-green-700'; break;
-      default: break;
+      default: style += 'bg-red-100 text-red-700'; break;
     }
     return (<div className={style}>{type}</div>);
   };
