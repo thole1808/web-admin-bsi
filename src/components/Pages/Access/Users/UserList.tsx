@@ -298,7 +298,6 @@ const UserList: React.FC = () => {
           <CardTitle className="text-lg font-semibold text-slate-800">Daftar Pengguna</CardTitle>
           <div className="flex gap-2">
             <Button variant="default" onClick={openCreate}>Buat Baru</Button>
-            <Button variant="outline" onClick={() => ExportCSV(users, "users.csv")}>Export CSV</Button>
           </div>
         </CardHeader>
 

@@ -96,6 +96,7 @@ export const authOptions: NextAuthOptions = {
             id: emailFromToken,
             name: nameFromToken,
             email: emailFromToken,
+            type: userProfile.type,
             accessToken,
             expiresAt,
             role: userRole,
@@ -129,6 +130,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.type = user.type;
         token.accessToken = (user as any).accessToken;
         token.expiresAt = (user as any).expiresAt;
         token.role = (user as any).role;
@@ -142,6 +144,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any) = {
           id: token.id,
           name: token.name,
+          type: token.type,
           email: token.email,
           accessToken: token.accessToken,
           role: token.role,

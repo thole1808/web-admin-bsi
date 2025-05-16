@@ -2,6 +2,8 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "react/react-in-jsx-scope": "off", // Contoh aturan yang bisa dimatikan
-    "no-console": "off" // NonActivekan aturan lain yang mengganggu
+    "no-console": "off", // NonActivekan aturan lain yang mengganggu
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off"
   }
 }

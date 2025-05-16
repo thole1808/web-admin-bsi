@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logToFile } from '@/lib/logger/logToFile';
+import { logToFile } from '../logger/logToFile';
 
 export function withApiLogger(
   handler: (req: NextRequest & { id?: string }) => Promise<NextResponse>
