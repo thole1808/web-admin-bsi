@@ -5,8 +5,9 @@ import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
-import { IdentificationIcon } from '@heroicons/react/24/solid';
+import { BuildingLibraryIcon, IdentificationIcon } from '@heroicons/react/24/solid';
 import { FaBuildingShield } from 'react-icons/fa6';
+import { UserCircleIcon } from 'lucide-react';
 
 interface DropdownItem {
     id: number;
@@ -70,12 +71,12 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     return (
-        <div className="sticky top-0 z-50 bg-white shadow-md w-full">
-            <div className="w-full px-6 py-3 flex items-center justify-end border-b">
+        <div className="sticky top-0 z-50 bg-white w-full">
+            <div className="w-full px-6 py-3 flex py-5 items-center justify-end border-b shadow">
                 <div className="text-sm text-gray-600 mr-auto flex space-x-8">
                     {branchCode && (
                         <span className='flex items-center gap-2'>
-                            <FaBuildingShield className='h-6 w-6' />
+                            <BuildingLibraryIcon className='h-6 w-6' />
                             <div>
                                 <p className='text-xs'>{branchCode}</p>
                                 <p className='font-medium'>{branchName}</p>
@@ -84,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({
                     )}
                     {roleInfo && (
                         <span className='flex items-center gap-2'>
-                            <IdentificationIcon className='h-6 w-6' />
+                            <UserCircleIcon className='h-6 w-6' />
                             <div>
                                 <p className='text-xs'>{roleInfo.code}</p>
                                 <p className='font-medium'>{roleInfo.name}</p>

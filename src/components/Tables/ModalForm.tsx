@@ -1,9 +1,17 @@
 'use client';
 
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { BeatLoader } from "react-spinners";
 import { FaSave, FaTrash } from "react-icons/fa";
-import { BeatLoader } from 'react-spinners';
+import React from "react";
+import { DialogOverlay } from "@radix-ui/react-dialog";
 
 interface ModalFormProps {
   width?: string;
@@ -23,18 +31,15 @@ const ModalForm: React.FC<ModalFormProps> = ({
   onClose,
   onSubmit,
   children,
-  isProcessing,
-  isDestructive,
+  isProcessing = false,
+  isDestructive = false,
 }) => {
-  if (!isOpen) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const formData: { [key: string]: string } = {};
-    const formElements = (e.target as HTMLFormElement).elements as any;
+    const elements = (e.target as HTMLFormElement).elements as any;
 
-    for (let element of formElements) {
+    for (let element of elements) {
       if (element.name) {
         formData[element.name] = element.value;
       }
@@ -43,75 +48,72 @@ const ModalForm: React.FC<ModalFormProps> = ({
     onSubmit(formData);
   };
 
-  const getMaxWidthClass = (width: string = 'xl') => {
-    const sizeMap: { [key: string]: string } = {
-      sm: 'max-w-sm',
-      md: 'max-w-md',
-      lg: 'max-w-lg',
-      xl: 'max-w-xl',
-      '2xl': 'max-w-2xl',
-      '4xl': 'max-w-4xl',
-      '6xl': 'max-w-6xl',
+  const getMaxWidthClass = (size: string = 'xl') => {
+    const map: Record<string, string> = {
+      sm: 'sm:max-w-sm',
+      md: 'sm:max-w-md',
+      lg: 'sm:max-w-lg',
+      xl: 'sm:max-w-xl',
+      '2xl': 'sm:max-w-2xl',
+      '4xl': 'sm:max-w-4xl',
+      '6xl': 'sm:max-w-6xl',
     };
-    return sizeMap[width] || 'max-w-xl';
+    return map[size] || 'sm:max-w-xl';
   };
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-hidden z-50"
-      onClick={onClose}
-    >
-      <div
-        className={`bg-white rounded-lg shadow-lg ${getMaxWidthClass(width)} w-full z-50 relative overflow-hidden`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="border border-b px-6 py-5 flex justify-between items-center">
-          <h2 className="text-lg font-bold">{title}</h2>
-          <div className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full cursor-pointer" onClick={onClose}>
-            <XMarkIcon className="h-5 w-5 text-gray-400" />
-          </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+  {/* Backdrop */}
+  <DialogOverlay className="fixed inset-0 z-9999 bg-black/50 backdrop-blur-sm" />
+
+  {/* Konten dialog */}
+  <DialogContent
+    className={`fixed left-1/2 top-1/2 z-99999 w-full ${getMaxWidthClass(width)} -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white dark:bg-zinc-900 p-6 shadow-xl`}
+    onPointerDownOutside={(e) => e.preventDefault()}
+  >
+    <DialogHeader>
+      <DialogTitle>{title}</DialogTitle>
+    </DialogHeader>
+
+    <form onSubmit={handleSubmit} className="relative">
+      <div className="space-y-4 py-4">{children}</div>
+
+      {isProcessing && (
+        <div className="absolute inset-0 bg-white/70 dark:bg-black/50 z-10 flex items-center justify-center rounded-lg">
+          <BeatLoader size={12} color="#0f766e" />
         </div>
-        <form onSubmit={handleSubmit} className="p-6">
-          {children}
+      )}
 
-          {isProcessing && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-50 z-10">
-              <BeatLoader size={15} color="#4fa94d" />
-            </div>
+      <DialogFooter className="mt-6 flex justify-between">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={isProcessing}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant={isDestructive ? "destructive" : "default"}
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            "Processing..."
+          ) : isDestructive ? (
+            <>
+              Delete <FaTrash className="ml-2" />
+            </>
+          ) : (
+            <>
+              Save <FaSave className="ml-2" />
+            </>
           )}
-
-          <div className="first-line:gap-2 mt-6 flex justify-between relative">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-md"
-              disabled={isProcessing}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className={`px-4 py-2 text-white rounded-md flex items-center font-medium ${
-                isDestructive ? 'bg-red-500 hover:bg-red-600' : 'bg-teal-500 hover:bg-teal-600'
-              }`}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <span>Processing...</span>
-              ) : isDestructive ? (
-                <>
-                  Delete <FaTrash className="ml-2" />
-                </>
-              ) : (
-                <>
-                  Save <FaSave className="ml-2" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </Button>
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
   );
 };
 

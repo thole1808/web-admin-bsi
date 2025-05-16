@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
-import { FaRotateLeft } from "react-icons/fa6";
 import CustomLoader from "../../Tables/CustomLoader";
-import Select from "@/components/Forms/Select";
-import { FaSearch } from "react-icons/fa";
-import TextInput from "@/components/Forms/TextInput";
 import DateTimePicker from "@/components/Forms/DateTimePicker";
 import { useSession } from "next-auth/react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 const QueueTable: React.FC = () => {
   const { data: session, status } = useSession();
@@ -24,12 +25,14 @@ const QueueTable: React.FC = () => {
   const [typeField, setTypeField] = useState("");
   const [statusField, setStatusField] = useState("");
   const [search, setSearch] = useState("");
+  const [branch, setBranch] = useState("");
   const [area, setArea] = useState("");
   const [region, setRegion] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [areaOptions, setAreaOptions] = useState<any[]>([]);
   const [regionOptions, setRegionOptions] = useState<any[]>([]);
-  
+  const [branchOptions, setBranchOptions] = useState<any[]>([]);
+
 
   const branchId = (session?.user as any)?.branch?.id?.toString() || "";
   const branchType = (session?.user as any)?.branch?.type?.toString() || "";
@@ -48,6 +51,7 @@ const QueueTable: React.FC = () => {
     const loadRegions = async () => {
       setRegion('');
       setArea('');
+      setBranch('');
 
       try {
         const response = await fetch(`/api/branches?type=REGION&size=100`);
@@ -66,10 +70,11 @@ const QueueTable: React.FC = () => {
 
   useEffect(() => {
     const loadAreas = async () => {
+      setBranch('');
       setArea('');
 
       try {
-        const response = await fetch(`/api/branches?type=AREA&aa=${region}`);
+        const response = await fetch(`/api/branches?type=AREA&regionId=${region}`);
         const result = await response.json();
 
         if (result.success) {
@@ -80,10 +85,40 @@ const QueueTable: React.FC = () => {
       }
     };
 
+    if (session?.user.branch?.type === 'REGION') {
+      setRegion(session?.user.branch?.regionId || "");
+    }
+
     if (region) {
       loadAreas();
     }
-  }, [region]);
+  }, [region, session]);
+
+  useEffect(() => {
+    const loadBranches = async () => {
+      setBranch('');
+
+      try {
+        const response = await fetch(`/api/branches?type=BRANCH&areaId=${area}&regionId=${region}`);
+        const result = await response.json();
+
+        if (result.success) {
+          setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+        }
+      } catch (err) {
+        console.error('Error fetching areas:', err);
+      }
+    };
+
+    if (session?.user.branch?.type === 'AREA') {
+      setRegion(session?.user.branch?.regionId || "");
+      setArea(session?.user.branch?.areaId || "");
+    }
+
+    if (area) {
+      loadBranches();
+    }
+  }, [session, area, region]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -106,9 +141,10 @@ const QueueTable: React.FC = () => {
         const direction = sortDirection.toString() || "DESC";
         const status = statusField.toString();
         const search = debouncedSearch;
-        const type = typeField;
-        const areaId = area;
-        const aa = region;
+        const type = typeField === "all" ? "" : typeField;
+        const areaId = area === "all" ? "" : area;
+        const regionId = region === "all" ? "" : region;
+        const branchId = branch === "all" ? "" : branch;
 
         const queryParams = new URLSearchParams({
           start,
@@ -119,7 +155,8 @@ const QueueTable: React.FC = () => {
           direction,
           type,
           areaId,
-          aa,
+          regionId,
+          branchId,
           status,
           search,
         });
@@ -145,7 +182,7 @@ const QueueTable: React.FC = () => {
     };
 
     fetchQueues();
-  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField, region, area, branchId]);
+  }, [fromDate, toDate, perPage, currentPage, sortField, sortDirection, statusField, debouncedSearch, typeField, region, area, branchId, branch]);
 
   function convertArrayOfObjectsToCSV(array: any[]) {
     let result: string;
@@ -210,7 +247,7 @@ const QueueTable: React.FC = () => {
           <InfoRow label="Cabang" value={data.branchName} />
           <InfoRow label="Area" value={data.areaName} />
           <InfoRow label="Region" value={data.regionName} />
-          <InfoRow label="Tipe Reservasi" value={data.type} />
+          <InfoRow label="Jenis Reservasi" value={data.type} />
           <InfoRow label="Waktu Reservasi" value={formatDateTime(data.createdAt)} />
           <InfoRow label="Waktu Dipanggil" value={formatDateTime(data.calledAt)} />
           <InfoRow label="Waktu Dilayani" value={formatDateTime(data.startedAt)} />
@@ -388,109 +425,168 @@ const QueueTable: React.FC = () => {
   }
 
   return (
-    <div className="grid gap-y-4">
-      <div className="py-1 border rounded-lg bg-white">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-lg font-semibold ml-2">Data Antrian</h2>
-          <div>
-            <Export onExport={() => downloadCSV(data)} />
-          </div>
-        </div>
+    <div className="grid gap-4">
+      <Card className="shadow-md border">
+        <CardHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
+          <CardTitle className="text-lg font-semibold">Daftar Antrian</CardTitle>
+          <Export onExport={() => downloadCSV(data)} />
+        </CardHeader>
 
-        <div className="grid grid-cols-7 py-4 px-6 gap-3">
-          <div className="grid col-span-4">
-            <TextInput
-              label="Pencarian"
-              placeholder="Cari berdasarkan kode reservasi, no antrian, layanan atau cabang..."
+        <CardContent className="space-y-4 px-6 py-4">
+          {/* Baris Filter */}
+          <div className="col-span-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Tanggal Awal */}
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Tanggal Awal</Label>
+              <DateTimePicker
+                value={fromDate}
+                onChange={setFromDate}
+                disableTime
+              />
+            </div>
+
+            {/* Tanggal Akhir */}
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium text-muted-foreground">Tanggal Akhir</Label>
+              <DateTimePicker
+                value={toDate}
+                onChange={setToDate}
+                disableTime
+              />
+            </div>
+
+            {/* Tipe Reservasi */}
+            <div className="space-y-1.5">
+              <Label htmlFor="type" className="text-sm font-medium text-muted-foreground">Jenis Reservasi</Label>
+              <Select value={typeField} onValueChange={setTypeField}>
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="Pilih Jenis Reservasi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua</SelectItem>
+                  <SelectItem value="ONSITE">Onsite</SelectItem>
+                  <SelectItem value="ONLINE">Online</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Status Antrian */}
+            <div className="space-y-1.5">
+              <Label htmlFor="status" className="text-sm font-medium text-muted-foreground">Status Antrian</Label>
+              <Select value={statusField} onValueChange={setStatusField}>
+                <SelectTrigger className="text-sm">
+                  <SelectValue placeholder="Pilih Status Antrian" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Semua</SelectItem>
+                  <SelectItem value="WAITING">Menunggu</SelectItem>
+                  <SelectItem value="STARTED,PAUSED,CONTINUED">Sedang Dilayani</SelectItem>
+                  <SelectItem value="STOPPED,CANCELED,TRANSFERRED">Selesai</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Region & Area */}
+            {branchType === "" && (
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-medium text-muted-foreground">Region</Label>
+                  <Select value={region} onValueChange={setRegion}>
+                    <SelectTrigger className="text-sm">
+                      <SelectValue placeholder="Pilih Region" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua</SelectItem>
+                      {regionOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {(branchType === "REGION" || branchType === "") && (
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-medium text-muted-foreground">Area</Label>
+                  <Select
+                    value={area}
+                    onValueChange={setArea}
+                    disabled={region === ""}
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue placeholder="Pilih Area" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua</SelectItem>
+                      {areaOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {(branchType === "AREA" || branchType === "REGION" || branchType === "") && (
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-medium text-muted-foreground">Cabang</Label>
+                  <Select
+                    value={branch}
+                    onValueChange={setBranch}
+                    disabled={area === ""}
+                  >
+                    <SelectTrigger className="text-sm">
+                      <SelectValue placeholder="Pilih Cabang" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Semua</SelectItem>
+                      {branchOptions.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+          </div>
+
+          {/* Pencarian */}
+          <div className="flex justify-end col-span-full pt-10">
+            <Input
+              id="search"
+              placeholder="Masukkan kata kunci pencarian.."
+              className="max-w-lg"
               value={search}
-              size="xs"
-              onChange={(value) => setSearch(value)}
-              suffixIcon={<FaSearch className="w-4 h-4 text-gray-400" />}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="grid col-span-2">
-            <Select
-              size="xs"
-              label="Tipe Reservasi"
-              options={[
-                { value: 'ONSITE', label: 'Langsung' },
-                { value: 'ONLINE', label: 'Online' },
-              ]}
-              value={typeField}
-              onChange={(value) => setTypeField(value as string)}
+          {/* Reset Button */}
+          {/* <div className="space-y-1.5 flex justify-end">
+              <Button variant="ghost" onClick={handleResetFilter}>Reset</Button>
+            </div> */}
+          {/* Table */}
+          <div className="mt-4 -mx-6">
+            <DataTable
+              columns={columns}
+              data={data}
+              progressPending={loading}
+              progressComponent={<CustomLoader />}
+              expandableRows
+              expandableRowsComponent={ExpandedComponent}
+              pagination
+              paginationServer
+              paginationTotalRows={totalRows}
+              onChangeRowsPerPage={handlePerRowsChange}
+              onChangePage={handlePageChange}
+              onSort={handleSort}
+              sortServer
             />
           </div>
-          <div className="grid text-sm items-end justify-end">
-            <button
-              className="flex items-center gap-2 py-2 px-4 border rounded bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 border-gray-300 transition-colors"
-              onClick={handleResetFilter}
-            >
-              <FaRotateLeft className="w-3 h-3" />
-              Atur Ulang
-            </button>
-          </div>
-
-          <div className="grid col-span-2">
-            <DateTimePicker
-              label="Tanggal Awal"
-              value={fromDate}
-              onChange={(value) => setFromDate(value)}
-              size="xs"
-              disableTime
-            />
-          </div>
-          <div className="grid col-span-2">
-            <DateTimePicker
-              label="Tanggal Akhir"
-              value={toDate}
-              onChange={(value) => setToDate(value)}
-              size="xs"
-              disableTime
-            />
-          </div>
-          <div className="grid col-span-2">
-            <Select
-              size="xs"
-              label="Status Antrian"
-              options={[
-                { value: '', label: 'Semua' },
-                { value: 'WAITING', label: 'Menunggu' },
-                { value: 'STARTED,PAUSED,CONTINUED', label: 'Sedang Dilayani' },
-                { value: 'STOPPED,CANCELED,TRANSFERRED', label: 'Selesai' },
-              ]}
-              value={statusField}
-              onChange={(value) => setStatusField(value as string)}
-            />
-          </div>
-
-          {branchType !== 'BRANCH' && (
-            <>
-              <div className="grid col-span-2">
-                <Select size="xs" label="Region" options={regionOptions} value={region} onChange={(value) => setRegion(value as string)} />
-              </div>
-              <div className="grid col-span-2">
-                <Select size="xs" label="Area" options={areaOptions} value={area} onChange={(value) => setArea(value as string)} disabled={region === ''} />
-              </div>
-            </>
-          )}
-        </div>
-
-        <DataTable
-          columns={columns}
-          data={data}
-          progressPending={loading}
-          progressComponent={<CustomLoader />}
-          expandableRows
-          expandableRowsComponent={ExpandedComponent}
-          pagination
-          paginationServer
-          paginationTotalRows={totalRows}
-          onChangeRowsPerPage={handlePerRowsChange}
-          onChangePage={handlePageChange}
-          onSort={handleSort}
-          sortServer
-        />
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

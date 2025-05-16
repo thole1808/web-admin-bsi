@@ -14,5 +14,5 @@ export async function buildUrl(req: Request, basePath: string): Promise<string> 
 
   const queryString = buildQueryString(combinedParams);
 
-  return `${API_URL}${basePath}?${queryString}`;
+  return `${basePath}?${queryString}`;
 }

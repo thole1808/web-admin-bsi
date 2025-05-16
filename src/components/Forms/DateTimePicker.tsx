@@ -1,4 +1,15 @@
-import React, { useState } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { CalendarIcon, ClockIcon } from 'lucide-react';
+import { format, parseISO, isValid } from 'date-fns';
+
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 interface DateTimePickerProps {
   label?: string;
@@ -11,7 +22,7 @@ interface DateTimePickerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
-const DateTimePicker: React.FC<DateTimePickerProps> = ({
+export default function DateTimePicker({
   label,
   value,
   onChange,
@@ -20,74 +31,93 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
   className = '',
   error,
   size = 'sm',
-}) => {
-  const [dateValue, setDateValue] = useState<string>(value || '');
+}: DateTimePickerProps) {
+  const [datePart, setDatePart] = useState<Date | undefined>();
+  const [timePart, setTimePart] = useState<string>('00:00');
   const [localError, setLocalError] = useState<string | undefined>(error);
 
-  const handleBlur = () => {
-    if (required && !dateValue) {
-      setLocalError('This field is required.');
+  useEffect(() => {
+    if (value) {
+      const parsed = parseISO(value);
+      if (isValid(parsed)) {
+        setDatePart(parsed);
+        const [, time = '00:00'] = value.split('T');
+        setTimePart(time.substring(0, 5)); // hh:mm
+      }
+    }
+  }, [value]);
+
+  const emitChange = (selectedDate: Date | undefined, selectedTime: string) => {
+    if (!selectedDate) return;
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    const finalVal = `${dateStr}T${selectedTime || '00:00'}`;
+    onChange(finalVal);
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setDatePart(date);
+    emitChange(date, timePart);
+    if (required && !date) {
+      setLocalError('Tanggal wajib diisi.');
     } else {
       setLocalError(undefined);
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const datePart = e.target.value;
-    if (!disableTime) {
-      const timePart = dateValue.split('T')[1] || '00:00';
-      const newValue = `${datePart}T${timePart}`;
-      setDateValue(newValue);
-      onChange(newValue);
-    } else {
-      setDateValue(datePart);
-      onChange(datePart);
-    }
-  };
-
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const timePart = e.target.value;
-    const datePart = dateValue.split('T')[0] || new Date().toISOString().split('T')[0];
-    const newValue = `${datePart}T${timePart}`;
-    setDateValue(newValue);
-    onChange(newValue);
+    const newTime = e.target.value;
+    setTimePart(newTime);
+    emitChange(datePart, newTime);
   };
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className={cn('w-full space-y-1.5', className)}>
       {label && (
-        <label className={`block text-${size} font-medium text-gray-700 mb-1`}>
+        <Label className="text-sm font-medium text-muted-foreground">
           {label}
-          {required && <span className="text-red-500">*</span>}
-        </label>
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </Label>
       )}
-      <div className="flex space-x-4">
-        {/* Date Input */}
-        <input
-          type="date"
-          value={dateValue.split('T')[0]}
-          onChange={handleDateChange}
-          onBlur={handleBlur}
-          className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
-            localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-          }`}
-        />
-        {/* Time Input (optional) */}
+
+      <div className="flex gap-3 items-center">
+        {/* Date via Popover */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left font-normal"
+            >
+              <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+              {datePart ? format(datePart, 'dd MMM yyyy') : <span className="text-muted-foreground">Pilih tanggal</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={datePart}
+              onSelect={handleDateSelect}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {/* Time input if enabled */}
         {!disableTime && (
-          <input
-            type="time"
-            value={dateValue.split('T')[1] || ''}
-            onChange={handleTimeChange}
-            onBlur={handleBlur}
-            className={`text-${size} w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:outline-none ${
-              localError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
+          <div className="flex items-center gap-2 w-full">
+            <ClockIcon className="h-4 w-4 text-muted-foreground" />
+            <Input
+              type="time"
+              value={timePart}
+              onChange={handleTimeChange}
+              className="w-full"
+            />
+          </div>
         )}
       </div>
-      {(localError || error) && <p className="text-red-500 text-sm mt-1">{localError || error}</p>}
+
+      {(localError || error) && (
+        <p className="text-sm text-red-500">{localError || error}</p>
+      )}
     </div>
   );
-};
-
-export default DateTimePicker;
+}

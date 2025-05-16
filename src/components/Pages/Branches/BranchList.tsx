@@ -181,10 +181,10 @@ const BranchList: React.FC = () => {
     { name: 'Unit', selector: (row: any) => row.unit || '', sortable: true, sortField: 'unit' },
     { name: 'Kapasitas Ruangan', selector: (row: any) => row.maxRoomCapacity || '', sortable: true, sortField: 'maxRoomCapacity' },
     { name: 'Kuota Antrian', selector: (row: any) => row.maxQueueCapacity || '', sortable: true, sortField: 'maxQueueCapacity' },
-    { name: 'Terakhir Diperbarui', selector: (row: any) => formatDateTime(row.updatedAt), grow: 2, right: true, sortable: true, sortField: 'updatedAt' },
+    { name: 'Terakhir Diperbarui', selector: (row: any) => formatDateTime(row.updatedAt), grow: 2, right: "true", sortable: true, sortField: 'updatedAt' },
     {
       name: "", right: true, cell: (row: any) => (
-        <Link href={`/branches/${row.id}`} className="text-sm border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-2 flex gap-1 items-center">
+        <Link href={`/branches/${row.id}`} className="text-sm border font-medium rounded bg-teal-500 hover:bg-teal-600 text-white py-1.5 px-3 flex gap-1 items-center">
           Kelola <FaCog className="w-3 h-3" />
         </Link>
       )

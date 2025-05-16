@@ -16,6 +16,7 @@ import TextInput from "../../Forms/TextInput";
 interface FormData {
     name: string;
     num: number;
+    roleName: string;
     serviceTypes: string[];
 }
 
@@ -36,7 +37,8 @@ const BranchCountersList: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
         name: "",
         num: 0,
-        serviceTypes: [],
+        roleName: "",
+        serviceTypes: []
     });
 
     useEffect(() => {
@@ -112,23 +114,22 @@ const BranchCountersList: React.FC = () => {
 
     const columns = [
         {
+            name: "Number",
+            selector: (row: { num: number }) => row?.num || "",
+        },
+        {
             name: "Name",
             selector: (row: { name: string }) => row?.name || "",
             grow: 2,
         },
         {
-            name: "Number",
-            selector: (row: { num: number }) => row?.num || "",
-        },
-        {
-            name: "Services",
-            selector: (row: { serviceTypes: any }) => row?.serviceTypes.map((i: any) => i.name).join(", ") || "",
-            maxWidth: "600px",
-            grow: 3,
+            name: "Role",
+            selector: (row: { roleName: string }) => row?.roleName || "",
+            grow: 2,
         },
         {
             name: "",
-            right: true,
+            right: "true",
             cell: (row: any) => (
                 <ActionGroup
                     options={[
@@ -149,7 +150,8 @@ const BranchCountersList: React.FC = () => {
         setFormData({
             name: row.name,
             num: row.num,
-            serviceTypes: row.serviceTypes.map((service: any) => service.name),
+            roleName: row.roleName,
+            serviceTypes: row.serviceTypes || []
         });
 
         console.log(formData);
@@ -212,7 +214,8 @@ const BranchCountersList: React.FC = () => {
                 setFormData({
                     serviceTypes: [],
                     name: "",
-                    num: 0
+                    num: 0,
+                    roleName: ""
                 });
 
             } else {
@@ -247,7 +250,7 @@ const BranchCountersList: React.FC = () => {
             {formOpen && (
                 <ModalForm
                     width="lg"
-                    title="Create Office Hours"
+                    title="Create Counter"
                     isOpen={formOpen}
                     onClose={() => setFormOpen(false)}
                     onSubmit={() => handleSubmit(formData)}

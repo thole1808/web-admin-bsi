@@ -30,7 +30,7 @@ export default function DefaultLayout({
 
           <main>
             <ToastContainer className="text-sm" />
-            <div className="mx-auto max-w-screen-2xl md:px-6 md:py-6 2xl:p-10">
+            <div className="mx-auto max-w-screen-2xl md:p-4 2xl:p-6">
               {children}
             </div>
           </main>

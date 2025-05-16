@@ -1,14 +1,13 @@
-import { buildUrl } from '@/utils/buildUrl';
-import { NextRequest } from 'next/server';
 import { apiClient } from "@/apiClient";
+import { getSessionUser } from "@/getSessionUser";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
+    const user = getSessionUser();
+
   try {
-    const url = await buildUrl(req, "/queues/paginate");
-
     const res = await apiClient({
       method: "GET",
-      url: url,
+      url: `/analytics/branch/${(await user).branch?.id}/daily-queue-summary`,
     });
 
     return Response.json(res.data);
