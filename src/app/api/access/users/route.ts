@@ -1,4 +1,4 @@
-import { apiGet } from '@/apiClient';
+import { apiGet } from '@/apiServer';
 import { getDefaultFilter } from '@/getDefaultFilter';
 import { buildUrl } from '@/utils/buildUrl';
 import { getToken } from 'next-auth/jwt';

@@ -44,20 +44,6 @@ export default function QueueTrendChart() {
           <CardTitle className="text-sm font-semibold text-gray-700">
             Tren Jumlah Antrean
           </CardTitle>
-          <Popover open={showCalendar} onOpenChange={setShowCalendar}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="text-xs">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {format(parseISO(start), 'dd MMM')} - {format(parseISO(end), 'dd MMM')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-2 space-y-2 bg-white shadow-md border border-gray-200 rounded-lg">
-              <div className="grid grid-cols-2 gap-2">
-                <Calendar mode="single" selected={parseISO(start)} onSelect={d => d && setStart(d.toISOString().split('T')[0])} />
-                <Calendar mode="single" selected={parseISO(end)} onSelect={d => d && setEnd(d.toISOString().split('T')[0])} />
-              </div>
-            </PopoverContent>
-          </Popover>
         </div>
       </CardHeader>
       <CardContent>

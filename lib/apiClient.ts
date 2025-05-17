@@ -1,77 +1,40 @@
-// lib/apiClient.ts
-import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import winston from "winston";
-import DailyRotateFile from "winston-daily-rotate-file";
-import path from "path";
-import fs from "fs";
-import { getSessionUser } from "./getSessionUser";
+'use client';
 
-// Setup log directory
-const logDir = path.join(process.cwd(), "logs");
-if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
+import { signOut } from 'next-auth/react';
 
-// Logger
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.printf(({ level, message }) => {
-    return `[${new Date().toISOString()}] ${level.toUpperCase()} ${message}`;
-  }),
-  transports: [
-    new DailyRotateFile({
-      filename: path.join(logDir, "api-%DATE%.log"),
-      datePattern: "YYYY-MM-DD",
-      zippedArchive: false,
-      maxFiles: "7d",
-    }),
-  ],
-});
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
-const baseClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api",
-  timeout: 10000,
-});
+export async function apiFetch<T = any>(
+  endpoint: string,
+  options: RequestInit = {},
+  customBaseUrl: string = BASE_URL
+): Promise<T> {
+  const url = `${customBaseUrl}${endpoint}`;
 
-// Fungsi utama dengan logger
-export async function apiClient(config: AxiosRequestConfig) {
-  const user = await getSessionUser();
-  const finalConfig: AxiosRequestConfig = {
-    ...config,
-    headers: {
-      ...(config.headers || {}),
-      Authorization: user ? `Bearer ${user.accessToken}` : "",
-    },
-  };
-
-  const startTime = new Date();
   try {
-    const response = await baseClient.request(finalConfig);
-    const duration = new Date().getTime() - startTime.getTime();
-    logger.info(
-      `${response.status} ${config.method?.toUpperCase()} ${config.url} - ${duration}ms`
-    );
-    return response;
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
+
+    if (res.status === 401) {
+      await signOut({ callbackUrl: '/login' });
+      return Promise.reject({ message: 'Unauthorized, redirecting to login' });
+    }
+
+    if (!res.ok) {
+      const errorBody = await res.json().catch(() => ({}));
+      throw new Error(errorBody.message || `HTTP error ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data;
   } catch (error: any) {
-    const duration = new Date().getTime() - startTime.getTime();
-    logger.error(
-      `${error.response?.status || "ERR"} ${config.method?.toUpperCase()} ${config.url} - ${duration}ms - ${error.message}`
-    );
+    console.error('API Fetch Error:', error);
     throw error;
   }
-}
-
-// 🔽 Helper Methods
-export async function apiGet<T = any>(url: string, config: AxiosRequestConfig = {}) {
-  return apiClient({ ...config, method: "get", url }) as Promise<AxiosResponse<T>>;
-}
-
-export async function apiPost<T = any>(url: string, data?: any, config: AxiosRequestConfig = {}) {
-  return apiClient({ ...config, method: "post", url, data }) as Promise<AxiosResponse<T>>;
-}
-
-export async function apiPut<T = any>(url: string, data?: any, config: AxiosRequestConfig = {}) {
-  return apiClient({ ...config, method: "put", url, data }) as Promise<AxiosResponse<T>>;
-}
-
-export async function apiDelete<T = any>(url: string, config: AxiosRequestConfig = {}) {
-  return apiClient({ ...config, method: "delete", url }) as Promise<AxiosResponse<T>>;
 }

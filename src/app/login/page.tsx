@@ -9,6 +9,11 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import Label from "@/components/Forms/Label";
 import NProgress from "nprogress"; // Progress bar (opsional, kecilin size nprogress.css)
 
+const errorMap: Record<string, string> = {
+  INVALID_ROLE_ACCESS: "Akun Anda tidak memiliki akses aplikasi. Pastikan Anda menggunakan akun admin.",
+  CredentialsSignin: "Email atau password salah.",
+};
+
 const SignIn: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -32,16 +37,21 @@ const SignIn: React.FC = () => {
     setIsLoading(true);
     NProgress.start();
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-
-    if (res?.ok) {
-      router.push("/dashboard");
-    } else {
-      setErrorMsg(res?.error || "Login gagal");
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+  
+      if (res?.ok) {
+        router.push("/dashboard");
+      } else {
+        const userFriendlyMessage = errorMap[res?.error ?? ""] || "Terjadi kesalahan saat login.";
+        setErrorMsg(userFriendlyMessage);
+      }
+    } catch (error) {
+      setErrorMsg(error instanceof Error ? error.message : String(error));
       setShake(true);
       setTimeout(() => setShake(false), 500);
     }
@@ -95,8 +105,8 @@ const SignIn: React.FC = () => {
               />
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-              Login
+            <h1 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+              Login Admin
             </h1>
 
             <form onSubmit={handleLogin} className={`space-y-6 ${shake ? "animate-shake" : ""}`}>
@@ -107,8 +117,8 @@ const SignIn: React.FC = () => {
                       <FaExclamation className="w-5 h-5 text-red-500 dark:text-red-400" />
                     </div>
                     <div className="flex-1 text-sm leading-snug">
-                      <p className="font-semibold">{errorMsg}</p>
-                      <p className="text-xs text-red-600 dark:text-red-400">Periksa email dan password Anda.</p>
+                      <p className="font-semibold">Login Gagal</p>
+                      <p className="text-sm mt-1 text-red-600 dark:text-red-400">{errorMsg}</p>
                     </div>
                     <button
                       type="button"

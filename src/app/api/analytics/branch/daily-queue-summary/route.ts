@@ -1,11 +1,11 @@
-import { apiClient } from "@/apiClient";
+import { apiServer } from "@/apiServer";
 import { getSessionUser } from "@/getSessionUser";
 
 export async function GET() {
     const user = getSessionUser();
 
   try {
-    const res = await apiClient({
+    const res = await apiServer({
       method: "GET",
       url: `/analytics/branch/${(await user).branch?.id}/daily-queue-summary`,
     });

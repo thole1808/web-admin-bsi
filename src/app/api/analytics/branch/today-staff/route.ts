@@ -1,4 +1,4 @@
-import { apiClient } from "@/apiClient";
+import { apiServer } from "@/apiServer";
 import { getSessionUser } from "@/getSessionUser";
 import { NextResponse } from "next/server";
 
@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 //     const user = getSessionUser();
 
 //   try {
-//     const res = await apiClient({
+//     const res = await apiServer({
 //       method: "GET",
 //       url: `/analytics/branch/${(await user).branch?.id}/today-staff`,
 //     });

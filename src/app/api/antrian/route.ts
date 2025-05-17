@@ -1,12 +1,12 @@
 import { buildUrl } from '@/utils/buildUrl';
 import { NextRequest } from 'next/server';
-import { apiClient } from "@/apiClient";
+import { apiServer } from "@/apiServer";
 
 export async function GET(req: NextRequest) {
   try {
     const url = await buildUrl(req, "/queues/paginate");
 
-    const res = await apiClient({
+    const res = await apiServer({
       method: "GET",
       url: url,
     });

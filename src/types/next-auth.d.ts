@@ -4,14 +4,23 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      name: string;
+      userId: string;
       type: string;
+      name: string;
       email: string;
+      phone: string;
       accessToken: string;
+      counter?: {
+        id: string;
+        name: string;
+        code?: string;
+        num?: string;
+      };
       role?: {
         id: string;
         name: string;
         code?: string;
+        guardName: string;
       };
       branch?: {
         id: string;
@@ -31,14 +40,23 @@ declare module "next-auth" {
 
   interface User {
     id: string;
-    name: string;
+    userId: string;
     type: string;
+    name: string;
     email: string;
+    phone: string;
     accessToken: string;
+    counter?: {
+      id: string;
+      name: string;
+      code?: string;
+      num?: string;
+    };
     role?: {
       id: string;
       name: string;
       code?: string;
+      guardName: string;
     };
     branch?: {
       id: string;
@@ -57,14 +75,23 @@ declare module "next-auth" {
 
   interface JWT {
     id: string;
-    name: string;
+    userId: string;
     type: string;
+    name: string;
     email: string;
+    phone: string;
     accessToken: string;
+    counter?: {
+      id: string;
+      name: string;
+      code?: string;
+      num?: string;
+    };
     role?: {
       id: string;
       name: string;
       code?: string;
+      guardName: string;
     };
     branch?: {
       id: string;

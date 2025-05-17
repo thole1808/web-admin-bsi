@@ -15,11 +15,12 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
 import { useSession } from "next-auth/react";
+import { IdentificationIcon } from '@heroicons/react/24/solid';
 
 interface UserManageProps {
     isOpen: boolean;
     onClose: () => void;
-    initialData?: Partial<FormData> & { counterId?: string; id?: string; role?: { id: string }; counter?: {id: string} };
+    initialData?: Partial<FormData> & { counterId?: string; id?: string; role?: { id: string }; counter?: { id: string }; branch?: { id: string } };
     mode?: 'create' | 'edit';
 }
 
@@ -28,7 +29,7 @@ interface FormData {
     username: string;
     name: string;
     email: string;
-    phone: string;
+    officialId: string;
     roleId: string;
     branchId: string;
     counterId?: string; // Added counterId to the interface
@@ -41,14 +42,13 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
     const branchData = session?.user?.branch;
 
     const [counters, setCounters] = useState<any[]>([]);
-    const [selectedCounter, setSelectedCounter] = useState('');
 
     const [formData, setFormData] = useState<FormData>({
         type: '',
         username: '',
         name: '',
         email: '',
-        phone: '',
+        officialId: '',
         roleId: '',
         branchId: '',
         counterId: ''
@@ -68,15 +68,14 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
 
     useEffect(() => {
         if (initialData) {
-            console.log(initialData);
             setFormData({
                 type: initialData.type || '',
                 username: initialData.username || '',
                 name: initialData.name || '',
                 email: initialData.email || '',
-                phone: initialData.phone || '',
+                officialId: initialData.officialId || '',
                 roleId: initialData.role?.id || '',
-                branchId: initialData.branchId || '',
+                branchId: initialData.branch?.id || '',
                 counterId: initialData.counter?.id || ''
             });
         }
@@ -89,28 +88,25 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
             setBranch(branchData.id);
             setFormData((prev) => ({ ...prev, branchId: branchData.id }));
             setFormData((prev) => ({ ...prev, type: session?.user?.branch?.type || '' }));
+
+            const fetchCounters = async () => {
+                try {
+                    const res = await fetch(`/api/branches/${branchData.id}/counters`);
+                    const result = await res.json();
+                    if (result.success) {
+                        setCounters(result.data.map((c: any) => ({
+                            value: c.id,
+                            label: c.name,
+                        })));
+                    }
+                } catch (err) {
+                    console.error("Error fetching counters", err);
+                }
+            };
+
+            fetchCounters();
         }
     }, [branchData, isBranchUser, session]);
-
-    useEffect(() => {
-        if (!branch) return;
-        const fetchCounters = async () => {
-            try {
-                const res = await fetch(`/api/branches/${branch}/counters`);
-                const result = await res.json();
-                if (result.success) {
-                    setCounters(result.data.map((c: any) => ({
-                        value: c.id,
-                        label: c.name,
-                    })));
-                }
-            } catch (err) {
-                console.error("Error fetching counters", err);
-            }
-        };
-
-        fetchCounters();
-    }, [branch]);
 
     useEffect(() => {
         const fetchRoles = async () => {
@@ -138,9 +134,9 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                             .filter((i: any) => i.guardName === 'operator' || i.guardName === 'branch' || i.guardName === 'area' || i.guardName === 'region')
                             .map((r: any) => ({ value: r.id, label: r.name }))
                     );
-                } else  {
+                } else {
                     setRoles(result.data.content
-                            .map((r: any) => ({ value: r.id, label: r.name })))
+                        .map((r: any) => ({ value: r.id, label: r.name })))
                 }
             }
         };
@@ -150,80 +146,76 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
 
     useEffect(() => {
         const loadRegions = async () => {
-          setRegion('');
-          setArea('');
-          setBranch('');
-    
-          try {
-            const response = await fetch(`/api/branches?type=REGION&size=100`);
-            const result = await response.json();
-    
-            if (result.success) {
-              setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+            setRegion('');
+            setArea('');
+            setBranch('');
+
+            try {
+                const response = await fetch(`/api/branches?type=REGION&size=100`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setRegionOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching regions:', err);
             }
-          } catch (err) {
-            console.error('Error fetching regions:', err);
-          }
         };
-    
+
         loadRegions();
-      }, []);
-    
-      useEffect(() => {
-        const loadAreas = async () => {
-          setBranch('');
-          setArea('');
-    
-          try {
-            const response = await fetch(`/api/branches?type=AREA&regionId=${region}`);
-            const result = await response.json();
-    
-            if (result.success) {
-              setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
-            }
-          } catch (err) {
-            console.error('Error fetching areas:', err);
-          }
-        };
-    
-        if (session?.user.branch?.type === 'REGION') {
-          setRegion(session?.user.branch?.regionId || "");
-        }
-    
-        if (region) {
-          loadAreas();
-        }
-      }, [region, session]);
-    
-      useEffect(() => {
-        const loadBranches = async () => {
-          setBranch('');
-    
-          try {
-            const response = await fetch(`/api/branches?type=BRANCH&areaId=${area}&regionId=${region}`);
-            const result = await response.json();
-    
-            if (result.success) {
-              setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
-            }
-          } catch (err) {
-            console.error('Error fetching areas:', err);
-          }
-        };
-    
-        if (session?.user.branch?.type === 'AREA') {
-          setRegion(session?.user.branch?.regionId || "");
-          setArea(session?.user.branch?.areaId || "");
-        }
-    
-        if (area) {
-          loadBranches();
-        }
-      }, [session, area, region]);
+    }, []);
 
     useEffect(() => {
-        setFormData((prev) => ({ ...prev, branchId: branch }));
-    }, [branch]);
+        const loadAreas = async () => {
+            setBranch('');
+            setArea('');
+
+            try {
+                const response = await fetch(`/api/branches?type=AREA&regionId=${region}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setAreaOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        if (session?.user.branch?.type === 'REGION') {
+            setRegion(session?.user.branch?.regionId || "");
+        }
+
+        if (region) {
+            loadAreas();
+        }
+    }, [region, session]);
+
+    useEffect(() => {
+        const loadBranches = async () => {
+            setBranch('');
+
+            try {
+                const response = await fetch(`/api/branches?type=BRANCH&areaId=${area}&regionId=${region}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setBranchOptions(result.data.content.map((branch: any) => ({ value: branch.id, label: branch.name })));
+                }
+            } catch (err) {
+                console.error('Error fetching areas:', err);
+            }
+        };
+
+        if (session?.user.branch?.type === 'AREA') {
+            setRegion(session?.user.branch?.regionId || "");
+            setArea(session?.user.branch?.areaId || "");
+        }
+
+        if (area) {
+            loadBranches();
+        }
+    }, [session, area, region]);
 
     const handleSubmit = async () => {
         setIsProcessing(true);
@@ -234,6 +226,9 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                 ...formData,
                 username: formData.email,
             };
+
+
+            console.log("FORMDATA", payload);
 
             const url = mode === 'edit'
                 ? `/api/access/users/${initialData?.id}`
@@ -278,12 +273,14 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                 {/* Informasi Akun */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Jenis Pengguna */}
+
                     <div>
                         <Label>Jenis Pengguna</Label>
                         <Select
                             value={formData.type}
                             onValueChange={(val) => setFormData((prev) => ({ ...prev, type: val }))}
                             disabled={isBranchUser}
+                            required
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih jenis pengguna" />
@@ -302,6 +299,7 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                         <Select
                             value={formData.roleId}
                             onValueChange={(val) => setFormData((prev) => ({ ...prev, roleId: val }))}
+                            required
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Pilih peran" />
@@ -323,6 +321,7 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                             placeholder="Masukkan nama lengkap"
                             value={formData.name}
                             onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                            required
                         />
                         {errors?.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
                     </div>
@@ -336,6 +335,7 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
                                 placeholder="contoh: user@email.com"
                                 value={formData.email}
                                 onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                                required
                             />
                             <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
                         </div>
@@ -344,17 +344,15 @@ const UserManage: React.FC<UserManageProps> = ({ isOpen, onClose, initialData, m
 
                     {/* Telepon */}
                     <div>
-                        <Label>No. Telepon</Label>
-                        <div className="relative">
-                            <Input
-                                className="pl-10"
-                                placeholder="Masukkan no telepon aktif"
-                                value={formData.phone}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                            />
-                            <FaPhone className="absolute left-3 top-3 text-gray-400" />
-                        </div>
-                        {errors?.phone && <p className="text-sm text-red-500 mt-1">{errors.phone}</p>}
+                        <Label>Employee ID</Label>
+                        <Input
+                            placeholder="Employee ID"
+                            value={formData.officialId}
+                            onChange={(e) => setFormData((prev) => ({ ...prev, officialId: e.target.value }))}
+                            maxLength={15}
+                            required
+                        />
+                        {errors?.officialId && <p className="text-sm text-red-500 mt-1">{errors.officialId}</p>}
                     </div>
 
                     {formData.type === 'BRANCH' && (

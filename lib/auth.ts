@@ -53,7 +53,6 @@ export const authOptions: NextAuthOptions = {
 
           const decodedToken: any = jwtDecode(accessToken);
           const emailFromToken = decodedToken?.sub;
-          const nameFromToken = emailFromToken?.split("@")[0] || "User";
 
           const profileRes = await fetch(`${apiUrl}/api/profile`, {
             method: "GET",
@@ -87,6 +86,11 @@ export const authOptions: NextAuthOptions = {
 
           const userRole = roleData.data;
 
+          if (userProfile.role.guardName === 'operator') {
+            console.error("INVALID_ROLE_ACCESS");
+            throw new Error("INVALID_ROLE_ACCESS");
+          }
+
           if (!emailFromToken) {
             console.error("Email not found in token.");
             return null;
@@ -94,17 +98,19 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: emailFromToken,
-            name: nameFromToken,
-            email: emailFromToken,
+            userId: userProfile.id,
             type: userProfile.type,
+            name: userProfile.name,
+            email: emailFromToken,
             accessToken,
             expiresAt,
             role: userRole,
             branch: userProfile.branch,
+            counter: userProfile.counter,
+            phone: userProfile.phone
           };
         } catch (error) {
-          console.error("Authorization error:", error);
-          return null;
+          throw error;
         }
       },
     }),
@@ -125,16 +131,24 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session) {
+        token.name = session.name;
+        token.phone = session.phone;
+      }
+
       if (user) {
         token.id = user.id;
+        token.userId = user.userId;
+        token.type = user.type;
         token.name = user.name;
         token.email = user.email;
-        token.type = user.type;
         token.accessToken = (user as any).accessToken;
         token.expiresAt = (user as any).expiresAt;
         token.role = (user as any).role;
         token.branch = (user as any).branch;
+        token.counter = user.counter;
+        token.phone = user.phone;
       }
       return token;
     },
@@ -143,12 +157,15 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         (session.user as any) = {
           id: token.id,
-          name: token.name,
+          userId: token.userId,
           type: token.type,
+          name: token.name,
           email: token.email,
           accessToken: token.accessToken,
           role: token.role,
           branch: token.branch,
+          counter: token.counter,
+          phone: token.phone,
         };
         (session as any).expiresAt = token.expiresAt;
       }

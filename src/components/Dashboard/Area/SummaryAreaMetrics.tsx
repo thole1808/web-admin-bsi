@@ -22,25 +22,25 @@ export default function SummaryAreaMetrics() {
         {
           title: 'Total Cabang',
           value: 12,
-          icon: <Building2 className="w-6 h-6 text-sky-700" />,
+          icon: <Building2 className="w-6 h-6" />,
           color: 'sky',
         },
         {
           title: 'Jumlah Cabang Aktif',
           value: 8,
-          icon: <Users className="w-6 h-6 text-emerald-700" />,
+          icon: <Users className="w-6 h-6" />,
           color: 'emerald',
         },
         {
           title: 'Jumlah Petugas Aktif',
           value: 14,
-          icon: <Clock className="w-6 h-6 text-orange-700" />,
+          icon: <Clock className="w-6 h-6" />,
           color: 'orange',
         },
         {
           title: 'Jumlah Loket Aktif',
           value: 10,
-          icon: <TimerReset className="w-6 h-6 text-indigo-700" />,
+          icon: <TimerReset className="w-6 h-6" />,
           color: 'indigo',
         },
       ];
@@ -56,12 +56,12 @@ export default function SummaryAreaMetrics() {
             <Card key={i} className="animate-pulse bg-gray-100 h-[100px]" />
           ))
         : metrics.map((item, index) => (
-            <Card key={index} className={`shadow-sm bg-${item.color}-100`}>
+            <Card key={index} className={`shadow-sm bg-${item.color}-50`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className={`text-sm font-semibold text-${item.color}-600 dark:text-${item.color}-300`}>
+                <CardTitle className={`text-base font-semibold text-${item.color}-600 dark:text-${item.color}-300`}>
                   {item.title}
                 </CardTitle>
-                <div className={`p-2 rounded-md`}>
+                <div className={`p-2 rounded-md text-${item.color}-600`}>
                   {item.icon}
                 </div>
               </CardHeader>
