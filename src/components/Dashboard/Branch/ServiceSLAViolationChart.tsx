@@ -13,18 +13,22 @@ interface SLAServiceData {
   slaViolation: number;
 }
 
-export default function ServiceSLAViolationChart() {
+interface Props {
+  period: string;
+}
+
+export default function ServiceSLAViolationChart({ period }: Props) {
   const [data, setData] = useState<SLAServiceData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/analytics/branch/service-sla-violation')
+    fetch('/api/analytics/service-sla-violation?period='+period)
       .then(res => res.json())
       .then(res => {
         setData(res.data);
         setLoading(false);
       });
-  }, []);
+  }, [period]);
 
   if (loading) {
     return <Skeleton className="w-full h-64 rounded-lg" />;
@@ -39,7 +43,7 @@ export default function ServiceSLAViolationChart() {
     <Card>
       <CardHeader>
         <CardTitle className="text-sm font-semibold text-gray-700">
-          Jenis Layanan dengan Pelanggaran SLA Terbanyak
+          Top Service Types by SLA Violations
         </CardTitle>
       </CardHeader>
       <CardContent>

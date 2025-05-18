@@ -1,28 +1,40 @@
 'use client';
 
+import { useState } from "react";
 import DailyChecklistCTA from "./DailyChecklistCTA";
-import QueueSummary from "./QueueSummary";
+import QueueStatistics from "../QueueStatistics";
 import QueueTrendChart from "./QueueTrendChart";
 import ServiceSLAViolationChart from "./ServiceSLAViolationChart";
 import ServiceTypeQueueChart from "./ServiceTypeQueueChart";
-import TodayStaffList from "./TodayStaffList";
+import DashboardFilter from "../DashboardFilter";
+import StaffRankPerformance from "../StaffRankPerformance";
+import StaffSLAHistories from "../StaffSLAHistories";
+import { useSession } from "next-auth/react";
 
 export default function BranchDashboard() {
+  const [period, setPeriod] = useState<string>("today");
+  const {data: session} = useSession();
+
   return (
     <div className="space-y-6">
-      <DailyChecklistCTA />
+      {session?.user.branch?.type === 'BRANCH' && (
+        <DailyChecklistCTA />
+      )}
 
-      <QueueSummary />
+      {/* 👉 Kirim props ke DashboardFilter */}
+      <DashboardFilter period={period} setPeriod={setPeriod} />
 
-      <QueueTrendChart />
+      {/* 👉 Kirim props ke komponen yang membutuhkan */}
+      <QueueStatistics period={period} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TodayStaffList />
-        <div className="grid gap-4">
-          <ServiceTypeQueueChart />
-          <ServiceSLAViolationChart />
-        </div>
+        <StaffRankPerformance period={period} />
+        <StaffSLAHistories period={period} />
+        <ServiceTypeQueueChart period={period} />
+        <ServiceSLAViolationChart period={period} />
       </div>
+
+      <QueueTrendChart period={period} />
     </div>
   );
 }

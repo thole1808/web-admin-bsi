@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
   try {
     const res = await apiServer({
       method: "GET",
-      url: "/analytics/queue-service-types",
+      url: "/analytics/sla-violation-by-service",
       params,
     });
 

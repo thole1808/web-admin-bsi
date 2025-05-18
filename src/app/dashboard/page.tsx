@@ -16,14 +16,8 @@ const DashboardPage = async () => {
   return (
     <DefaultLayout>
       <div className="space-y-6">
-        {/* <SummaryAreaMetrics /> */}
-        {/* <Dashboard /> */}
-
-      {user.branch?.type === 'BRANCH' && (
         <BranchDashboard />
-      )}
       </div>
-
     </DefaultLayout>
   );
 };

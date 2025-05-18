@@ -12,18 +12,22 @@ interface QueueByServiceType {
     total: number;
 }
 
-export default function ServiceTypeQueueChart() {
+interface Props {
+    period: string;
+}
+
+export default function ServiceTypeQueueChart({ period }: Props) {
     const [data, setData] = useState<QueueByServiceType[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/analytics/branch/service-type-queues')
+        fetch('/api/analytics/branch/service-type-queues?period='+period)
             .then(res => res.json())
             .then(res => {
                 setData(res.data);
                 setLoading(false);
             });
-    }, []);
+    }, [period]);
 
     if (loading) {
         return <Skeleton className="w-full h-64 rounded-lg" />;
@@ -59,7 +63,7 @@ export default function ServiceTypeQueueChart() {
         <Card>
             <CardHeader>
                 <CardTitle className="text-sm font-semibold text-gray-700">
-                    Antrean Berdasarkan Jenis Layanan
+                    Queue by Service Type
                 </CardTitle>
             </CardHeader>
             <CardContent>

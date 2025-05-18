@@ -53,16 +53,18 @@ export async function GET(req: NextRequest) {
     endOfDay: endOfDay.toISOString(),
   };
 
+  console.log("PARAMS", params);
+
   try {
     const res = await apiServer({
       method: "GET",
-      url: "/analytics/queue-service-types",
+      url: "/analytics/staff-performances",
       params,
     });
 
     return Response.json(res.data);
   } catch (err) {
     console.error(err);
-    return new Response("Failed to fetch statistics", { status: 500 });
+    return new Response("Failed to fetch staff performances", { status: 500 });
   }
 }

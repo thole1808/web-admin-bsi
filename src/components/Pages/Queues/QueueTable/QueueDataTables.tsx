@@ -85,10 +85,17 @@ const QueueDataTable: React.FC<Props> = ({
       grow: 2,
       cell: (row: any) => statusWithStyle(row.status),
     },
-    { name: "Waiting Time", selector: (row: any) => row.waitingDuration || "", sortable: true, grow: 2 },
-    { name: "Service Time", selector: (row: any) => row.serviceDuration || "", sortable: true, grow: 2 },
+    { name: "Waiting Time", selector: (row: any) => formatDuration(row.waitingDuration) || "", sortable: true, grow: 2 },
+    { name: "Service Time", selector: (row: any) => formatDuration(row.serviceDuration) || "", sortable: true, grow: 2 },
     { name: "SLA Criteria", selector: (row: any) => slaCriteria(row) || "", sortable: true, grow: 2 },
   ];
+
+  function formatDuration(seconds: number): string {
+    if (!seconds || isNaN(seconds)) return "";
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${secs}s`;
+  }
 
   const ExpandedComponent: React.FC<ExpanderComponentProps<any>> = ({ data }) => (
     <div className="py-4 px-16 bg-gray-50 text-sm">
@@ -151,6 +158,16 @@ const QueueDataTable: React.FC<Props> = ({
         onSort={(column, sortDirection) =>
           onSortChange(typeof column.selector === "string" ? column.selector : "", sortDirection)
         }
+        conditionalRowStyles={[
+          {
+            when: (row) => slaCriteria(row) === "Exceeds SLA",
+            style: {
+              backgroundColor: "#ffe4e6", // pink soft
+              color: "#b91c1c",           // red text
+              fontWeight: "bold",
+            },
+          },
+        ]}
         sortServer
       />
     </div>
