@@ -236,35 +236,35 @@ export default function QueueStatistics({ period }: Props) {
                                 <div className="text-center bg-sky-50 border border-sky-100 p-4 rounded-xl">
                                     <div className="text-sky-700 font-medium mb-1">Avg. Waiting Time</div>
                                     <div className="text-xl font-semibold text-gray-900">
-                                        {Math.round(data.avgWaitingDuration / 60)} menit
+                                        {Math.round(data.avgWaitingDuration / 60)} min
                                     </div>
                                 </div>
 
                                 <div className="text-center bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
                                     <div className="text-emerald-700 font-medium mb-1">Avg. Service Time</div>
                                     <div className="text-xl font-semibold text-gray-900">
-                                        {Math.round(data.avgServiceDuration / 60)} menit
+                                        {Math.round(data.avgServiceDuration / 60)} min
                                     </div>
                                 </div>
 
                                 <div className="col-span-1 md:col-span-2 text-center bg-indigo-50 border border-indigo-100 p-4 rounded-xl">
                                     <div className="text-indigo-700 font-medium mb-1">Avg. Total Time</div>
                                     <div className="text-xl font-semibold text-gray-900">
-                                        {Math.round((data.avgWaitingDuration + data.avgServiceDuration) / 60)} menit
+                                        {Math.round((data.avgWaitingDuration + data.avgServiceDuration) / 60)} min
                                     </div>
                                 </div>
 
                                 <div className="text-center bg-orange-50 border border-orange-100 p-4 rounded-xl">
                                     <div className="text-orange-700 font-medium mb-1">Max Waiting Time</div>
                                     <div className="text-xl font-semibold text-gray-900">
-                                        {Math.round(data.maxWaitingDuration / 60)} menit
+                                        {Math.round(data.maxWaitingDuration / 60)} min
                                     </div>
                                 </div>
 
                                 <div className="text-center bg-rose-50 border border-rose-100 p-4 rounded-xl">
                                     <div className="text-rose-700 font-medium mb-1">Max Service Time</div>
                                     <div className="text-xl font-semibold text-gray-900">
-                                        {Math.round(data.maxServiceDuration / 60)} menit
+                                        {Math.round(data.maxServiceDuration / 60)} min
                                     </div>
                                 </div>
                             </div>
